@@ -1,0 +1,7 @@
+datasets:
+  - name: "http://w3id.org/raki/hobbit/vocab#Animal"
+    dataset: "/raki/data/animals/animals.owl"
+    learningProblem: "/raki/data/animals/lp.json"
+  - name: "http://w3id.org/raki/hobbit/vocab#Carcinogenesis"
+    dataset: "/raki/data/animals/animals.owl"
+    learningProblem: "/raki/data/animals/lp.json"
