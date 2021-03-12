@@ -3,11 +3,13 @@ package org.dice_group.raki.hobbit.benchmark;
 import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.Commands;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractBenchmarkController;
 import org.hobbit.utils.rdf.RdfHelper;
+import org.hobbit.vocab.HOBBIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +91,8 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         // model.
         // FIXME add parameters
         // this.resultModel.add(null);
+        LOGGER.info("Results: {}", this.resultModel);
+        //this.resultModel.add(benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel.createProperty("http://w3id.org/hobbit/vocab#involvesSystemInstance")).next().asResource(), RDF.type, HOBBIT.System);
         sendResultModel(this.resultModel);
     }
 }

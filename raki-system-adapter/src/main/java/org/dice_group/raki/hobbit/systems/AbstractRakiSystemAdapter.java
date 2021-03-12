@@ -23,12 +23,23 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     @Override
     public void receiveCommand(byte command, byte[] data) {
-        if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND){
+        if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND_SYSTEM){
             if(receiver!=null){
                 receiver.terminate();
             }
+            else{
+                LOGGER.error("Receiver cannot be terminated at this point. ");
+            }
         }
         super.receiveCommand(command, data);
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        String queueName = generateSessionQueueName("ontologyToSystemQueue");
+        LOGGER.info("Queue Name {} "+ Instant.now(), queueName);
+        receiver = SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
     }
 
     @Override
@@ -41,13 +52,10 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         LOGGER.info("Trying to receive generated data now.{}", d);
 
         try {
-            String queueName = generateSessionQueueName("ontologyToSystemQueue");
-            LOGGER.info("Queue Name {} "+ Instant.now(), queueName);
-            receiver = SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
             LOGGER.info("Created queue.");
             String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDirSystem/");
             LOGGER.info("Received {} Files ", receivedFiles.length);
-            IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
+            //IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
             //FIXME for now assume we only use one Ontology file
             LOGGER.info("Loading Ontology now.");
             loadOntology(new File("/raki/tempOntologyDirSystem/"+receivedFiles[0]));
@@ -67,9 +75,9 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     @Override
     public void receiveGeneratedTask(String taskId, byte[] data) {
-        LOGGER.debug("Retrieved task with id {}. ", taskId);
+        LOGGER.info("Retrieved task with id {}. ", taskId);
         String posNegExamples = RabbitMQUtils.readString(data);
-        LOGGER.debug("Examples: {} ", posNegExamples);
+        LOGGER.info("Examples: {} ", posNegExamples);
         //empty string will be considered as an error
         String concept = "";
         try {
@@ -78,6 +86,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
             LOGGER.error("Concept couldn't be created. ", e);
         }
         try {
+            LOGGER.info("Sending concept {} now", concept);
             sendResultToEvalStorage(taskId, RabbitMQUtils.writeString(concept));
         } catch (IOException e) {
             //Log the error.

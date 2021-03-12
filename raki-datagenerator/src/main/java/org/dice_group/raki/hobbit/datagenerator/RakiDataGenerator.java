@@ -120,6 +120,7 @@ public class RakiDataGenerator extends AbstractDataGenerator {
     protected void generateData() throws Exception {
         LOGGER.info("Sending ontology to system. "+ Instant.now());
         sendOntologyToSystem();
+        sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND_SYSTEM);
         LOGGER.info("Sending ontology to eval. "+ Instant.now());
         sendOntologyToEval();
         sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
@@ -132,6 +133,7 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
             byte[] data = RabbitMQUtils.writeString(posNegExample.toString());
             try {
+                LOGGER.info("Sending {}", posNegExample.toString());
                 sendDataToTaskGenerator(data);
             } catch (IOException e) {
                 LOGGER.error("Couldn't send data to task generator. ", e);
@@ -141,22 +143,26 @@ public class RakiDataGenerator extends AbstractDataGenerator {
     }
 
     private void sendOntologyToEval() throws IOException {
-        sendOntologyToQueue(this.evalQueueName);
+        SimpleFileSender sender = SimpleFileSender.create(this.outgoingDataQueuefactory, this.evalQueueName);
+
+        sendOntologyToQueue(sender, this.evalQueueName);
     }
 
     private void sendOntologyToSystem() throws IOException {
         //just sending one byte so the system triggers and we can send to the correct queue
-        sendOntologyToQueue(this.systemOntQueueName);
+        SimpleFileSender sender = SimpleFileSender.create(this.outgoingDataQueuefactory, this.systemOntQueueName);
+
         sendDataToSystemAdapter(new byte[]{1});
+
+        sendOntologyToQueue(sender, this.systemOntQueueName);
         //send to the actual queue
     }
 
-    private void sendOntologyToQueue(String queue) throws IOException {
+    private void sendOntologyToQueue(SimpleFileSender sender, String queue) throws IOException {
         // define a queue name, e.g., read it from the environment
 
         LOGGER.info("Queue Name: {}", queue);
         // create the sender
-        SimpleFileSender sender = SimpleFileSender.create(this.outgoingDataQueuefactory, queue);
 
         InputStream is = null;
         try {
@@ -173,6 +179,6 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         }
 
         // close the sender
-        //IOUtils.closeQuietly(sender);
+        IOUtils.closeQuietly(sender);
     }
 }

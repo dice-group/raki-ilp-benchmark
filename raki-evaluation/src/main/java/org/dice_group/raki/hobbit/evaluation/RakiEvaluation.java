@@ -6,9 +6,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
 import org.hobbit.core.components.AbstractEvaluationModule;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileReceiver;
+import org.hobbit.vocab.HOBBIT;
 import org.json.JSONObject;
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -72,15 +74,16 @@ public class RakiEvaluation extends AbstractEvaluationModule {
 
     @Override
     protected void collectResponses() throws Exception {
-        String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDir/");
-        IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
+        String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDirEval/");
+        //IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
 
-        LOGGER.info("received ontology {}", new File("/raki/tempOntologyDir/").listFiles().length);
+        LOGGER.info("received ontology {}", new File("/raki/tempOntologyDirEval/").listFiles().length);
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        for(File f : (new File("/raki/tempOntologyDir/").listFiles())){
+        for(File f : (new File("/raki/tempOntologyDirEval/").listFiles())){
             LOGGER.info("file {}", f.getAbsolutePath());
-            LOGGER.info("Size of recv ont: ", FileUtils.sizeOf(f));
+            LOGGER.info("Size of recv ont: {}", f.length());
             ontology= manager.loadOntologyFromOntologyDocument(f);
+            LOGGER.info("Axioms in Ontology: {}" , ontology.getAxiomCount());
         }
         if(receivedFiles.length>1){
             ontology = new OWLOntologyMerger(manager).createMergedOntology(manager, IRI.create("http://raki.merged.ontology/"));
@@ -105,6 +108,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     @Override
     protected void evaluateResponse(byte[] expectedData, byte[] receivedData, long taskSentTimestamp, long responseReceivedTimestamp) throws Exception {
         //convert data 2 concept
+        LOGGER.info("Recv an eval ");
         try {
             noOfConcepts++;
             Reasoner hermit = new Reasoner(ontology);
@@ -117,7 +121,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
             else {
                 try {
                     OWLClassExpression receivedConcept = parseManchesterConcept(receivedData);
-                    LOGGER.debug("Received concept is: {}.", receivedConcept);
+                    LOGGER.info("Received concept is: {}.", receivedConcept);
                     //OWLOntology ont = new OWLOntologyImpl(ontology);
                     this.conceptLengths.add(getConceptLength(receivedConcept));
 
@@ -139,6 +143,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
             this.summedPrecision += f1[1];
             this.summedRecall += f1[2];
             this.resultTimes.add(responseReceivedTimestamp-taskSentTimestamp);
+            LOGGER.info("Got {} {} {} {} {} {}" , tp,fp,fn,f1[0], f1[1], f1[2]);
         }catch (Exception e){
             LOGGER.error("Found error while evaluating. ", e);
             this.errorCount++;
@@ -152,7 +157,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         JSONObject posNegJson = new JSONObject(expectedPosNeg);
         if(posNegJson.has("concept")) {
             OWLClassExpression expectedConcept = parseManchesterConcept(expectedData);
-            LOGGER.debug("expected concept {}", expectedConcept);
+            LOGGER.info("expected concept {}", expectedConcept);
             NodeSet<OWLNamedIndividual> expectedSet = hermit.getInstances(expectedConcept);
             //evaluate and add to tp,fp,fn count, as well as f1,recall, precision
             //0=tp, 1=fp, 2=fn
@@ -219,7 +224,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
 
     protected OWLClassExpression parseManchesterConcept(byte[] data){
         String concept= RabbitMQUtils.readString(data);
-        LOGGER.debug("Retrieved concept: {}", concept);
+        LOGGER.info("Retrieved concept: {}", concept);
         BidirectionalShortFormProvider provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(ontology), new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology));
         OWLEntityChecker checker = new ShortFormEntityChecker(provider);
         OWLDataFactory dataFactory = new OWLDataFactoryImpl();
@@ -299,6 +304,8 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         ResultStorage result = evaluate();
         Model model = createDefaultModel();
         Resource experiment = model.getResource(experimentUri);
+
+        model.add(experiment , RDF.type, HOBBIT.Experiment);
         model.addLiteral(experiment, RAKI.macroPrecision, result.getMacroPrecision());
         model.addLiteral(experiment, RAKI.macroRecall, result.getMacroRecall());
         model.addLiteral(experiment, RAKI.macroF1, result.getMacroF1Measure());
