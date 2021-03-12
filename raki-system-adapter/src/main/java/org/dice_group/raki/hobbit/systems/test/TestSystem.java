@@ -25,6 +25,7 @@ public class TestSystem extends AbstractRakiSystemAdapter {
     private OWLOntology ontology;
     private BidirectionalShortFormProviderAdapter provider;
 
+
     @Override
     public String createConcept(String posNegExample) throws IOException, Exception {
         JSONObject posNegJson = new JSONObject(posNegExample);

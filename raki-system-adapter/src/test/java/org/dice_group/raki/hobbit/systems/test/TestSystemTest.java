@@ -1,8 +1,11 @@
 package org.dice_group.raki.hobbit.systems.test;
 
+import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class TestSystemTest {
+
+    protected static Logger LOGGER = LoggerFactory.getLogger(TestSystemTest.class);
 
     @Parameterized.Parameters
     public static Collection<Object> data(){
@@ -36,6 +41,7 @@ public class TestSystemTest {
     @Test
     public void test() throws Exception {
         TestSystem system = new TestSystem();
+        LOGGER.info("test");
         system.loadOntology(new File("ontology.owl"));
         String concept = system.createConcept(posNegExample);
         assertEquals(expectedConcept, concept);

@@ -47,9 +47,7 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
 
     @Override
     protected void generateTask(byte[] data) throws Exception {
-        //wait for system to be loaded message
-        systemLoadedMutex.acquire();
-        systemLoadedMutex.release();
+
 
         // Create an ID for the task
         String taskId = getNextTaskId();
@@ -63,6 +61,9 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         // Send the task to the system (and store the timestamp)
         long timestamp = System.currentTimeMillis();
         LOGGER.debug("Sending task with id {} to system. ", taskId);
+        //wait for system to be loaded message
+        systemLoadedMutex.acquire();
+        systemLoadedMutex.release();
         sendTaskToSystemAdapter(taskId, taskData);
 
         LOGGER.debug("Sending task with id {} to eval storage. ", taskId);

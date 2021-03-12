@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.hobbit</groupId>
             <artifactId>core</artifactId>
-            <version>1.0.6-SNAPSHOT</version>
+            <version>1.0.19-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <artifactId>jena-arq</artifactId>
@@ -63,8 +63,45 @@
                     <artifactId>jena-tdb</artifactId>
                     <groupId>org.apache.jena</groupId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.15</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-core -->
         <dependency>
             <groupId>org.apache.jena</groupId>

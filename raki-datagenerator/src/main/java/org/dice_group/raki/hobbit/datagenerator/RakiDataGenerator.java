@@ -1,8 +1,6 @@
 package org.dice_group.raki.hobbit.datagenerator;
 
-import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
-import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.YAMLConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
@@ -18,9 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RakiDataGenerator extends AbstractDataGenerator {
 
@@ -118,14 +118,17 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
     @Override
     protected void generateData() throws Exception {
-        LOGGER.info("Sending ontology to eval. ");
-        sendOntologyToEval();
-        LOGGER.info("Sending ontology to system. ");
+        LOGGER.info("Sending ontology to system. "+ Instant.now());
         sendOntologyToSystem();
+        LOGGER.info("Sending ontology to eval. "+ Instant.now());
+        sendOntologyToEval();
+        sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
 
         LOGGER.debug("Sending now tasks to task generator. ");
         //send examples to task generator
+        AtomicInteger count= new AtomicInteger(1);
         examples.forEach(posNegExample -> {
+            LOGGER.info("Sending {}. task to system. ", count.getAndIncrement());
 
             byte[] data = RabbitMQUtils.writeString(posNegExample.toString());
             try {
@@ -143,9 +146,9 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
     private void sendOntologyToSystem() throws IOException {
         //just sending one byte so the system triggers and we can send to the correct queue
+        sendOntologyToQueue(this.systemOntQueueName);
         sendDataToSystemAdapter(new byte[]{1});
         //send to the actual queue
-        sendOntologyToQueue(this.systemOntQueueName);
     }
 
     private void sendOntologyToQueue(String queue) throws IOException {
@@ -158,6 +161,7 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         InputStream is = null;
         try {
             // create input stream, e.g., by opening a file
+            LOGGER.info("Ontology size: {}", FileUtils.sizeOf(new File(ontology)));
             is = new FileInputStream(ontology);
             // send data
             sender.streamData(is, "ontology");
@@ -169,6 +173,6 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         }
 
         // close the sender
-        IOUtils.closeQuietly(sender);
+        //IOUtils.closeQuietly(sender);
     }
 }

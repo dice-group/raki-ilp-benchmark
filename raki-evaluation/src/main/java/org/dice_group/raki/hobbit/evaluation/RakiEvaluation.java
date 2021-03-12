@@ -1,6 +1,8 @@
 package org.dice_group.raki.hobbit.evaluation;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -28,6 +30,9 @@ import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 import org.dice_group.raki.hobbit.commons.CONSTANTS;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,23 +56,34 @@ public class RakiEvaluation extends AbstractEvaluationModule {
 
     protected List<Double> conceptLengths =new ArrayList<Double>();
     protected List<Long> resultTimes =new ArrayList<Long>();
+    private SimpleFileReceiver receiver = null;
 
+
+
+    public void receiveCommand(byte command, byte[] data) {
+        if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND){
+            if(receiver!=null){
+                receiver.terminate();
+            }
+        }
+        super.receiveCommand(command, data);
+    }
 
 
     @Override
     protected void collectResponses() throws Exception {
-        SimpleFileReceiver receiver = SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
+        String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDir/");
+        IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
 
-        String[] receivedFiles = receiver.receiveData("tempOntologyDir");
+        LOGGER.info("received ontology {}", new File("/raki/tempOntologyDir/").listFiles().length);
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        for(String ontologyFile : receivedFiles ) {
-            manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
+        for(File f : (new File("/raki/tempOntologyDir/").listFiles())){
+            LOGGER.info("file {}", f.getAbsolutePath());
+            LOGGER.info("Size of recv ont: ", FileUtils.sizeOf(f));
+            ontology= manager.loadOntologyFromOntologyDocument(f);
         }
         if(receivedFiles.length>1){
             ontology = new OWLOntologyMerger(manager).createMergedOntology(manager, IRI.create("http://raki.merged.ontology/"));
-        }
-        else{
-            ontology = manager.getOntologies().iterator().next();
         }
         super.collectResponses();
     }
@@ -80,6 +96,10 @@ public class RakiEvaluation extends AbstractEvaluationModule {
                 queueName = System.getenv().get(CONSTANTS.ONTOLOGY_QUEUE_NAME);
         }
         LOGGER.info("Eval module queue name {}", queueName);
+        LOGGER.info("receiving ontology "+ Instant.now());
+        receiver= SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
+
+
     }
 
     @Override

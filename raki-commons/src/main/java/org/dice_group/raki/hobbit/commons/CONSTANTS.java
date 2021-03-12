@@ -8,4 +8,5 @@ public class CONSTANTS {
     public static final String RAKI2_PREFIX = "http://w3id.org/raki/hobbit/vocab#";
     public static final String TIMEOUT_MS = "TIMEOUT_MS";
     public static final byte COMMAND_SYSTEM_LOADED = 20;
+    public static final byte COMMAND_ONTO_FULLY_SEND = 23;
 }
