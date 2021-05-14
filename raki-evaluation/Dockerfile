@@ -1,6 +1,8 @@
 FROM java
 
 ADD target/raki-evaluation-1.0-SNAPSHOT.jar /raki/evalModule.jar
+ADD owl.ttl /raki/owl.ttl
+
 
 WORKDIR /raki
 

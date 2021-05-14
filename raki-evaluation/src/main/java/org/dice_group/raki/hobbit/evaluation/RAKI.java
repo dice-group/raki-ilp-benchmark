@@ -26,6 +26,7 @@ public class RAKI {
     public static Property firstPercentileResultTimes=getProperty("firstPercentileResultTimes");
     public static Property secondPercentileResultTimes=getProperty("secondPercentileResultTimes");
     public static Property thirdPercentileResultTimes=getProperty("thirdPercentileResultTimes");
+    public static Property noOfConcepts=getProperty("noOfConcepts");
     //TODO
 
     public static Property getProperty(String propertyName){

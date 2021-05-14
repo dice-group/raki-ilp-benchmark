@@ -1,31 +1,28 @@
 package org.dice_group.raki.hobbit.evaluation;
 
 import com.google.common.collect.Sets;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import openllet.owlapi.OpenlletReasonerFactory;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
+
 import org.hobbit.core.components.AbstractEvaluationModule;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileReceiver;
 import org.hobbit.vocab.HOBBIT;
 import org.json.JSONObject;
-import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.HermiT.Configuration;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.dlsyntax.parser.DLSyntaxParser;
 import org.semanticweb.owlapi.expression.OWLEntityChecker;
 import org.semanticweb.owlapi.expression.ShortFormEntityChecker;
+import org.semanticweb.owlapi.io.FileDocumentSource;
 import org.semanticweb.owlapi.manchestersyntax.parser.ManchesterOWLSyntaxClassExpressionParser;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.reasoner.NodeSet;
-import org.semanticweb.owlapi.reasoner.impl.DefaultNodeSet;
-import org.semanticweb.owlapi.reasoner.impl.OWLNamedIndividualNodeSet;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProvider;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
-import org.semanticweb.owlapi.util.OWLOntologyMerger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
@@ -33,12 +30,9 @@ import org.dice_group.raki.hobbit.commons.CONSTANTS;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 
 public class RakiEvaluation extends AbstractEvaluationModule {
 
@@ -60,7 +54,9 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     protected List<Long> resultTimes =new ArrayList<Long>();
     private SimpleFileReceiver receiver = null;
 
-
+    private final Semaphore evalStartMutex = new Semaphore(0);
+    private OWLReasoner reasoner;
+    private OWLOntology owlOnto;
 
     public void receiveCommand(byte command, byte[] data) {
         if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND){
@@ -68,28 +64,12 @@ public class RakiEvaluation extends AbstractEvaluationModule {
                 receiver.terminate();
             }
         }
+        if(command == CONSTANTS.COMMAND_EVAL_START){
+            evalStartMutex.release();
+        }
         super.receiveCommand(command, data);
     }
 
-
-    @Override
-    protected void collectResponses() throws Exception {
-        String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDirEval/");
-        //IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
-
-        LOGGER.info("received ontology {}", new File("/raki/tempOntologyDirEval/").listFiles().length);
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        for(File f : (new File("/raki/tempOntologyDirEval/").listFiles())){
-            LOGGER.info("file {}", f.getAbsolutePath());
-            LOGGER.info("Size of recv ont: {}", f.length());
-            ontology= manager.loadOntologyFromOntologyDocument(f);
-            LOGGER.info("Axioms in Ontology: {}" , ontology.getAxiomCount());
-        }
-        if(receivedFiles.length>1){
-            ontology = new OWLOntologyMerger(manager).createMergedOntology(manager, IRI.create("http://raki.merged.ontology/"));
-        }
-        super.collectResponses();
-    }
 
     @Override
     public void init() throws Exception {
@@ -101,31 +81,77 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         LOGGER.info("Eval module queue name {}", queueName);
         LOGGER.info("receiving ontology "+ Instant.now());
         receiver= SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
+        //we know, that at this point, the onto was fully send.
+        String[] receivedFiles = receiver.receiveData("/raki/tempOntologyDirEval/");
+        //IOUtils.closeQuietly(this.incomingDataQueueFactory.createDefaultRabbitQueue(queueName));
 
+        LOGGER.info("received ontology {}", new File("/raki/tempOntologyDirEval/").listFiles().length);
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        //load owl ontology
+        //ontology = manager.loadOntologyFromOntologyDocument(new File("/raki/owl.ttl"));
+        for(File f : (new File("/raki/tempOntologyDirEval/").listFiles())){
+            LOGGER.info("file {}", f.getAbsolutePath());
+            LOGGER.info("Size of recv ont: {}", f.length());
+            OWLOntologyLoaderConfiguration loaderConfig = new OWLOntologyLoaderConfiguration();
+            ontology = manager.loadOntologyFromOntologyDocument(new FileDocumentSource(f), loaderConfig);
+            //ontology= manager.loadOntologyFromOntologyDocument(f);
+            LOGGER.info("Axioms in Ontology: {}" , ontology.getAxiomCount());
+        }
+        //if(receivedFiles.length>1){
+        //OWLOntologyManager manager2 = OWLManager.createOWLOntologyManager();
 
+        //ontology = new OWLOntologyMerger(manager).createMergedOntology(manager2, ontology.getOntologyID().getOntologyIRI().get());
+        //}
+
+        Configuration conf = new Configuration();
+        conf.ignoreUnsupportedDatatypes=true;
+        conf.throwInconsistentOntologyException=false;
+        reasoner = createReasoner();
+        owlOnto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("/raki/owl.ttl"));
+
+        LOGGER.debug("Sending Eval Loaded command.");
+        try {
+            sendToCmdQueue(CONSTANTS.COMMAND_EVAL_LOADED);
+        } catch (IOException e) {
+            LOGGER.error("Error while sending command that eval is loaded", e);
+        }
+    }
+
+    private OWLReasoner createReasoner() {
+        OWLReasoner reasoner = OpenlletReasonerFactory.getInstance().createReasoner(ontology);
+        return reasoner;
+    }
+
+    @Override
+    protected void collectResponses() throws Exception {
+        evalStartMutex.acquire();
+        super.collectResponses();
+        evalStartMutex.release();
     }
 
     @Override
     protected void evaluateResponse(byte[] expectedData, byte[] receivedData, long taskSentTimestamp, long responseReceivedTimestamp) throws Exception {
         //convert data 2 concept
         LOGGER.info("Recv an eval ");
+        noOfConcepts++;
+        this.resultTimes.add(responseReceivedTimestamp-taskSentTimestamp);
         try {
-            noOfConcepts++;
-            Reasoner hermit = new Reasoner(ontology);
-            NodeSet<OWLNamedIndividual> receivedSet = new OWLNamedIndividualNodeSet();
+
+            Set<OWLNamedIndividual> receivedSet = new HashSet<>();
             if(receivedData.length==0){
                 LOGGER.error("Concept Length is 0. Defined as error.");
                 errorCount++;
-                this.conceptLengths.add(0.0);
+                //this.conceptLengths.add(0.0);
             }
             else {
                 try {
-                    OWLClassExpression receivedConcept = parseManchesterConcept(receivedData);
+                    OWLClassExpression receivedConcept = parseManchesterConcept(RabbitMQUtils.readString(receivedData));
                     LOGGER.info("Received concept is: {}.", receivedConcept);
                     //OWLOntology ont = new OWLOntologyImpl(ontology);
                     this.conceptLengths.add(getConceptLength(receivedConcept));
-
-                    receivedSet = hermit.getInstances(receivedConcept);
+                    LOGGER.info("retrieving instances now");
+                    receivedSet = getInstances(receivedConcept);
+                    LOGGER.info("Retrieved {} instances.", receivedSet.size());
                 }catch(Exception e){
                     LOGGER.error("Found error while parsing concept. ", e);
                     this.errorCount++;
@@ -133,7 +159,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
             }
             //evaluate and add to tp,fp,fn count, as well as f1,recall, precision
             //0=tp, 1=fp, 2=fn
-            int[] evalVals = evaluate(expectedData, receivedSet, hermit);
+            int[] evalVals = evaluate(expectedData, receivedSet);
             this.tp += evalVals[0];
             this.fp += evalVals[1];
             this.fn += evalVals[2];
@@ -142,23 +168,28 @@ public class RakiEvaluation extends AbstractEvaluationModule {
             this.summedF1 += f1[0];
             this.summedPrecision += f1[1];
             this.summedRecall += f1[2];
-            this.resultTimes.add(responseReceivedTimestamp-taskSentTimestamp);
             LOGGER.info("Got {} {} {} {} {} {}" , tp,fp,fn,f1[0], f1[1], f1[2]);
         }catch (Exception e){
             LOGGER.error("Found error while evaluating. ", e);
             this.errorCount++;
+            //this.conceptLengths.add(0.0);
         }
     }
 
+    private Set<OWLNamedIndividual> getInstances(OWLClassExpression receivedConcept)
+    {
+        return reasoner.getInstances(receivedConcept).getFlattened();
+    }
 
-    private int[] evaluate(byte[] expectedData, NodeSet<OWLNamedIndividual> receivedSet, Reasoner hermit){
+
+    private int[] evaluate(byte[] expectedData, Set<OWLNamedIndividual> receivedSet) {
         String expectedPosNeg = RabbitMQUtils.readString(expectedData);
 
         JSONObject posNegJson = new JSONObject(expectedPosNeg);
         if(posNegJson.has("concept")) {
-            OWLClassExpression expectedConcept = parseManchesterConcept(expectedData);
+            OWLClassExpression expectedConcept = parseManchesterConcept(posNegJson.getString("concept"));
             LOGGER.info("expected concept {}", expectedConcept);
-            NodeSet<OWLNamedIndividual> expectedSet = hermit.getInstances(expectedConcept);
+            Set<OWLNamedIndividual> expectedSet = getInstances(expectedConcept);
             //evaluate and add to tp,fp,fn count, as well as f1,recall, precision
             //0=tp, 1=fp, 2=fn
             LOGGER.info("Evaluation uses individuals retrieved by gold standard concept. ");
@@ -181,12 +212,13 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     }
 
 
-    private int[] evaluatePosNeg(Set<String> positiveExamples, Set<String> negativeExamples, NodeSet<OWLNamedIndividual> receivedSet) {
+    private int[] evaluatePosNeg(Set<String> positiveExamples, Set<String> negativeExamples, Set<OWLNamedIndividual> received) {
         int[] evalVals= new int[]{0,0,0};
-        Set<OWLNamedIndividual> received = receivedSet.getFlattened();
         int foundPosExa=0;
-        for(OWLNamedIndividual individual : received){
-            String individualStr = individual.toString();
+        LOGGER.info("positives {}", positiveExamples);
+        for(OWLIndividual individual: received){
+            String individualStr = individual.asOWLNamedIndividual().getIRI().toString();
+            LOGGER.info("Found {}", individualStr);
             if(positiveExamples.contains(individualStr)){
                 evalVals[0]++; //tp ++
                 foundPosExa++;
@@ -200,10 +232,9 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     }
 
     //0=tp, 1=fp, 2=fn
-    private int[] evaluateSets(NodeSet<OWLNamedIndividual> expectedSet, NodeSet<OWLNamedIndividual> receivedSet) {
+    private int[] evaluateSets(Set<OWLNamedIndividual> expected, Set<OWLNamedIndividual> received) {
         int[] evalVals= new int[3];
-        Set<OWLNamedIndividual> expected = expectedSet.getFlattened();
-        Set<OWLNamedIndividual> received = receivedSet.getFlattened();
+
 
         //0=tp, 1=fp, 2=fn
         //tp = |e and r|
@@ -222,52 +253,57 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         return 1.0*renderer.conceptLength;
     }
 
-    protected OWLClassExpression parseManchesterConcept(byte[] data){
-        String concept= RabbitMQUtils.readString(data);
+    protected OWLClassExpression parseManchesterConcept(String concept){
+        //String concept= RabbitMQUtils.readString(data);
         LOGGER.info("Retrieved concept: {}", concept);
-        BidirectionalShortFormProvider provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(ontology), new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology));
+        BidirectionalShortFormProvider provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(ontology, owlOnto), new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology));
         OWLEntityChecker checker = new ShortFormEntityChecker(provider);
+
         OWLDataFactory dataFactory = new OWLDataFactoryImpl();
 
         ManchesterOWLSyntaxClassExpressionParser parser = new ManchesterOWLSyntaxClassExpressionParser(dataFactory, checker);
         return parser.parse(concept);
     }
 
-    private OWLClassExpression parseConcept(byte[] data){
-        String concept= RabbitMQUtils.readString(data);
-        DLSyntaxParser parser2 = new DLSyntaxParser(concept);
-        return parser2.parseClassDescription();
-    }
 
     private ResultStorage evaluate(){
+        if(noOfConcepts==0){
+            return ResultStorage.createEmpty();
+        }
         double macroRecall=this.summedRecall/noOfConcepts;
         double macroPrecision=this.summedPrecision/noOfConcepts;
         double macroF1 = this.summedF1/noOfConcepts;
 
         double[] microResults = calculateF1Measure(this.tp, this.fp, this.fn);
+        if(conceptLengths.size()==0){
+            conceptLengths.add(0.0);
+        }
         double[] conceptLengthValues = new double[conceptLengths.size()];
         for(int i=0;i<conceptLengthValues.length;i++){
             conceptLengthValues[i]= conceptLengths.get(i);
         }
-        double avgConceptLength=StatUtils.mean(conceptLengthValues);
-        double maxCL = StatUtils.max(conceptLengthValues);
-        double minCL = StatUtils.min(conceptLengthValues);
-        double fpCL = StatUtils.percentile(conceptLengthValues, 0.25);
-        double tpCL = StatUtils.percentile(conceptLengthValues, 0.75);
-        double spCL = StatUtils.percentile(conceptLengthValues, 0.5);
-        double varCL = StatUtils.variance(conceptLengthValues);
+        Double avgConceptLength=StatUtils.mean(conceptLengthValues);
+        Double maxCL = StatUtils.max(conceptLengthValues);
+        Double minCL = StatUtils.min(conceptLengthValues);
+        Double fpCL = StatUtils.percentile(conceptLengthValues, 25);
+        Double tpCL = StatUtils.percentile(conceptLengthValues, 75);
+        Double spCL = StatUtils.percentile(conceptLengthValues, 50);
+        Double varCL = StatUtils.variance(conceptLengthValues);
 
+        if(resultTimes.size()==0){
+            resultTimes.add(0l);
+        }
         double[] resultTimesValues = new double[resultTimes.size()];
         for(int i=0;i<resultTimesValues.length;i++){
             resultTimesValues[i]= resultTimes.get(i);
         }
-        double avgRT=StatUtils.mean(resultTimesValues);
-        double maxRT = StatUtils.max(resultTimesValues);
-        double minRT = StatUtils.min(resultTimesValues);
-        double fpRT = StatUtils.percentile(resultTimesValues, 0.25);
-        double tpRT = StatUtils.percentile(resultTimesValues, 0.75);
-        double spRT = StatUtils.percentile(resultTimesValues, 0.5);
-        double varRT = StatUtils.variance(resultTimesValues);
+        Double avgRT = StatUtils.mean(resultTimesValues);
+        Double maxRT = StatUtils.max(resultTimesValues);
+        Double minRT = StatUtils.min(resultTimesValues);
+        Double fpRT = StatUtils.percentile(resultTimesValues, 25);
+        Double tpRT = StatUtils.percentile(resultTimesValues, 75);
+        Double spRT = StatUtils.percentile(resultTimesValues, 50);
+        Double varRT = StatUtils.variance(resultTimesValues);
         ResultStorage result = new ResultStorage(macroF1,macroPrecision,macroRecall,microResults[0],microResults[1],microResults[2],this.errorCount,
                 avgConceptLength, maxCL, minCL, fpCL, tpCL, spCL, varCL,
                 avgRT, maxRT, minRT, fpRT, tpRT, spRT, varRT);
@@ -306,6 +342,8 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         Resource experiment = model.getResource(experimentUri);
 
         model.add(experiment , RDF.type, HOBBIT.Experiment);
+        model.addLiteral(experiment, RAKI.noOfConcepts, this.noOfConcepts);
+
         model.addLiteral(experiment, RAKI.macroPrecision, result.getMacroPrecision());
         model.addLiteral(experiment, RAKI.macroRecall, result.getMacroRecall());
         model.addLiteral(experiment, RAKI.macroF1, result.getMacroF1Measure());

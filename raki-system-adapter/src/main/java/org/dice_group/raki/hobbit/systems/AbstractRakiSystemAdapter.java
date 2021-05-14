@@ -1,6 +1,7 @@
 package org.dice_group.raki.hobbit.systems;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.jena.rdf.model.NodeIterator;
 import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractSystemAdapter;
 import org.hobbit.core.rabbit.RabbitMQUtils;
@@ -26,6 +27,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND_SYSTEM){
             if(receiver!=null){
                 receiver.terminate();
+
             }
             else{
                 LOGGER.error("Receiver cannot be terminated at this point. ");
@@ -40,6 +42,12 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         String queueName = generateSessionQueueName("ontologyToSystemQueue");
         LOGGER.info("Queue Name {} "+ Instant.now(), queueName);
         receiver = SimpleFileReceiver.create(this.incomingDataQueueFactory, queueName);
+        NodeIterator iterator = systemParamModel
+                .listObjectsOfProperty(systemParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "timeOutMS"));
+        if(iterator.hasNext()){
+            timeOutMs = iterator.next().asLiteral().getLong();
+        }
+        LOGGER.info("Timeout set to {} ms", timeOutMs);
     }
 
     @Override
@@ -77,7 +85,6 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
     public void receiveGeneratedTask(String taskId, byte[] data) {
         LOGGER.info("Retrieved task with id {}. ", taskId);
         String posNegExamples = RabbitMQUtils.readString(data);
-        LOGGER.info("Examples: {} ", posNegExamples);
         //empty string will be considered as an error
         String concept = "";
         try {
@@ -88,6 +95,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         try {
             LOGGER.info("Sending concept {} now", concept);
             sendResultToEvalStorage(taskId, RabbitMQUtils.writeString(concept));
+            LOGGER.info("sended concept");
         } catch (IOException e) {
             //Log the error.
             LOGGER.error("Problem sending results to eval storage. ", e);

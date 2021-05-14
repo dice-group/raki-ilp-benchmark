@@ -1,0 +1,22 @@
+[
+       {
+         "positives" : [
+            "http://www.benchmark.org/family#F5M64",
+            "http://www.benchmark.org/family#F6M92",
+            "http://www.benchmark.org/family#F9M157",
+            "http://www.benchmark.org/family#F6M71",
+            "http://www.benchmark.org/family#F2M11",
+            "http://www.benchmark.org/family#F3M45",
+            "http://www.benchmark.org/family#F7M123"
+         ],
+         "negatives" : [
+            "http://www.benchmark.org/family#F5M66",
+            "http://www.benchmark.org/family#F10M188",
+            "http://www.benchmark.org/family#F10M173",
+            "http://www.benchmark.org/family#F1F3",
+            "http://www.benchmark.org/family#F2M37",
+            "http://www.benchmark.org/family#F7M115",
+            "http://www.benchmark.org/family#F6F84"
+         ]
+      }
+   ]

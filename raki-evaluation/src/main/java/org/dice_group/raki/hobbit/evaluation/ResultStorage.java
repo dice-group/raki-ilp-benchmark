@@ -56,6 +56,12 @@ public class ResultStorage {
         this.varRT=varRT;
     }
 
+    public static ResultStorage createEmpty() {
+        return new ResultStorage(0,0,0,0,0,0,
+                0,0,0,0,0,0,0,0,
+                0,0,0,0,0,0,0);
+    }
+
     public double getMacroPrecision() {
         return macroPrecision;
     }

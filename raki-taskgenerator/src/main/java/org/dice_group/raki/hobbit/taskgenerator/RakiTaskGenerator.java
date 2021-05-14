@@ -17,6 +17,7 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
 
 
     private Semaphore systemLoadedMutex = new Semaphore(0);
+    private Semaphore evalLoadedMutex = new Semaphore(0);
 
 
     @Override
@@ -26,6 +27,11 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
             LOGGER.info("Received signal that system is ready");
             // release the mutex
             systemLoadedMutex.release();
+        }
+        if (command == CONSTANTS.COMMAND_EVAL_LOADED) {
+            LOGGER.info("Received signal that eval is ready");
+            // release the mutex
+            evalLoadedMutex.release();
         }
         super.receiveCommand(command, data);
     }
@@ -50,6 +56,8 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         LOGGER.info("Got task");
         systemLoadedMutex.acquire();
         systemLoadedMutex.release();
+        evalLoadedMutex.acquire();
+        evalLoadedMutex.release();
         // Create an ID for the task
         String taskId = getNextTaskId();
 
@@ -63,7 +71,6 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         long timestamp = System.currentTimeMillis();
         LOGGER.info("Sending task with id {} to system. ", taskId);
         //wait for system to be loaded message
-
         sendTaskToSystemAdapter(taskId, taskData);
 
         LOGGER.info("Sending task with id {} to eval storage. ", taskId);

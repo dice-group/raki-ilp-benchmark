@@ -12,6 +12,9 @@ import org.hobbit.core.components.AbstractDataGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileSender;
 import org.json.JSONArray;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.util.OWLOntologyMerger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +61,7 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
         YAMLConfiguration conf = readConfiguration(configFile);
         conf.getKeys().forEachRemaining(x ->{
-            LOGGER.info("Got config {}", x);
+            LOGGER.info("Got config {}", conf.getList(x));
 
         });
 
@@ -80,8 +83,11 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
         //load dataset and pos/neg examples or concepts if available
         examples = readPosNegExamples(posNegExamples);
+
         ontology=datasetFile;
     }
+
+
 
     private JSONArray readPosNegExamples(String posNegExamples) {
         StringBuilder jsonStr = new StringBuilder();
@@ -124,6 +130,8 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         LOGGER.info("Sending ontology to eval. "+ Instant.now());
         sendOntologyToEval();
         sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
+
+        //sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
 
         LOGGER.debug("Sending now tasks to task generator. ");
         //send examples to task generator
@@ -180,5 +188,11 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
         // close the sender
         IOUtils.closeQuietly(sender);
+    }
+
+    @Override
+    public void close() throws IOException {
+
+        super.close();
     }
 }

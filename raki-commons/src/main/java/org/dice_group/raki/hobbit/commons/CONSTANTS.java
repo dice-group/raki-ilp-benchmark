@@ -10,4 +10,7 @@ public class CONSTANTS {
     public static final byte COMMAND_SYSTEM_LOADED = 56;
     public static final byte COMMAND_ONTO_FULLY_SEND = 43;
     public static final byte COMMAND_ONTO_FULLY_SEND_SYSTEM = 45;
+    public static final byte COMMAND_EVAL_LOADED = 61;
+    public static final byte COMMAND_EVAL_WAITING = 60;
+    public static final byte COMMAND_EVAL_START = 62;
 }

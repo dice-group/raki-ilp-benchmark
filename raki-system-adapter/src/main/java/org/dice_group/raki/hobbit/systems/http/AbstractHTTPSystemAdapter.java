@@ -1,10 +1,12 @@
 package org.dice_group.raki.hobbit.systems.http;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -26,7 +28,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
     protected static Logger LOGGER = LoggerFactory.getLogger(AbstractHTTPSystemAdapter.class);
 
 
-    private String baseUri;
+    protected String baseUri;
 
     public AbstractHTTPSystemAdapter(String baseUri){
         super();
@@ -39,8 +41,10 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
         LOGGER.debug("Creating Concept request");
         String learningUri = baseUri+"/concept_learning";
         HttpPost post = new HttpPost(learningUri);
+        post.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         StringEntity entity = new StringEntity(posNegExample);
         post.setEntity(entity);
+        entity.setContentType("application/json");
         CloseableHttpClient httpclient = HttpClients.createDefault();
         LOGGER.info("Sending Concept request");
         HttpResponse response = httpclient.execute(post);
@@ -55,9 +59,18 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
             concept = RabbitMQUtils.readString(data);
 
         }
+        try {
+            concept = convertToManchester(concept);
+        } catch (OWLOntologyCreationException e) {
+            e.printStackTrace();
+        }
         httpclient.close();
         LOGGER.info("Concept received successfully.");
-        LOGGER.debug("Concept is: {}", concept);
+        LOGGER.info("Concept is: {}", concept);
+        return concept;
+    }
+
+    protected String convertToManchester(String concept) throws OWLOntologyCreationException, IOException {
         return concept;
     }
 
@@ -71,34 +84,42 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
     }
 
     protected void waitForSystemReady() throws IOException {
-        boolean notReady=true;
+        boolean ready=false;
         do {
-            String statusUri = baseUri + "/status";
-            HttpGet get = new HttpGet(statusUri);
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpResponse response = httpclient.execute(get);
-            notReady = response.getStatusLine().getStatusCode()==200;
-            if(!notReady){
-            InputStream is = response.getEntity().getContent();
-            try(BufferedInputStream bis = new BufferedInputStream(is)){
-                byte[] data =StreamUtils.getBytes(bis);
-                String jsonStr = RabbitMQUtils.readString(data);
-                JSONObject jsonStatus = new JSONObject(jsonStr);
-                if(jsonStatus.has("status")) {
-                    LOGGER.debug("System Status: {}",jsonStatus.toString());
-                    notReady="ready".equals(jsonStatus.get("status").toString().toLowerCase());
-                }else{
-                    notReady=false;
+            try {
+                String statusUri = baseUri + "/status";
+                HttpGet get = new HttpGet(statusUri);
+                CloseableHttpClient httpclient = HttpClients.createDefault();
+                HttpResponse response = httpclient.execute(get);
+                ready = response.getStatusLine().getStatusCode() == 200;
+                if (ready) {
+                    InputStream is = response.getEntity().getContent();
+                    try (BufferedInputStream bis = new BufferedInputStream(is)) {
+                        byte[] data = StreamUtils.getBytes(bis);
+                        String jsonStr = RabbitMQUtils.readString(data);
+                        System.out.println(jsonStr);
+                        JSONObject jsonStatus = new JSONObject(jsonStr);
+                        if (jsonStatus.has("status")) {
+                            LOGGER.debug("System Status: {}", jsonStatus.toString());
+                            ready = "ready".equals(jsonStatus.get("status").toString().toLowerCase());
+                        } else {
+                            ready = false;
+                        }
+                    }
+                }
+                httpclient.close();
+                try {
+                    this.wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }catch(Exception e){
+                try {
+                    this.wait(100);
+                } catch (Exception e1) {
                 }
             }
-            }
-            httpclient.close();
-            try {
-                this.wait(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }while(notReady);
+        }while(!ready);
         //System now ready
     }
 

@@ -13,6 +13,7 @@ import org.hobbit.vocab.HOBBIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.Instant;
 
 public class RakiBenchmark extends AbstractBenchmarkController {
@@ -25,10 +26,10 @@ public class RakiBenchmark extends AbstractBenchmarkController {
 
     private long timeOutMS=60000;
 
+
     @Override
     public void init() throws Exception {
         super.init();
-        LOGGER.info(benchmarkParamModel.toString());
         Resource newExpResource = benchmarkParamModel.getResource(Constants.NEW_EXPERIMENT_URI);
 
         NodeIterator iterator = benchmarkParamModel
@@ -37,7 +38,6 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         if(iterator.hasNext()){
             datasetName = iterator.next().asResource().toString();
         }
-        System.out.println(datasetName);
         iterator = benchmarkParamModel
                 .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "timeOutMS"));
         if(iterator.hasNext())
@@ -50,6 +50,9 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         LOGGER.info("Benchmark uses: benchmark={}, timeoutMS={}", datasetName, timeOutMS);
         String ontToEvalQueueName = generateSessionQueueName("ontologyToEvalQueue");
 
+        createEvaluationModule(EVALUATION_MODULE_CONTAINER_IMAGE,
+                new String[] { CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName });
+
         createDataGenerators(DATA_GENERATOR_CONTAINER_IMAGE, 1,
                 new String[] { CONSTANTS.BENCHMARK_NAME+"="+datasetName, CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName,
                         CONSTANTS.ONTOLOGY_2_SYSTEM_QUEUE_NAME+"="+ontToSystemQueueName});
@@ -58,12 +61,12 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         createTaskGenerators(TASK_GENERATOR_CONTAINER_IMAGE, 1, new String[] {
                 CONSTANTS.TIMEOUT_MS+"="+timeOutMS});
         LOGGER.info("Finished creating Task Generator");
+
         createEvaluationStorage(DEFAULT_EVAL_STORAGE_IMAGE,
                 new String[] { Constants.ACKNOWLEDGEMENT_FLAG_KEY + "=true", DEFAULT_EVAL_STORAGE_PARAMETERS[0] });
 
-        createEvaluationModule(EVALUATION_MODULE_CONTAINER_IMAGE,
-                new String[] { CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName });
-        LOGGER.info("Finished creating Modules"+ Instant.now());
+
+
 
         // start the evaluation module
         waitForComponentsToInitialize();
@@ -74,16 +77,22 @@ public class RakiBenchmark extends AbstractBenchmarkController {
     @Override
     protected void executeBenchmark() throws Exception {
         // give the start signals
+        String ontToEvalQueueName = generateSessionQueueName("ontologyToEvalQueue");
 
         sendToCmdQueue(Commands.DATA_GENERATOR_START_SIGNAL);
         sendToCmdQueue(Commands.TASK_GENERATOR_START_SIGNAL);
         // wait for the data generators to finish their work
+
+
+        LOGGER.info("Finished creating Modules");
         waitForDataGenToFinish();
+
         // wait for the task generators to finish their work
         waitForTaskGenToFinish();
 
         waitForSystemToFinish();
 
+        sendToCmdQueue(CONSTANTS.COMMAND_EVAL_START);
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();
         // the evaluation module should have sent an RDF model containing the

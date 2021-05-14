@@ -5,4 +5,4 @@ ADD target/raki-system-adapter-1.0-SNAPSHOT.jar /raki/systems.jar
 
 WORKDIR /raki
 
-CMD java -cp systems.jar org.hobbit.core.run.ComponentStarter org.dice_group.raki.hobbit.systems.test.TestSystem
+CMD java -cp systems.jar org.hobbit.core.run.ComponentStarter org.dice_group.raki.hobbit.systems.test.TestSystem2

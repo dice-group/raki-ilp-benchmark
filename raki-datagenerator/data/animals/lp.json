@@ -20,7 +20,6 @@
   ]
   },
   {
-    "concept":"Fish",
     "positives": [
       "http://dl-learner.org/benchmark/dataset/animals#trout01",
       "http://dl-learner.org/benchmark/dataset/animals#herring01",

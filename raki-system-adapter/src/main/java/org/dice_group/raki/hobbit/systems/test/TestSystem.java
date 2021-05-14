@@ -4,14 +4,13 @@ import com.google.common.collect.Sets;
 import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.semanticweb.HermiT.structural.OWLAxioms;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
-import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
+import uk.ac.manchester.cs.owl.owlapi.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +25,26 @@ public class TestSystem extends AbstractRakiSystemAdapter {
     private BidirectionalShortFormProviderAdapter provider;
 
 
+    public static void main(String[] args) throws Exception {
+        TestSystem system = new TestSystem();
+        system.loadOntology(new File("./raki-datagenerator/data/family/ontology.owl"));
+        String lp = "{\n" +
+                "  \"positives\": [\n" +
+                "    \"http://www.benchmark.org/family#F6F86\",\n" +
+                "    \"http://www.benchmark.org/family#F6F87\",\n" +
+                "    \"http://www.benchmark.org/family#F6M69\"\n" +
+                "  ],\n" +
+                "  \"negatives\": [\n" +
+                "    \"http://www.benchmark.org/family#F6F86\",\n" +
+                "    \"http://www.benchmark.org/family#F6M73\",\n" +
+                "    \"http://www.benchmark.org/family#F7F103\"\n" +
+
+                "  ]\n" +
+                "}";
+        String concept = system.createConcept(lp);
+        System.out.println(concept);
+    }
+
     @Override
     public String createConcept(String posNegExample) throws IOException, Exception {
         JSONObject posNegJson = new JSONObject(posNegExample);
@@ -38,24 +57,17 @@ public class TestSystem extends AbstractRakiSystemAdapter {
                 posAxioms.addAll(classAssertion.getClassesInSignature());
             });
         }
-        for(OWLIndividual neg : negExamples) {
-            ontology.getClassAssertionAxioms(neg).forEach(classAssertion ->{
-                negAxioms.addAll(classAssertion.getClassesInSignature());
-            });        }
-        //posAxioms.removeAll(negAxioms);
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
         renderer.setShortFormProvider(provider);
-        List<OWLClassExpression> classes = new ArrayList<OWLClassExpression>();
+        Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+        if(posAxioms.size()>1){
+            posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
+        }
         posAxioms.forEach(owlClass -> {classes.add(owlClass.getNNF());});
-        List<OWLClassExpression> notClasses = new ArrayList<OWLClassExpression>();
-        negAxioms.forEach(owlClass -> {notClasses.add(owlClass.getObjectComplementOf());});
 
-        OWLClassExpression pos = new OWLObjectIntersectionOfImpl(classes);
-        OWLClassExpression neg = new OWLObjectIntersectionOfImpl(notClasses);
-        classes.addAll(notClasses);
-        OWLClassExpression best = new OWLObjectIntersectionOfImpl(classes);
-        return renderer.render(best).replace("\n", " ");
+        OWLClassExpression pos = new OWLObjectUnionOfImpl(classes);
+        return renderer.render(pos).replace("\n", " ");
     }
 
 
@@ -70,6 +82,7 @@ public class TestSystem extends AbstractRakiSystemAdapter {
     @Override
     public void loadOntology(File ontologyFile) throws IOException, Exception {
         ontology = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(ontologyFile);
+
         provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(ontology), new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology));
 
     }
