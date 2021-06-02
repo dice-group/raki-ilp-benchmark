@@ -1,5 +1,5 @@
-# raki-ipl-benchmark
-RAKI IPL Bencharmk integration for HOBBIT
+# raki-ilp-benchmark
+RAKI ILP Bencharmk integration for HOBBIT
 
 ## How to add a Dataset
 
