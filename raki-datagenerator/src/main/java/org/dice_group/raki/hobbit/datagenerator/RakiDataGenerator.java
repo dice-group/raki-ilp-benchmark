@@ -141,7 +141,7 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
             byte[] data = RabbitMQUtils.writeString(posNegExample.toString());
             try {
-                LOGGER.info("Sending {}", posNegExample.toString());
+                //LOGGER.info("Sending {}", posNegExample.toString());
                 sendDataToTaskGenerator(data);
             } catch (IOException e) {
                 LOGGER.error("Couldn't send data to task generator. ", e);

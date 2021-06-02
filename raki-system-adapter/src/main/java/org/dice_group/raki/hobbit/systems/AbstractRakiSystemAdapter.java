@@ -12,12 +12,18 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(AbstractRakiSystemAdapter.class);
 
-    protected long timeOutMs=60000;
+
+    protected int delta=500;
+    protected Long timeOutMs=60000l;
     public abstract String createConcept(String posNegExample) throws IOException, Exception;
     public abstract void loadOntology(File ontology) throws IOException, Exception;
     private SimpleFileReceiver receiver = null;
@@ -36,6 +42,10 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         super.receiveCommand(command, data);
     }
 
+    public void releaseMutexes(){
+
+    }
+
     @Override
     public void init() throws Exception {
         super.init();
@@ -47,7 +57,13 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         if(iterator.hasNext()){
             timeOutMs = iterator.next().asLiteral().getLong();
         }
-        LOGGER.info("Timeout set to {} ms", timeOutMs);
+
+        iterator = systemParamModel
+                .listObjectsOfProperty(systemParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "delta"));
+        if(iterator.hasNext()){
+            delta = iterator.next().asLiteral().getInt();
+        }
+        LOGGER.info("Timeout set to {} ms, detal set to {} ms", timeOutMs, delta);
     }
 
     @Override
@@ -87,12 +103,38 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         String posNegExamples = RabbitMQUtils.readString(data);
         //empty string will be considered as an error
         String concept = "";
+        AtomicReference<String> atomicConcept = new AtomicReference<>("");
         try {
-            concept = createConcept(posNegExamples);
+            ExecutorService service = Executors.newSingleThreadExecutor();
+            service.submit(() -> {
+                try {
+                    String conceptTmp = createConcept(posNegExamples);
+                    LOGGER.info("recevied {}", conceptTmp);
+                    atomicConcept.set(conceptTmp);
+                } catch (Exception e) {
+                    LOGGER.error("Problems retrieving concepts", e);
+                    atomicConcept.set("");
+                }
+            });
+            service.shutdown();
+            try {
+                boolean terminated = service.awaitTermination(timeOutMs + delta, TimeUnit.MILLISECONDS);
+                LOGGER.info("received {}, terminated: {}", atomicConcept.get(), terminated);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            releaseMutexes();
+            concept = atomicConcept.get();
+            System.out.println("Concept: "+ concept);
+                    //concept = createConcept(posNegExamples);
         } catch (Exception e) {
             LOGGER.error("Concept couldn't be created. ", e);
         }
+
         try {
+            if(concept==null){
+                concept="";
+            }
             LOGGER.info("Sending concept {} now", concept);
             sendResultToEvalStorage(taskId, RabbitMQUtils.writeString(concept));
             LOGGER.info("sended concept");

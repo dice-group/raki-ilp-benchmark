@@ -13,4 +13,8 @@ public class CONSTANTS {
     public static final byte COMMAND_EVAL_LOADED = 61;
     public static final byte COMMAND_EVAL_WAITING = 60;
     public static final byte COMMAND_EVAL_START = 62;
+    public static final String USE_CONCEPTS = "USE_CONCEPTS";
+    public static final String SPLIT_RATIO = "SPLIT_RATIO";
+    public static final String MIN_EXAMPLES = "MIN_EXAMPLES";
+    public static final String SEED = "SEED";
 }

@@ -43,6 +43,26 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         if(iterator.hasNext())
             timeOutMS = iterator.next().asLiteral().getLong();
 
+        boolean useConcepts=false;
+
+
+        int minExamples=1;
+        iterator = benchmarkParamModel
+                .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "minExamples"));
+        if(iterator.hasNext())
+            minExamples = iterator.next().asLiteral().getInt();
+
+        long seed=1;
+        iterator = benchmarkParamModel
+                .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "seed"));
+        if(iterator.hasNext())
+            seed = iterator.next().asLiteral().getLong();
+
+        double splitRatio=1.0;
+        iterator = benchmarkParamModel
+                .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "splitRatio"));
+        if(iterator.hasNext())
+            splitRatio = iterator.next().asLiteral().getDouble();
 
         //CREATE TASK DATA etc here
         String ontToSystemQueueName = generateSessionQueueName("ontologyToSystemQueue");
@@ -51,7 +71,7 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         String ontToEvalQueueName = generateSessionQueueName("ontologyToEvalQueue");
 
         createEvaluationModule(EVALUATION_MODULE_CONTAINER_IMAGE,
-                new String[] { CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName });
+                new String[] { CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName, CONSTANTS.USE_CONCEPTS+"="+useConcepts });
 
         createDataGenerators(DATA_GENERATOR_CONTAINER_IMAGE, 1,
                 new String[] { CONSTANTS.BENCHMARK_NAME+"="+datasetName, CONSTANTS.ONTOLOGY_QUEUE_NAME+"="+ontToEvalQueueName,
@@ -59,7 +79,7 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         LOGGER.info("Finished creating Data Generator");
 
         createTaskGenerators(TASK_GENERATOR_CONTAINER_IMAGE, 1, new String[] {
-                CONSTANTS.TIMEOUT_MS+"="+timeOutMS});
+                CONSTANTS.TIMEOUT_MS+"="+timeOutMS, CONSTANTS.SEED+"="+seed, CONSTANTS.MIN_EXAMPLES+"="+minExamples, CONSTANTS.SPLIT_RATIO+"="+splitRatio});
         LOGGER.info("Finished creating Task Generator");
 
         createEvaluationStorage(DEFAULT_EVAL_STORAGE_IMAGE,

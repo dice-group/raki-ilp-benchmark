@@ -46,7 +46,37 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
     private BidirectionalShortFormProviderAdapter provider;
 
 
-
+    public static void main(String[] args) throws Exception {
+        DRILLSystemAdapter adapter = new DRILLSystemAdapter();
+        adapter.timeOutMs=5000l;
+        adapter.loadOntology(new File("/OntoPy/KGs/Mutagenesis/mutagenesis.owl"));
+        String lp  ="{         \"positives\" : [\n" +
+                "            \"http://dl-learner.org/mutagenesis#d157_6\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d176_14\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#e23_18\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#e20_13\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d63_13\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#e22_6\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#e20_14\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#e23_17\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d179_11\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d131_12\"\n" +
+                "         ],\n" +
+                "         \"negatives\" : [\n" +
+                "            \"http://dl-learner.org/mutagenesis#bond2357\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#nitro-174\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d22_7\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d132_3\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d94_28\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d63_30\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#bond2204\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#bond5592\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#bond3402\",\n" +
+                "            \"http://dl-learner.org/mutagenesis#d24_16\"\n" +
+                "         ]\n" +
+                "      }";
+        adapter.receiveGeneratedTask("a",lp.getBytes(StandardCharsets.UTF_8));
+    }
 
     @Override
     protected String convertToManchester(String concept) throws OWLOntologyCreationException, IOException {
@@ -111,6 +141,12 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
                 " "+ONTOPY_PATH+"pre_trained_agents/"+preTrainedData+" "+Math.max(1, this.timeOutMs/1000) };
         execute(start);
     }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+    }
+
 
     public void execute(String[] args) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder().redirectErrorStream(true).inheritIO();

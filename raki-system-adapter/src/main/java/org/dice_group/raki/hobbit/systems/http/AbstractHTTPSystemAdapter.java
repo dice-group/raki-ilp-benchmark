@@ -4,6 +4,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -33,6 +34,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
     public AbstractHTTPSystemAdapter(String baseUri){
         super();
         this.baseUri = baseUri;
+
     }
 
 
@@ -41,34 +43,53 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
         LOGGER.debug("Creating Concept request");
         String learningUri = baseUri+"/concept_learning";
         HttpPost post = new HttpPost(learningUri);
+
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+
+        RequestConfig.Builder requestConfig = RequestConfig.custom();
+        requestConfig.setConnectTimeout(this.timeOutMs.intValue()+delta);
+        requestConfig.setConnectionRequestTimeout(this.timeOutMs.intValue()+delta);
+        requestConfig.setSocketTimeout(this.timeOutMs.intValue()+delta);
+
+        post.setConfig(requestConfig.build());
         post.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
         StringEntity entity = new StringEntity(posNegExample);
         post.setEntity(entity);
         entity.setContentType("application/json");
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        LOGGER.info("Sending Concept request");
-        HttpResponse response = httpclient.execute(post);
-        InputStream is = response.getEntity().getContent();
-        if(response.getStatusLine().getStatusCode()!=200){
-            LOGGER.error("Status is not 200, but {}",response.getStatusLine().getStatusCode());
-            return "";
-        }
-        String concept="";
-        try(BufferedInputStream bis = new BufferedInputStream(is)){
-            byte[] data = StreamUtils.getBytes(bis);
-            concept = RabbitMQUtils.readString(data);
+        String concept = "";
+        try{
+            LOGGER.info("Sending Concept request");
+            HttpResponse response = httpclient.execute(post);
+            InputStream is = response.getEntity().getContent();
+            if (response.getStatusLine().getStatusCode() != 200) {
+                LOGGER.error("Status is not 200, but {}", response.getStatusLine().getStatusCode());
+                httpclient.close();
+                return "";
+            }
+            try (BufferedInputStream bis = new BufferedInputStream(is)) {
+                byte[] data = StreamUtils.getBytes(bis);
+                concept = RabbitMQUtils.readString(data);
 
+            }
+            try {
+                concept = convertToManchester(concept);
+            } catch (OWLOntologyCreationException e) {
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+            LOGGER.warn(e.getMessage());
+            return "";
+        }finally {
+            LOGGER.info("Closing connection.");
+            httpclient.close();
+            LOGGER.info("Closing connection done.");
         }
-        try {
-            concept = convertToManchester(concept);
-        } catch (OWLOntologyCreationException e) {
-            e.printStackTrace();
-        }
-        httpclient.close();
         LOGGER.info("Concept received successfully.");
         LOGGER.info("Concept is: {}", concept);
         return concept;
     }
+
 
     protected String convertToManchester(String concept) throws OWLOntologyCreationException, IOException {
         return concept;
@@ -121,6 +142,11 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
             }
         }while(!ready);
         //System now ready
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
     }
 
     public abstract void startSystem(String ontologyFile) throws OWLOntologyCreationException, Exception;

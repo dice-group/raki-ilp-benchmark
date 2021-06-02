@@ -33,10 +33,14 @@ import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
     private CELOE celoeAlg;
@@ -52,13 +56,14 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
 
     public static void main(String[] args) throws Exception {
         DLLearnerSystemAdapter adapter = new DLLearnerSystemAdapter();
-        adapter.timeOutMs=1000;
-        adapter.loadOntology(new File("raki-datagenerator/data/mutagenesis/ontology.owl"));
+        adapter.timeOutMs=1000l;
+        adapter.loadOntology(new File("raki-datagenerator/data/carcinogenesis/ontology.owl"));
 
-        JSONObject posNegJson = new JSONObject("{ \"benchmark\":"+FileUtils.readFileToString(new File("raki-datagenerator/data/mutagenesis/lp.json"))+"}");
+        JSONObject posNegJson = new JSONObject("{ \"benchmark\":"+FileUtils.readFileToString(new File("raki-datagenerator/data/carcinogenesis/lp.json"))+"}");
         posNegJson.getJSONArray("benchmark").forEach(lp ->{
             try {
-                System.out.println(adapter.createConcept(lp.toString()));
+                adapter.receiveGeneratedTask("1", lp.toString().getBytes(StandardCharsets.UTF_8));
+                //System.out.println(adapter.createConcept(lp.toString()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -81,9 +86,17 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
         lp.setNegativeExamples(negExamples);
         lp.setPositiveExamples(posExamples);
         lp.init();
-        String ret =  celeo(lp);
+        AtomicReference<String> atomicConcept = new AtomicReference<>("");
+        atomicConcept.set(celeo(lp));
+
+        //String ret =  celeo(lp);
         serialMutex.release();
-        return ret;
+        return atomicConcept.get();
+    }
+
+    @Override
+    public void releaseMutexes(){
+        serialMutex.release();
     }
 
     private String celeo(PosNegLP lp) throws ComponentInitException {
