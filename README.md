@@ -42,7 +42,7 @@ and add the embeddings to Ontolearn in `Ontolearn/embeddings/ConEx_YOUR_DATASET_
 Add in `raki-system-adapter/src/main/resources/drill-mapping.properties` 
 
 ```properties
-http\://dl-learner.org/mutagenesis=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth
+http\://ONTOLOGY_ID_IN_YOUR_ONTOLOGY.COM=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth
 ```
 
 ## Use a local HOBBIT deploymeny
