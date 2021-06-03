@@ -118,13 +118,29 @@ Be aware: Folks may see the name of the dataset. (Use an obscured one if you don
 
 # Use Ontolearn as a system
 
+Get pre defined embeddings and trained datasets
+```
+wget https://github.com/dice-group/RAKI-Drill-Endpoint/blob/master/pre_trained_agents.zip?raw=true
+unzip pre_trained_agents.zip?raw=true
+https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true
+unzip embeddings.zip?raw=true
+```
+
 To use the Ontolearn adapter you need to create embeddings in https://github.com/dice-group/DAIKIRI-Embedding using ConEx on your dataset. 
-and add the embeddings to Ontolearn in `Ontolearn/embeddings/ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv` and `Ontolearn/pre_trained_agents/YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth`
+
+add the embeddings and pre-trained agents to the corresponding folder in `embeddings/ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv` and `pre_trained_agents/YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth`
 
 Add in `raki-system-adapter/src/main/resources/drill-mapping.properties` using your previous declared Ontology ID (e.g. `http://example.com/MY-ID`)
 
 ```properties
 http\://example.com/MY-ID=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth
+```
+
+Now we need to zip the embeddings and pre_trained_agents again
+
+```
+zip -r pre_trained_agents.zip pre_trained_agents/
+zip -r embeddings.zip embeddings/
 ```
 
 # Build 
