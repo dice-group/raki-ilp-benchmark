@@ -48,6 +48,7 @@ Create a benchmark ID like the following
 
 we will use `YOUR_BENCHMARK_URI` as a placeholder fo this ID throughout this README.
 
+
 ## How to add a Dataset
 
 Create the directory where you'll put your benchmark dataset in.
@@ -106,7 +107,7 @@ go to https://git.project-hobbit.eu/raki/raki-private/raki-benchmark and edit th
 
 Add the following to the end
 
-```
+```properties
 <YOUR_BENCHMARK_URI> a raki:Datasets;
 		rdfs:label "My Benchmark Name"@en;
 		rdfs:comment "Description of My Benchmark Name"@en .
