@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -55,15 +56,20 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
 
 
     public static void main(String[] args) throws Exception {
-        DLLearnerSystemAdapter adapter = new DLLearnerSystemAdapter();
-        adapter.timeOutMs=1000l;
-        adapter.loadOntology(new File("raki-datagenerator/data/carcinogenesis/ontology.owl"));
 
-        JSONObject posNegJson = new JSONObject("{ \"benchmark\":"+FileUtils.readFileToString(new File("raki-datagenerator/data/carcinogenesis/lp.json"))+"}");
+        DLLearnerSystemAdapter adapter = new DLLearnerSystemAdapter();
+        adapter.timeOutMs=5000l;
+        adapter.loadOntology(new File("raki-datagenerator/data/animals/animals.owl"));
+
+        JSONObject posNegJson = new JSONObject("{ \"benchmark\":"+FileUtils.readFileToString(new File("raki-datagenerator/data/animals/lp.json"))+"}");
         posNegJson.getJSONArray("benchmark").forEach(lp ->{
             try {
-                adapter.receiveGeneratedTask("1", lp.toString().getBytes(StandardCharsets.UTF_8));
-                //System.out.println(adapter.createConcept(lp.toString()));
+                long start = Calendar.getInstance().getTimeInMillis();
+                //adapter.receiveGeneratedTask("1", lp.toString().getBytes(StandardCharsets.UTF_8));
+                System.out.println(adapter.createConcept(lp.toString()));
+                long end = Calendar.getInstance().getTimeInMillis();
+                System.out.println(end-start);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -86,12 +92,12 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
         lp.setNegativeExamples(negExamples);
         lp.setPositiveExamples(posExamples);
         lp.init();
-        AtomicReference<String> atomicConcept = new AtomicReference<>("");
-        atomicConcept.set(celeo(lp));
+        //AtomicReference<String> atomicConcept = new AtomicReference<>("");
+        //atomicConcept.set(celeo(lp));
 
-        //String ret =  celeo(lp);
+        String ret =  celeo(lp);
         serialMutex.release();
-        return atomicConcept.get();
+        return ret;
     }
 
     @Override
@@ -114,7 +120,7 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
         celoeAlg.start();
 
         OWLClassExpression best = celoeAlg.getCurrentlyBestDescription();
-
+        LOGGER.info("Best expression: {}", best);
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
         renderer.setShortFormProvider(provider);
         return renderer.render(best);

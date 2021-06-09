@@ -35,6 +35,7 @@ import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -65,101 +66,40 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     private OWLOntology owlOnto;
     private Boolean useConcepts = false;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        //http://w3id.org/hobbit/vocab#measuresKPI
-        List<Integer> offsets = Lists.newArrayList(0,4,8,12,16,20);
-        for(Integer offset : offsets) {
-            Query q = QueryFactory.create("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> select distinct ?metric ?metricLabel where {<http://w3id.org/raki/hobbit/vocab#RakiIPLBenchmark> <http://w3id.org/hobbit/vocab#measuresKPI> ?metric . ?metric rdfs:label ?metricLabel} ORDER BY ?metric LIMIT 4 OFFSET " + offset);
-            List<String[]> metrics = new ArrayList<>();
+    public static void main(String[] args) throws Exception {
+        RakiEvaluation eval = new RakiEvaluation();
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-            QueryExecution qexec = QueryExecutionFactory.sparqlService("https://db.project-hobbit.eu/sparql", q);
-            ResultSet res = qexec.execSelect();
-            while (res.hasNext()) {
-                QuerySolution sol = res.next();
-                metrics.add(new String[]{sol.getResource("metric").getURI(), sol.getLiteral("metricLabel").getString()});
-
-            }
-            qexec.close();
-            for (String[] metricArr : metrics) {
-                String metric = metricArr[0];
-                Map<String, Map<String, Object>> table = new HashMap<>();
-
-                q = QueryFactory.create("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> select distinct ?system ?benchmarkLabel ?val where {?exp <" + metric + "> ?val; <http://w3id.org/raki/hobbit/vocab#benchmarkName> ?benchmark ; <http://w3id.org/hobbit/vocab#involvesSystemInstance> ?sys. ?sys rdfs:label ?system. ?benchmark rdfs:label ?benchmarkLabel . FILTER ( ?exp =  <http://w3id.org/hobbit/experiments#1621338025374> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621339947135> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621339595129> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621340733760> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621340741452> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621340746672> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621340752712> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331603316> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331613318> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331625648> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331639248> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331655275> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331670045> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331693146> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331469764> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331486200> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331506730> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331520675> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331538101> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331571649> || \n" +
-                        "?exp =  <http://w3id.org/hobbit/experiments#1621331581464> ) } ");
-
-                qexec = QueryExecutionFactory.createServiceRequest("https://db.project-hobbit.eu/sparql", q);
-                res = qexec.execSelect();
-
-                List<String> benchmarks = Lists.newArrayList("Biopax-DRILL", "Biopax-LPBenchGen", "Family", "Mutagenesis-DRILL", "Mutagenesis-LPBenchGen", "Carcinogenesis-DRILL", "Carcinogenesis-LPBenchGen");
-                Map<String, String> benchMap = new HashMap<>();
-                benchMap.put("Biopax-DRILL", "Biopax Benchmark");
-                benchMap.put("Biopax-LPBenchGen", "Biopax LPBenchGen Full Benchmark");
-                benchMap.put("Family", "Family Benchmark");
-                benchMap.put("Mutagenesis-DRILL", "Mutagenesis - SML-Bench");
-                benchMap.put("Mutagenesis-LPBenchGen", "Mutagenesis LPBenchGen Full Benchmark");
-                benchMap.put("Carcinogenesis-DRILL", "Carcinogenesis - DRILL creation");
-                benchMap.put("Carcinogenesis-LPBenchGen", "Carcinogenesis LPBenchGen Full Benchmark");
-
-
-                while (res.hasNext()) {
-                    QuerySolution sol = res.next();
-                    table.putIfAbsent(sol.getLiteral("system").getString(), new HashMap<>());
-                    table.get(sol.getLiteral("system").getString()).put(sol.getLiteral("benchmarkLabel").getString(), sol.getLiteral("val").getValue());
-                    //benchmarks.add(sol.getLiteral("benchmarkLabel").getString());
-                }
-                qexec.close();
-                //List<String> benchs = new ArrayList<>(benchmarks);
-                //Collections.sort(benchs);
-                try (PrintWriter pw = new PrintWriter("/home/minimal/work/raki-eval/" + metricArr[1].replace("%", "").replace(" ", "_") + ".tsv")) {
-                    pw.println(metricArr[1].replace("%", "\\%") + "\t" + String.join("\t", benchmarks));
-                    List<String> rows = new ArrayList<>();
-                    for (String system : table.keySet()) {
-                        StringBuilder row = new StringBuilder(system.replace("-Test", "")).append("\t");
-                        for (String bench : benchmarks) {
-                            row.append(table.get(system).get(benchMap.get(bench))).append("\t");
-                        }
-
-                        rows.add(row.toString().trim());
-                    }
-                    Collections.sort(rows, new Comparator<String>() {
-                        @Override
-                        public int compare(String s, String t1) {
-                            if (s.startsWith("DRILL")) {
-                                return -1;
-                            }
-                            if (t1.startsWith("DRILL")) {
-                                return 1;
-                            } else {
-                                return s.compareTo(t1);
-                            }
-                        }
-                    });
-                    for (String row : rows) {
-                        pw.println(row);
-                    }
-                }
-            }
-        }
-
+        eval.ontology = manager.loadOntologyFromOntologyDocument(new File("raki-datagenerator/data/animals/animals.owl"));
+        Configuration conf = new Configuration();
+        conf.ignoreUnsupportedDatatypes=true;
+        conf.throwInconsistentOntologyException=false;
+        eval.reasoner =eval.createReasoner();
+        eval.owlOnto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("ontology.owl"));
+        byte[] expected = ("  {\n" +
+                "    \"positives\": [\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#lizard01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#croco01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#trex01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#snake01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#turtle01\"\n" +
+                "    ],\n" +
+                "    \"negatives\": [\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#dog01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#dolphin01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#platypus01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#bat01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#trout01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#herring01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#shark01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#eagle01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#ostrich01\",\n" +
+                "      \"http://dl-learner.org/benchmark/dataset/animals#penguin01\"\n" +
+                "    ]\n" +
+                "  }").getBytes(StandardCharsets.UTF_8);
+        byte[] actual = ("dl:HasEggs").getBytes(StandardCharsets.UTF_8);
+        eval.evaluateResponse(expected,actual,0,0);
+        System.out.println("");
     }
 
     public void receiveCommand(byte command, byte[] data) {
@@ -326,7 +266,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         LOGGER.info("positives {}", positiveExamples.size());
         for(OWLIndividual individual: received){
             String individualStr = individual.asOWLNamedIndividual().getIRI().toString();
-            //LOGGER.info("Found {}", individualStr);
+            LOGGER.info("Found {}", individualStr);
             if(positiveExamples.contains(individualStr)){
                 evalVals[0]++; //tp ++
                 foundPosExa++;
@@ -334,6 +274,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
             else if(negativeExamples.contains(individualStr)){
                 evalVals[1]++; //fp ++
             }
+            LOGGER.info("evals {}", evalVals);
         }
         evalVals[2] = positiveExamples.size()-foundPosExa; //fn (if we found all positive examples, good, if we missed one, this will be accounted here)
         LOGGER.info("tp: {}, fp: {}, fn: {}", evalVals[0], evalVals[1], evalVals[2]);

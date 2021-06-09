@@ -112,7 +112,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
                     LOGGER.info("recevied {}", conceptTmp);
                     atomicConcept.set(conceptTmp);
                 } catch (Exception e) {
-                    LOGGER.error("Problems retrieving concepts", e);
+                    LOGGER.error("Problems retrieving concepts {}", e);
                     atomicConcept.set("");
                 }
             });
