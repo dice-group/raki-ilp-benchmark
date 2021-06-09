@@ -5,7 +5,7 @@ This README will guide you through the steps to add your own datasets, assuming 
 
 # Preparations
 
-1. You need an Account on Hobbit at https://master.project-hobbit.eu and permission on the project
+1. You need an Account on Hobbit at https://git.project-hobbit.eu and permission on the project
 2. You need to use a local HOBBIT deployment if you want to use private datasets
 3. You need to Clone this Repository
 
