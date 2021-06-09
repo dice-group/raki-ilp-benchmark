@@ -138,6 +138,12 @@ If you've done your changes:
 
 It will automatically build the Docker images for the private RAKI benchmark.
 
+
+# The Benchmark 
+
+The benchmark is called `RAKI ILP Benchmark - Priv`. 
+
+
 # Troubleshooting
 
 If something doesn't work please let me know. 
