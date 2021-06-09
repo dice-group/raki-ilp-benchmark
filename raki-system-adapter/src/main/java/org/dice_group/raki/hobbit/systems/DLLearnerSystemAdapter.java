@@ -96,7 +96,7 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
         //atomicConcept.set(celeo(lp));
 
         String ret =  celeo(lp);
-        serialMutex.release();
+        //serialMutex.release();
         return ret;
     }
 

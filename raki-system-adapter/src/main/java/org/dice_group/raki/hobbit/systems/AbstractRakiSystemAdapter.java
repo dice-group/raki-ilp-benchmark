@@ -63,7 +63,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         if(iterator.hasNext()){
             delta = iterator.next().asLiteral().getInt();
         }
-        LOGGER.info("Timeout set to {} ms, detal set to {} ms", timeOutMs, delta);
+        LOGGER.info("Timeout set to {} ms, delta set to {} ms", timeOutMs, delta);
     }
 
     @Override
@@ -112,7 +112,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
                     LOGGER.info("recevied {}", conceptTmp);
                     atomicConcept.set(conceptTmp);
                 } catch (Exception e) {
-                    LOGGER.error("Problems retrieving concepts {}", e);
+                    LOGGER.error("Problems retrieving concepts", e);
                     atomicConcept.set("");
                 }
             });

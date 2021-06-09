@@ -25,7 +25,7 @@ RUN conda activate ontolearn_env && pip install -e .
 
 ADD startonto.sh /raki/startonto.sh
 
-ADD embeddings.zip
+ADD embeddings.zip .
 
 RUN unzip embeddings.zip
 
