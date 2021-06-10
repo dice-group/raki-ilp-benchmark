@@ -118,12 +118,16 @@ Be aware: Folks may see the name of the dataset. (Use an obscured one if you don
 
 # Use Ontolearn as a system
 
-Get pre defined embeddings and trained datasets
+1. Get pre defined embeddings and trained datasets
 ```
-wget https://github.com/dice-group/RAKI-Drill-Endpoint/blob/master/pre_trained_agents.zip?raw=true
-unzip pre_trained_agents.zip?raw=true
-https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true
-unzip embeddings.zip?raw=true
+cd raki-system-adapters && wget https://github.com/dice-group/RAKI-Drill-Endpoint/blob/master/pre_trained_agents.zip?raw=true -O pre_trained_agents.zip && ..
+https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true -O embeddings.zip && cd ..
+```
+
+2. Unzip them to add your datasets
+```
+cd raki-system-adapters && unzip pre_trained_agents.zip?raw=true && cd ..
+cd raki-system-adapters && unzip embeddings.zip?raw=true && cd ..
 ```
 
 To use the Ontolearn adapter you need to create embeddings in https://github.com/dice-group/DAIKIRI-Embedding using ConEx on your dataset. 
@@ -139,8 +143,8 @@ http\://example.com/MY-ID=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, Y
 Now we need to zip the embeddings and pre_trained_agents again
 
 ```
-zip -r pre_trained_agents.zip pre_trained_agents/
-zip -r embeddings.zip embeddings/
+cd raki-system-adapters && zip -r pre_trained_agents.zip pre_trained_agents/ && cd ..
+cd raki-system-adapters && zip -r embeddings.zip embeddings/ && cd ..
 ```
 
 # Build 
