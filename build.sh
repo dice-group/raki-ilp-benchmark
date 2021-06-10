@@ -1,8 +1,5 @@
 mvn clean install -Dmaven.test.skip=true
 
-cd raki-system-adapter && wget https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true -O embeddings.zip && cd ..
-cd raki-system-adapter && wget https://github.com/dice-group/Ontolearn/blob/main/pre_trained_agents.zip?raw=true -O pre_trained_agents.zip && cd ..
-
 cd raki-benchmark && docker build -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakibenchmark . && cd ..
 cd raki-datagenerator &&  docker build -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakidatagenerator . && cd ../
 cd raki-taskgenerator  && docker build -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakitaskgenerator . && cd ../
