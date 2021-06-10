@@ -120,14 +120,13 @@ Be aware: Folks may see the name of the dataset. (Use an obscured one if you don
 
 1. Get pre defined embeddings and trained datasets
 ```
-cd raki-system-adapters && wget https://github.com/dice-group/RAKI-Drill-Endpoint/blob/master/pre_trained_agents.zip?raw=true -O pre_trained_agents.zip && ..
-https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true -O embeddings.zip && cd ..
+cd raki-system-adapters && https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true -O embeddings.zip && cd ..
 ```
 
 2. Unzip them to add your datasets
 ```
-cd raki-system-adapters && unzip pre_trained_agents.zip?raw=true && cd ..
-cd raki-system-adapters && unzip embeddings.zip?raw=true && cd ..
+cd raki-system-adapters && unzip pre_trained_agents.zip && cd ..
+cd raki-system-adapters && unzip embeddings.zip && cd ..
 ```
 
 To use the Ontolearn adapter you need to create embeddings in https://github.com/dice-group/DAIKIRI-Embedding using ConEx on your dataset. 
