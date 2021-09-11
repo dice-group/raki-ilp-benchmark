@@ -7,7 +7,7 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dice_group.raki.hobbit.commons.CONSTANTS;
+import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractDataGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileSender;

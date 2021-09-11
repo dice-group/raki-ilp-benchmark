@@ -30,16 +30,14 @@ import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
-import org.dice_group.raki.hobbit.commons.CONSTANTS;
+import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 public class RakiEvaluation extends AbstractEvaluationModule {
 
@@ -70,7 +68,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         RakiEvaluation eval = new RakiEvaluation();
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-        eval.ontology = manager.loadOntologyFromOntologyDocument(new File("raki-datagenerator/data/animals/animals.owl"));
+        eval.ontology = manager.loadOntologyFromOntologyDocument(new File("raki-org.dice_group.raki.hobbit.datagenerator/data/animals/animals.owl"));
         Configuration conf = new Configuration();
         conf.ignoreUnsupportedDatatypes=true;
         conf.throwInconsistentOntologyException=false;

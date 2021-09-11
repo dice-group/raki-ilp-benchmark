@@ -1,7 +1,7 @@
 package org.dice_group.raki.hobbit.taskgenerator;
 
 import org.apache.commons.io.FileUtils;
-import org.dice_group.raki.hobbit.commons.CONSTANTS;
+import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractSequencingTaskGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.json.JSONArray;
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
