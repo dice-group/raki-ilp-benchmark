@@ -27,7 +27,6 @@ public class RAKI {
     public static Property secondPercentileResultTimes=getProperty("secondPercentileResultTimes");
     public static Property thirdPercentileResultTimes=getProperty("thirdPercentileResultTimes");
     public static Property noOfConcepts=getProperty("noOfConcepts");
-    //TODO
 
     public static Property getProperty(String propertyName){
         return ResourceFactory.createProperty(RAKI2_PREFIX+propertyName);

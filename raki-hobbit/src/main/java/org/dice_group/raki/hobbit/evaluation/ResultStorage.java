@@ -2,27 +2,27 @@ package org.dice_group.raki.hobbit.evaluation;
 
 public class ResultStorage {
 
-    private int errorCount;
-    private double avgConceptLength;
-    private double maxCL;
-    private double minCL;
-    private double fpCL;
-    private double spCL;
-    private double tpCL;
-    private double varCL;
-    private double avgRT;
-    private double maxRT;
-    private double minRT;
-    private double fpRT;
-    private double spRT;
-    private double tpRT;
-    private double varRT;
-    private double macroPrecision=0.0;
-    private double macroRecall=0.0;
-    private double macroF1Measure=0.0;
-    private double microPrecision=0.0;
-    private double microRecall=0.0;
-    private double microF1Measure=0.0;
+    private final int errorCount;
+    private final double avgConceptLength;
+    private final double maxCL;
+    private final double minCL;
+    private final double fpCL;
+    private final double spCL;
+    private final double tpCL;
+    private final double varCL;
+    private final double avgRT;
+    private final double maxRT;
+    private final double minRT;
+    private final double fpRT;
+    private final double spRT;
+    private final double tpRT;
+    private final double varRT;
+    private final double macroPrecision;
+    private final double macroRecall;
+    private final double macroF1Measure;
+    private final double microPrecision;
+    private final double microRecall;
+    private final double microF1Measure;
 
 
     public ResultStorage(double macroF1Measure, double macroPrecision, double macroRecall,
