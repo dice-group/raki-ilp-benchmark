@@ -1,8 +1,6 @@
-package org.dice_group.raki.hobbit.core.ilp;
+package org.dice_group.raki.core.ilp;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A learning problem is defined as a set of positive uris and a set of negative uris.
@@ -49,6 +47,85 @@ public class LearningProblem {
 
     public Set<String> getPositiveUris(){
         return positiveUris;
+    }
+
+
+    /**
+     * Gets a random set of negative uris.
+     *
+     * The ratio [0-1.0] describes how many percent of the original negative uris should be returned.
+     *
+     *
+     * ## Example:
+     *
+     * If the learning problem has 10 negative uris.
+     * A ratio of 0.5 will return 5 randomly choosen negative uris.
+     * A ratio of 0.7 will return 7 randomly choosen negative uris.
+     * A ratio of 0.79 will return 7 randomly choosen negative uris.
+     *
+     *
+     * @param ratio the ratio (from 0 to 1) describing how many negative uris should be received max.
+     * @param rand The Random object to user for the retrieval
+     * @return A Set of random retrieved negative uris from the original negative uris. The size will be negativeUris.size()*ratio
+     */
+    public Set<String> getSomeNegativeUris(double ratio, Random rand){
+        return getSomeUris(negativeUris, ratio, rand);
+    }
+
+    /**
+     * Gets a random set of positive uris.
+     *
+     * The ratio [0-1.0] describes how many percent of the original positive uris should be returned.
+     *
+     *
+     * ## Example:
+     *
+     * If the learning problem has 10 positive uris.
+     * A ratio of 0.5 will return 5 randomly choosen positive uris.
+     * A ratio of 0.7 will return 7 randomly choosen positive uris.
+     * A ratio of 0.79 will return 7 randomly choosen positive uris.
+     *
+     *
+     * @param ratio the ratio (from 0 to 1) describing how many positive uris should be received max.
+     * @param rand The Random object to user for the retrieval
+     * @return A Set of random retrieved positive uris from the original positive uris. The size will be positiveUris.size()*ratio
+     */
+    public Set<String> getSomePositiveUris(double ratio, Random rand){
+        return getSomeUris(positiveUris, ratio, rand);
+    }
+
+    /**
+     * Gets a random set of uris.
+     *
+     * The ratio [0-1.0] describes how many percent of the original uris should be returned.
+     *
+     *
+     * ## Example:
+     *
+     * If the provided uris colletion has 10 uris.
+     * A ratio of 0.5 will return 5 randomly choosen uris.
+     * A ratio of 0.7 will return 7 randomly choosen uris.
+     * A ratio of 0.79 will return 7 randomly choosen uris.
+     *
+     *
+     * @param uris The uris to choose from.
+     * @param ratio the ratio (from 0 to 1) describing how many uris should be received max.
+     * @param rand The Random object to user for the retrieval
+     * @return A Set of random retrieved uris from the original uris. The size will be uris.size()*ratio
+     */
+    private Set<String> getSomeUris(Collection<String> uris, double ratio, Random rand){
+        //Convert positive Uris to list, so we can shuffle it.
+        List<String> shuffleList = new ArrayList<>(uris);
+
+        // random shuffle, so we can just choose the first N uris
+        Collections.shuffle(shuffleList, rand);
+
+        // assert that the amount of uris we want to retrieve is positive or 0, and not greater than the actual amount of positive Uris.
+        // Max( 0, Min ( |positiveUris|, floor( |positiveUris| * ratio )  ))
+        double retrieve = Math.max(0, Math.min(shuffleList.size(),
+                Math.floor(shuffleList.size()*ratio)
+        ));
+        return new HashSet<>(shuffleList.subList(0, (int) retrieve));
     }
 
 

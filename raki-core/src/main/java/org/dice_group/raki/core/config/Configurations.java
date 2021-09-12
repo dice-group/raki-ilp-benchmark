@@ -1,4 +1,4 @@
-package org.dice_group.raki.hobbit.core.config;
+package org.dice_group.raki.core.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

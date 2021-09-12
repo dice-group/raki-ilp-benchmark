@@ -1,7 +1,7 @@
-package org.dice_group.raki.hobbit.core.config;
+package org.dice_group.raki.core.config;
 
-import org.dice_group.raki.hobbit.core.ilp.LearningProblem;
-import org.dice_group.raki.hobbit.core.ilp.LearningProblemFactory;
+import org.dice_group.raki.core.ilp.LearningProblem;
+import org.dice_group.raki.core.ilp.LearningProblemFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.FileDocumentSource;
 import org.semanticweb.owlapi.model.OWLOntology;

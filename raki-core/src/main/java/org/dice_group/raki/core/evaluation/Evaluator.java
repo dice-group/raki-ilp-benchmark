@@ -1,13 +1,13 @@
-package org.dice_group.raki.hobbit.core.evaluation;
+package org.dice_group.raki.core.evaluation;
 
 import openllet.owlapi.OpenlletReasonerFactory;
 import org.apache.commons.math3.util.Pair;
 import org.apache.jena.ext.com.google.common.collect.Lists;
-import org.dice_group.raki.hobbit.core.concepts.ManchesterSyntaxParser;
-import org.dice_group.raki.hobbit.core.evaluation.f1measure.F1MeasureCalculator;
-import org.dice_group.raki.hobbit.core.evaluation.f1measure.F1Result;
-import org.dice_group.raki.hobbit.core.ilp.LearningProblem;
-import org.dice_group.raki.hobbit.core.utils.TablePrinter;
+import org.dice_group.raki.core.concepts.ManchesterSyntaxParser;
+import org.dice_group.raki.core.evaluation.f1measure.F1MeasureCalculator;
+import org.dice_group.raki.core.evaluation.f1measure.F1Result;
+import org.dice_group.raki.core.ilp.LearningProblem;
+import org.dice_group.raki.core.utils.TablePrinter;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -28,6 +28,7 @@ public class Evaluator {
     private final OWLOntology owlBaseOntology;
     private final boolean useConcepts;
     private final OWLReasoner reasoner;
+    private final ManchesterSyntaxParser manchesterParser;
 
     /**
      * Creates an Evaluator using the Ontology and the provided OWL Base Ontology.
@@ -45,6 +46,7 @@ public class Evaluator {
         this.owlBaseOntology = owlBaseOntology;
         this.useConcepts = useConcepts;
         this.reasoner = createReasoner();
+        this.manchesterParser = new ManchesterSyntaxParser(ontology, owlBaseOntology);
     }
 
     /**
@@ -65,7 +67,7 @@ public class Evaluator {
      * @return The result container, containing the {@link F1Result} and the conceptLength
      */
     public ResultContainer evaluate(LearningProblem problem, String answerConcept){
-        OWLClassExpression expr = ManchesterSyntaxParser.parse(answerConcept, ontology, owlBaseOntology);
+        OWLClassExpression expr = manchesterParser.parse(answerConcept);
 
         //calculate length.
         ConceptLengthCalculator calculator = new ConceptLengthCalculator();
@@ -134,7 +136,7 @@ public class Evaluator {
         //also check if the problem has a concept listed, otherwise use the listed examples.
         if(useConcepts && problem.hasConcept()){
             //retrieve all positive concepts instead of only the examples in the problem
-            OWLClassExpression expr = ManchesterSyntaxParser.parse(problem.getConcept(), ontology, owlBaseOntology);
+            OWLClassExpression expr = manchesterParser.parse(problem.getConcept());
             return retrieveIndividuals(expr);
         }
         return problem.getPositiveUris();

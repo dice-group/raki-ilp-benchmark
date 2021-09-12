@@ -1,4 +1,4 @@
-package org.dice_group.raki.hobbit.core.ilp;
+package org.dice_group.raki.core.ilp;
 
 import org.apache.jena.util.FileUtils;
 import org.json.JSONArray;

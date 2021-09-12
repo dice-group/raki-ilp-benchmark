@@ -1,9 +1,9 @@
-package org.dice_group.raki.hobbit.core.evaluation;
+package org.dice_group.raki.core.evaluation;
 
-import org.dice_group.raki.hobbit.core.evaluation.f1measure.F1Result;
+import org.dice_group.raki.core.evaluation.f1measure.F1Result;
 
 /**
- * Simple Wrapper class for the {@link org.dice_group.raki.hobbit.core.evaluation.f1measure.F1Result} and the concept length
+ * Simple Wrapper class for the {@link F1Result} and the concept length
  */
 public class ResultContainer {
 

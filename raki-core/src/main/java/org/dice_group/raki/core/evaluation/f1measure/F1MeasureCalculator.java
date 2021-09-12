@@ -1,4 +1,4 @@
-package org.dice_group.raki.hobbit.core.evaluation.f1measure;
+package org.dice_group.raki.core.evaluation.f1measure;
 
 import java.util.ArrayList;
 import java.util.List;

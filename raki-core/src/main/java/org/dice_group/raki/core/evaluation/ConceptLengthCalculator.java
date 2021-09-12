@@ -1,4 +1,4 @@
-package org.dice_group.raki.hobbit.core.evaluation;
+package org.dice_group.raki.core.evaluation;
 
 import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.model.*;

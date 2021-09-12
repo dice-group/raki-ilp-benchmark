@@ -1,4 +1,4 @@
-package org.dice_group.raki.hobbit.core.utils;
+package org.dice_group.raki.core.utils;
 
 import java.util.List;
 

@@ -1,5 +1,8 @@
-package org.dice_group.raki.hobbit.core.commons;
+package org.dice_group.raki.core.commons;
 
+/**
+ * Some CONSTANTS used in Hobbit
+ */
 public class CONSTANTS {
 
     public static final String ONTOLOGY_QUEUE_NAME = "ontologyQueueName";
