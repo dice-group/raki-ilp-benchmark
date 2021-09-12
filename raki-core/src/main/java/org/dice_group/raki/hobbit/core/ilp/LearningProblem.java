@@ -19,6 +19,14 @@ public class LearningProblem {
         this.concept = concept;
     }
 
+    public boolean hasConcept(){
+        return concept!=null && !concept.isEmpty();
+    }
+
+    public String getConcept(){
+        return this.concept;
+    }
+
     public void addPositiveUri(String uri){
         positiveUris.add(uri);
     }

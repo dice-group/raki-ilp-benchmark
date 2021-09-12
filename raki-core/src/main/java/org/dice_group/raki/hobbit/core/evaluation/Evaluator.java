@@ -12,10 +12,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +27,7 @@ public class Evaluator {
     private final OWLOntology ontology;
     private final OWLOntology owlBaseOntology;
     private final boolean useConcepts;
+    private final OWLReasoner reasoner;
 
     /**
      * Creates an Evaluator using the Ontology and the provided OWL Base Ontology.
@@ -46,6 +44,7 @@ public class Evaluator {
         this.ontology = ontology;
         this.owlBaseOntology = owlBaseOntology;
         this.useConcepts = useConcepts;
+        this.reasoner = createReasoner();
     }
 
     /**
@@ -73,7 +72,13 @@ public class Evaluator {
         calculator.render(expr);
         int conceptLength = calculator.getConceptLength();
 
-        //TODO retrieve OWLNamedIndividuals for answerConcept, and get result dependent on the different techniques.
+        //retrieve OWLNamedIndividuals for answerConcept
+        Collection<String> answers = retrieveIndividuals(expr);
+        //retrieve positive uris from either problem or if useConcept is set to all positives
+        Collection<String> positiveUris = retrievePositiveUris(problem);
+
+        //retrieve negative uris from either problem or if useConcept is set to empty list
+        Collection<String> negativeUris = retrieveNegativeUris(problem);
 
         // count tp, fp, fn
         int truePositives, falsePositives, falseNegatives;
@@ -92,10 +97,54 @@ public class Evaluator {
     }
 
     /**
+     * Retrieves all Individuals fitting to the provided concept listed in the provided ontology.
+     *
+     * @param concept the concept to retrieve the Individuals for
+     * @return the set of Individuals fitting to this concept in String representation (is IRI)
+     */
+    private Collection<String> retrieveIndividuals(OWLClassExpression concept){
+        //retrieve all individuals and map the IRIs to a set of strings.
+        return reasoner.getInstances(concept).getFlattened()
+                .stream()
+                .map(
+                        expr -> expr.getIRI().toString()).collect(Collectors.toSet()
+                );
+    }
+
+    /**
+     * Retrieves negative URIs from the learning problem.
+     *
+     * Either return the set of negative uris listed in the provided problem or if useConcept is set, will just return null.
+     *
+     * Be aware that it is defined if the negative uris are null, simply all non positives are considered negative.
+     *
+     * @param problem the learning problem to retrieve the negative uris from
+     * @return the set of negative uris listed in the problem or null if useConcept is true
+     */
+    private Collection<String> retrieveNegativeUris(LearningProblem problem){
+        if(useConcepts){
+            // we defined null to be used if all non positives are negative (and not just examples)
+            return null;
+        }
+        return problem.getNegativeUris();
+    }
+
+    private Collection<String> retrievePositiveUris(LearningProblem problem){
+        //check if concept should be used to retrieve positives, rather than the listed examples.
+        //also check if the problem has a concept listed, otherwise use the listed examples.
+        if(useConcepts && problem.hasConcept()){
+            //retrieve all positive concepts instead of only the examples in the problem
+            OWLClassExpression expr = ManchesterSyntaxParser.parse(problem.getConcept(), ontology, owlBaseOntology);
+            return retrieveIndividuals(expr);
+        }
+        return problem.getPositiveUris();
+    }
+
+    /**
      * Evaluates the positive uris and the negative uris against the answer uris.
      * And returns the true positive, false positive and false negative counts.
      *
-     * If the negative uris are empty, it will assume that all uris not in positiveUris are negative uris.
+     * If the negative uris are null, it will assume that all uris not in positiveUris are negative uris.
      *
      * @param positiveUris the positive uris
      * @param negativeUris the negative uris
@@ -113,8 +162,8 @@ public class Evaluator {
                 evalVals[0]++; //tp ++
             }
             //check if negative uris contains answer -> false positive found,
-            //if negative Uris is empty, we assume that all other individuals are negative
-            else if(negativeUris.contains(answer) || negativeUris.isEmpty()){
+            //if negative Uris is null, we assume that all non-positive individuals are negative
+            else if(negativeUris == null || negativeUris.contains(answer)){
                 evalVals[1]++; //fp ++
             }
         }
