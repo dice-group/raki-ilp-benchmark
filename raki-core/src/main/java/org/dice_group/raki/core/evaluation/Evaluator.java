@@ -25,7 +25,6 @@ public class Evaluator {
 
     private final List<ResultContainer> resultContainers = new ArrayList<>();
     private final OWLOntology ontology;
-    private final OWLOntology owlBaseOntology;
     private final boolean useConcepts;
     private final OWLReasoner reasoner;
     private final ManchesterSyntaxParser manchesterParser;
@@ -43,7 +42,6 @@ public class Evaluator {
      */
     public Evaluator(OWLOntology ontology, OWLOntology owlBaseOntology, boolean useConcepts){
         this.ontology = ontology;
-        this.owlBaseOntology = owlBaseOntology;
         this.useConcepts = useConcepts;
         this.reasoner = createReasoner();
         this.manchesterParser = new ManchesterSyntaxParser(ontology, owlBaseOntology);
@@ -131,6 +129,14 @@ public class Evaluator {
         return problem.getNegativeUris();
     }
 
+    /**
+     * Retrieves the positive uris either from the learning problem itself or by
+     * retrieving all instances fitting to the concept in the learning problem if useConcept is true
+     * and the learning problem contains a concept
+     *
+     * @param problem the learning problem to retrieve the positve uris or the concept from
+     * @return The set of positive uris.
+     */
     private Collection<String> retrievePositiveUris(LearningProblem problem){
         //check if concept should be used to retrieve positives, rather than the listed examples.
         //also check if the problem has a concept listed, otherwise use the listed examples.
