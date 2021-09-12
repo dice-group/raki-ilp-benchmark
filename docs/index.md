@@ -43,9 +43,9 @@ There is no concept within the TBox of the ontology representing the Learning Pr
 
 ### Hobbit
 
-The RAKI ILP Benchmark is integrated into [Hobbit](https://project-hobbit.eu) and can be used using Hobbit.
+The RAKI ILP Benchmark is integrated into [Hobbit](https://project-hobbit.eu).
 
-For further Information how the ILP benchmark works inside Hobbit, have a look [here](hobbit/overview)
+For further Information how the ILP benchmark works with Hobbit and a walkthrough on how to use it, have a look [here](hobbit/overview)
 
 
 ## Where can I find the code?
