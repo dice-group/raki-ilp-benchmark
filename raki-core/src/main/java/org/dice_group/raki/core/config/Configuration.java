@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -65,5 +66,27 @@ public class Configuration {
 
     public void setLearningProblem(String learningProblem) {
         this.learningProblem = learningProblem;
+    }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "name='" + name + '\'' +
+                ", dataset='" + dataset + '\'' +
+                ", learningProblem='" + learningProblem + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Configuration that = (Configuration) o;
+        return Objects.equals(name, that.name) && Objects.equals(dataset, that.dataset) && Objects.equals(learningProblem, that.learningProblem);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, dataset, learningProblem);
     }
 }

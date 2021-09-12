@@ -212,4 +212,17 @@ public class LearningProblem {
                 ", concept='" + concept + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LearningProblem that = (LearningProblem) o;
+        return Objects.equals(positiveUris, that.positiveUris) && Objects.equals(negativeUris, that.negativeUris) && Objects.equals(concept, that.concept);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(positiveUris, negativeUris, concept);
+    }
 }

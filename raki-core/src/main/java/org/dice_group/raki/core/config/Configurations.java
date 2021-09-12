@@ -41,6 +41,23 @@ public class Configurations {
         return mapper.readValue(configurationFile, Configurations.class);
     }
 
+    /**
+     * After [load] retrieves the Configuration with the provided name.
+     *
+     * If no Configuration with this name can be found, returns null
+     *
+     * @param name The name of the Configuration to retrieve
+     * @return The Configuration with this name or null if none exists
+     */
+    public Configuration getConfiguration(String name){
+        for (Configuration dataset : datasets) {
+            if(dataset.getName().equals(name)){
+                return dataset;
+            }
+        }
+        return null;
+    }
+
     public List<Configuration> datasets;
 
     public List<Configuration> getAsList() {
