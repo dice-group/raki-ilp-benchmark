@@ -17,6 +17,8 @@ public class LearningProblem {
         this.concept = concept;
     }
 
+
+
     public boolean hasConcept(){
         return concept!=null && !concept.isEmpty();
     }
@@ -65,11 +67,12 @@ public class LearningProblem {
      *
      *
      * @param ratio the ratio (from 0 to 1) describing how many negative uris should be received max.
+     * @param minimal The minimal amount of elements returned, (is max shuffle list, min 0)
      * @param rand The Random object to user for the retrieval
      * @return A Set of random retrieved negative uris from the original negative uris. The size will be negativeUris.size()*ratio
      */
-    public Set<String> getSomeNegativeUris(double ratio, Random rand){
-        return getSomeUris(negativeUris, ratio, rand);
+    public Set<String> getSomeNegativeUris(double ratio, int minimal, Random rand){
+        return getSomeUris(negativeUris, ratio, minimal, rand);
     }
 
     /**
@@ -87,11 +90,12 @@ public class LearningProblem {
      *
      *
      * @param ratio the ratio (from 0 to 1) describing how many positive uris should be received max.
+     * @param minimal The minimal amount of elements returned, (is max shuffle list, min 0)
      * @param rand The Random object to user for the retrieval
      * @return A Set of random retrieved positive uris from the original positive uris. The size will be positiveUris.size()*ratio
      */
-    public Set<String> getSomePositiveUris(double ratio, Random rand){
-        return getSomeUris(positiveUris, ratio, rand);
+    public Set<String> getSomePositiveUris(double ratio, int minimal,  Random rand){
+        return getSomeUris(positiveUris, ratio, minimal, rand);
     }
 
     /**
@@ -110,19 +114,20 @@ public class LearningProblem {
      *
      * @param uris The uris to choose from.
      * @param ratio the ratio (from 0 to 1) describing how many uris should be received max.
+     * @param minimal The minimal amount of elements returned, (is max shuffle list, min 0)
      * @param rand The Random object to user for the retrieval
      * @return A Set of random retrieved uris from the original uris. The size will be uris.size()*ratio
      */
-    private Set<String> getSomeUris(Collection<String> uris, double ratio, Random rand){
+    private Set<String> getSomeUris(Collection<String> uris, double ratio, int minimal, Random rand){
         //Convert positive Uris to list, so we can shuffle it.
         List<String> shuffleList = new ArrayList<>(uris);
 
         // random shuffle, so we can just choose the first N uris
         Collections.shuffle(shuffleList, rand);
-
+        minimal = Math.max(0, Math.min(minimal, shuffleList.size()));
         // assert that the amount of uris we want to retrieve is positive or 0, and not greater than the actual amount of positive Uris.
         // Max( 0, Min ( |positiveUris|, floor( |positiveUris| * ratio )  ))
-        double retrieve = Math.max(0, Math.min(shuffleList.size(),
+        double retrieve = Math.max(minimal, Math.min(shuffleList.size(),
                 Math.floor(shuffleList.size()*ratio)
         ));
         return new HashSet<>(shuffleList.subList(0, (int) retrieve));

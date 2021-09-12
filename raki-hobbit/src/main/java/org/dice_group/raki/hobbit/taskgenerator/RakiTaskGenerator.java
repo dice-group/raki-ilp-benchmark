@@ -1,6 +1,8 @@
 package org.dice_group.raki.hobbit.taskgenerator;
 
-import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
+import org.dice_group.raki.core.ilp.LearningProblem;
+import org.dice_group.raki.core.ilp.LearningProblemFactory;
+import org.dice_group.raki.core.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractSequencingTaskGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.json.JSONObject;
@@ -8,20 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RakiTaskGenerator.class);
 
-
-
-    private Semaphore systemLoadedMutex = new Semaphore(0);
-    private Semaphore evalLoadedMutex = new Semaphore(0);
+    private final Semaphore systemLoadedMutex = new Semaphore(0);
+    private final Semaphore evalLoadedMutex = new Semaphore(0);
     private long seed=0;
     private double splitRatio=1.0;
     private int minExamples=1;
@@ -48,7 +45,7 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
     public void init() throws Exception {
         super.init();
         Map<String, String> envVariables = System.getenv();
-        Integer timeOutMS=60000;
+        int timeOutMS=60000;
         if (envVariables.containsKey(CONSTANTS.TIMEOUT_MS)) {
             String value = envVariables.get(CONSTANTS.TIMEOUT_MS);
             timeOutMS = Integer.parseInt(value);
@@ -57,17 +54,23 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         if (envVariables.containsKey(CONSTANTS.SPLIT_RATIO)) {
             String value = envVariables.get(CONSTANTS.SPLIT_RATIO);
             splitRatio = Double.parseDouble(value);
+            if(splitRatio<=0){
+                LOGGER.warn("Split Ratio was 0 or smaller, This is not allowed. Split Ratio is set to 1.0 per default");
+                splitRatio = 1.0;
+            }
 
         }
         if (envVariables.containsKey(CONSTANTS.MIN_EXAMPLES)) {
             String value = envVariables.get(CONSTANTS.MIN_EXAMPLES);
             minExamples = Integer.parseInt(value);
-
+            if(minExamples<=0){
+                LOGGER.warn("Minimum examples was smaller 1, This is not allowed. Minimum will be set to 1 per default");
+                minExamples = 1;
+            }
         }
         if (envVariables.containsKey(CONSTANTS.SEED)) {
             String value = envVariables.get(CONSTANTS.SEED);
             seed = Long.parseLong(value);
-
         }
         setAckTimeout(timeOutMS);
     }
@@ -84,12 +87,17 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         String taskId = getNextTaskId();
 
         String jsonExampleStr = RabbitMQUtils.readString(data);
-        JSONObject posNegExample = new JSONObject(jsonExampleStr);
-        posNegExample.remove("concept");
-        if(splitRatio<1) {
-            posNegExample = ratioExamples(posNegExample);
+        LearningProblem lp = LearningProblemFactory.parse(jsonExampleStr);
+
+        String problemToSystem;
+        //check if only a portion of the examples should be used and make sure that the ratio is greater 0.
+        if(splitRatio<1 && splitRatio > 0) {
+            Set<String> positiveRatioed = lp.getSomePositiveUris(splitRatio, minExamples, new Random(seed));
+            lp.getPositiveUris().clear();
+            lp.getPositiveUris().addAll(positiveRatioed);
         }
-        byte[] taskData = RabbitMQUtils.writeString(posNegExample.toString());
+        problemToSystem = lp.asJsonString(false);
+        byte[] taskData = RabbitMQUtils.writeString(problemToSystem);
 
         // Send the task to the system (and store the timestamp)
         long timestamp = System.currentTimeMillis();
@@ -100,18 +108,6 @@ public class RakiTaskGenerator extends AbstractSequencingTaskGenerator {
         LOGGER.info("Sending task with id {} to eval storage. ", taskId);
         // Send the expected answer to the evaluation store
         sendTaskToEvalStorage(taskId, timestamp, data);
-    }
-
-    private JSONObject ratioExamples(JSONObject posNegExample) {
-        List<Object> positives = posNegExample.getJSONArray("positives").toList();
-        Random rand = new Random(seed);
-        Collections.shuffle(positives, rand);
-        Double keep = positives.size()*splitRatio;
-        positives = positives.subList(0, Math.min(Math.max(minExamples, keep.intValue()), positives.size()));
-        LOGGER.info("gold size: {}, test size {}", posNegExample.getJSONArray("positives").length(), positives.size());
-        posNegExample.put("positives", positives);
-
-        return posNegExample;
     }
 
     @Override

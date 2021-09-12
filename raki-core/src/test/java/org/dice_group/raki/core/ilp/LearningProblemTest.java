@@ -45,12 +45,12 @@ public class LearningProblemTest {
     @ParameterizedTest(name = "given a Learning Problem, and a positive and negative ratio, return the correct amount of positive and negative uris")
     @MethodSource("createLearningProblems")
     public void createCorrectPositiveRatio(LearningProblem problem, double positiveRatio, int expectedPositiveSize,
-                                           double negativeRatio, int expectedNegativeSize){
+                                           double negativeRatio, int expectedNegativeSize, int minimal){
         Random rand = new Random();
-        Set<String> uris = problem.getSomePositiveUris(positiveRatio, rand);
+        Set<String> uris = problem.getSomePositiveUris(positiveRatio, minimal, rand);
         assertEquals(expectedPositiveSize, uris.size());
 
-        uris = problem.getSomeNegativeUris(negativeRatio, rand);
+        uris = problem.getSomeNegativeUris(negativeRatio, minimal, rand);
         assertEquals(expectedNegativeSize, uris.size());
     }
 
@@ -78,15 +78,19 @@ public class LearningProblemTest {
                 Arguments.of(LearningProblemFactory.create(
                         Lists.newArrayList("http://example.com/1", "http://example.com/2", "http://example.com/3"),
                         Lists.newArrayList("http://example.com/2", "http://example.com/3", "http://example.com/4")
-                ), 0.5, 1, 0.7, 2),
+                ), 0.5, 1, 0.7, 2, 0),
                 Arguments.of(LearningProblemFactory.create(
                         Lists.newArrayList("http://example.com/1", "http://example.com/2", "http://example.com/3"),
                         Lists.newArrayList("http://example.com/2", "http://example.com/3", "http://example.com/4")
-                ), 1.0, 3, 0.2, 0),
+                ), 1.0, 3, 0.2, 0, 0),
                 Arguments.of(LearningProblemFactory.create(
                         Lists.newArrayList("http://example.com/1", "http://example.com/2", "http://example.com/3"),
                         Lists.newArrayList("http://example.com/2", "http://example.com/3", "http://example.com/4")
-                ), 1.0, 3, 1.0, 3)
+                ), 1.0, 3, 1.0, 3, 0),
+                Arguments.of(LearningProblemFactory.create(
+                        Lists.newArrayList("http://example.com/1", "http://example.com/2", "http://example.com/3"),
+                        Lists.newArrayList("http://example.com/2", "http://example.com/3", "http://example.com/4")
+                ), 0.0, 2, 1.0, 3, 2)
         );
     }
 }

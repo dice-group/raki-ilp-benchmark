@@ -1,40 +1,33 @@
 package org.dice_group.raki.hobbit.datagenerator;
 
-import org.apache.commons.configuration2.FileBasedConfiguration;
-import org.apache.commons.configuration2.YAMLConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.apache.commons.configuration2.ex.ConfigurationException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
+import org.dice_group.raki.core.config.Configuration;
+import org.dice_group.raki.core.config.Configurations;
+import org.dice_group.raki.core.ilp.LearningProblem;
+import org.dice_group.raki.core.ilp.LearningProblemFactory;
+import org.dice_group.raki.core.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractDataGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileSender;
-import org.json.JSONArray;
-import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RakiDataGenerator extends AbstractDataGenerator {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(RakiDataGenerator.class);
 
-    private static final String PROPERTIES_PREFIX = "org.dice_group.raki.benchmark.";
-
     private String evalQueueName="DG_2_EVAL_MODULE_QUEUE_NAME";
     private String systemOntQueueName="DG_2_SYSTEM_QUEUE_NAME";
 
-    private JSONArray examples;
+    private Set<LearningProblem> learningProblems;
     private String ontology;
-    private Map<String, String[]> datasets = new HashMap<String, String[]>();
 
     @Override
     public void init() throws Exception {
@@ -57,68 +50,26 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         String configFile ="/raki/benchmark.yaml";
         LOGGER.info("Reading datasets config file {}", configFile);
 
-        YAMLConfiguration conf = readConfiguration(configFile);
-        conf.getKeys().forEachRemaining(x ->{
-            LOGGER.info("Got config {}", conf.getList(x));
-
-        });
-
-        //What a bunch of garabage. Note to future: DO NOT USE YamlConfiguration
-        List<Object> names = conf.getList("datasets.name");
-        List<Object> datasetFiles = conf.getList("datasets.dataset");
-        List<Object> learningProblems = conf.getList("datasets.learningProblem");
-        for(int i=0;i<names.size();i++){
-            datasets.put(names.get(i).toString(), new String[]{
-                    datasetFiles.get(i).toString(),
-                    learningProblems.get(i).toString()
-            });
+        Configuration config = Configurations.load(new File(configFile)).getConfiguration(benchmarkName);
+        if(config == null){
+            LOGGER.error("Couldn't find Configuration with name {}", benchmarkName);
+            System.exit(1);
         }
-
-        LOGGER.info("Got following datasets {}", datasets);
-        //from file get org.dice_group.raki.benchmark.+benchmarkName.dataset, posNegExamples, hasConcepts
-        String datasetFile = datasets.get(benchmarkName)[0];
-        String posNegExamples = datasets.get(benchmarkName)[1];
-
-        //load dataset and pos/neg examples or concepts if available
-        examples = readPosNegExamples(posNegExamples);
-
-        ontology=datasetFile;
+        //check if lps exists
+        if(!new File(config.getLearningProblem()).exists()){
+            LOGGER.error("Couldn't find Learning Problem file at {}", config.getLearningProblem());
+            System.exit(1);
+        }
+        learningProblems = LearningProblemFactory.readMany(new File(config.getLearningProblem()));
+        //check if onto exists
+        if(!new File(config.getDataset()).exists()){
+            LOGGER.error("Couldn't find Ontology Dataset file at {}", config.getDataset());
+            System.exit(1);
+        }
+        ontology= config.getDataset();
     }
 
 
-
-    private JSONArray readPosNegExamples(String posNegExamples) {
-        StringBuilder jsonStr = new StringBuilder();
-
-        try(BufferedReader reader = new BufferedReader(new FileReader(new File(posNegExamples)))){
-            String line;
-            while((line=reader.readLine())!=null){
-                jsonStr.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            LOGGER.error("Could not read pos/neg Examples. ", e);
-        }
-        return new JSONArray(jsonStr.toString());
-    }
-
-    private static YAMLConfiguration readConfiguration(String fileName){
-        File propertiesFile = new File(fileName);
-        Parameters params = new Parameters();
-        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
-                new FileBasedConfigurationBuilder<FileBasedConfiguration>(YAMLConfiguration.class)
-                        .configure(params.fileBased()
-                                .setFile(propertiesFile));
-        try
-        {
-            return (YAMLConfiguration) builder.getConfiguration();
-            // config contains all properties read from the file
-        }
-        catch(ConfigurationException cex)
-        {
-            LOGGER.error("Could not read dataset/benchmark property file");
-            return null;
-        }
-    }
 
     @Override
     protected void generateData() throws Exception {
@@ -129,17 +80,13 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         sendOntologyToEval();
         sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
 
-        //sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
-
         LOGGER.debug("Sending now tasks to task generator. ");
         //send examples to task generator
         AtomicInteger count= new AtomicInteger(1);
-        examples.forEach(posNegExample -> {
+        learningProblems.forEach(learningProblem -> {
             LOGGER.info("Sending {}. task to system. ", count.getAndIncrement());
-
-            byte[] data = RabbitMQUtils.writeString(posNegExample.toString());
+            byte[] data = RabbitMQUtils.writeString(learningProblem.asJsonString(true));
             try {
-                //LOGGER.info("Sending {}", posNegExample.toString());
                 sendDataToTaskGenerator(data);
             } catch (IOException e) {
                 LOGGER.error("Couldn't send data to task generator. ", e);

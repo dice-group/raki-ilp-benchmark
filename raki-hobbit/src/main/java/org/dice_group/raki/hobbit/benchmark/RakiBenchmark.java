@@ -4,7 +4,7 @@ import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
+import org.dice_group.raki.core.commons.CONSTANTS;
 import org.hobbit.core.Commands;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractBenchmarkController;

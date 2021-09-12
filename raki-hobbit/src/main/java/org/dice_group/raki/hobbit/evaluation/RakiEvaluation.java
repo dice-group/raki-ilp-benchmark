@@ -3,11 +3,10 @@ package org.dice_group.raki.hobbit.evaluation;
 import com.google.common.collect.Sets;
 import openllet.owlapi.OpenlletReasonerFactory;
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.dice_group.raki.hobbit.core.commons.CONSTANTS;
+import org.dice_group.raki.core.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractEvaluationModule;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileReceiver;
@@ -63,41 +62,6 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     private OWLOntology owlOnto;
     private Boolean useConcepts = false;
 
-    public static void main(String[] args) throws Exception {
-        RakiEvaluation eval = new RakiEvaluation();
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-
-        eval.ontology = manager.loadOntologyFromOntologyDocument(new File("raki-org.dice_group.raki.hobbit.datagenerator/data/animals/animals.owl"));
-        Configuration conf = new Configuration();
-        conf.ignoreUnsupportedDatatypes=true;
-        conf.throwInconsistentOntologyException=false;
-        eval.reasoner =eval.createReasoner();
-        eval.owlOnto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("ontology.owl"));
-        byte[] expected = ("  {\n" +
-                "    \"positives\": [\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#lizard01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#croco01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#trex01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#snake01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#turtle01\"\n" +
-                "    ],\n" +
-                "    \"negatives\": [\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#dog01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#dolphin01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#platypus01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#bat01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#trout01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#herring01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#shark01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#eagle01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#ostrich01\",\n" +
-                "      \"http://dl-learner.org/benchmark/dataset/animals#penguin01\"\n" +
-                "    ]\n" +
-                "  }").getBytes(StandardCharsets.UTF_8);
-        byte[] actual = ("dl:HasEggs").getBytes(StandardCharsets.UTF_8);
-        eval.evaluateResponse(expected,actual,0,0);
-        System.out.println("");
-    }
 
     public void receiveCommand(byte command, byte[] data) {
         if(command == CONSTANTS.COMMAND_ONTO_FULLY_SEND){
