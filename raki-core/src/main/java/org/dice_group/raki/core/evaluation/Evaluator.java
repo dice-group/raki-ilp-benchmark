@@ -112,7 +112,7 @@ public class Evaluator {
      */
     private Collection<String> retrieveIndividuals(OWLClassExpression concept){
         //retrieve all individuals and map the IRIs to a set of strings.
-        return reasoner.getInstances(concept).getFlattened()
+        return reasoner.getInstances(concept, false).getFlattened()
                 .stream()
                 .map(
                         expr -> expr.getIRI().toString()).collect(Collectors.toSet()
