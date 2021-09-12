@@ -2,6 +2,8 @@ package org.dice_group.raki.core.evaluation;
 
 import org.dice_group.raki.core.evaluation.f1measure.F1Result;
 
+import java.util.Objects;
+
 /**
  * Simple Wrapper class for the {@link F1Result} and the concept length
  */
@@ -27,5 +29,27 @@ public class ResultContainer {
 
     public String getConcept() {
         return concept;
+    }
+
+    @Override
+    public String toString() {
+        return "ResultContainer{" +
+                "f1Result=" + f1Result +
+                ", conceptLength=" + conceptLength +
+                ", concept='" + concept + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResultContainer that = (ResultContainer) o;
+        return conceptLength == that.conceptLength && Objects.equals(f1Result, that.f1Result) && Objects.equals(concept, that.concept);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(f1Result, conceptLength, concept);
     }
 }

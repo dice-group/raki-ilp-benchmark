@@ -60,6 +60,14 @@ public class Evaluator {
     /**
      * Calculates the F1 Measures and Concept Length for the provided {@link LearningProblem} and the concept answering this problem.
      *
+     * ## Example
+     *
+     * ```java
+     *         Evaluator evaluator = new Evaluator(ontology, OWLManager.createConcurrentOWLOntologyManager().createOntology(), useConcepts);
+     *         ResultContainer actual = evaluator.evaluate(problem, concept);
+     *
+     * ```
+     *
      * @param problem the problem which was solved
      * @param answerConcept the concept which is the solution for the problem
      * @return The result container, containing the {@link F1Result} and the conceptLength
@@ -185,6 +193,16 @@ public class Evaluator {
      * Evaluates each Learning Problem - Concept Pair and stores the concept length as well as the F1Measures.
      *
      * Will remove all previously evaluations
+     *
+     * ## Example
+     *
+     * ```java
+     *         Evaluator evaluator = new Evaluator(ontology, OWLManager.createConcurrentOWLOntologyManager().createOntology(), useConcepts);
+     *         evaluator.evaluate(problemPairs);
+     *         F1Result actualMacro = evaluator.getMacroF1Measure();
+     *         F1Result actualMicro = evaluator.getMicroF1Measure();
+     * ```
+     *
      *
      * @param answers the learning problem - concept pairs to evaluate
      */
