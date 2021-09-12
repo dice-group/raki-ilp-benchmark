@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#welcome-to-mkdocs" class="md-skip">
+        <a href="#about" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Welcome to MkDocs
+              About
             
           </span>
         </div>
@@ -200,7 +200,7 @@
 
   <li class="md-tabs__item">
     <a href="." class="md-tabs__link md-tabs__link--active">
-      Welcome to MkDocs
+      About
     </a>
   </li>
 
@@ -290,12 +290,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Welcome to MkDocs
+          About
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="." class="md-nav__link md-nav__link--active">
-        Welcome to MkDocs
+        About
       </a>
       
         
@@ -313,15 +313,42 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    Commands
+  <a href="#what-is-a-learning-problem-in-this-context" class="md-nav__link">
+    What is a Learning Problem in this context?
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#project-layout" class="md-nav__link">
-    Project layout
+  <a href="#how-does-it-work" class="md-nav__link">
+    How does it work?
+  </a>
+  
+    <nav class="md-nav" aria-label="How does it work?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core" class="md-nav__link">
+    Core
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hobbit" class="md-nav__link">
+    Hobbit
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-can-i-find-the-code" class="md-nav__link">
+    Where can I find the code?
   </a>
   
 </li>
@@ -389,21 +416,38 @@
               
                 
                 
-                <h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
+                <h1 id="about">About</h1>
+<p>The RAKI ILP Benchmark is a benchmark developed for the RAKI project.</p>
+<p>The benchmark aims to evaluate Explainable AI systems, by asking a system the best fitting concept for a Learning Problem.</p>
+<p>Thus the system aims to describe the problem as best it can using an OWL ontology.</p>
+<h2 id="what-is-a-learning-problem-in-this-context">What is a Learning Problem in this context?</h2>
+<p>A learning problem is a set of positive examples and negative examples, whereas one example is an Individual contained in the ABox of the benchmarked OWL ontology.</p>
+<p>A learning problem may have also a gold standard concept which describes the learning problem.</p>
+<p>However a Learning Problem does not have to contain a Concept. </p>
+<p>Imagine the following Ontology </p>
+<pre><code>Class Human
+Class Dragon
+
+Disjoint: Humand, Dragon
+
+Human1 is Human
+Dragon1 is Dragon
+Human2 is Human
 </code></pre>
+<p>Our Learning problem is:</p>
+<pre><code>positives: [&quot;Human1&quot;]
+negatives: [&quot;Human2&quot;, &quot;Dragon1&quot;]
+</code></pre>
+<p>There is no concept within the TBox of the ontology representing the Learning Problem fully.</p>
+<h2 id="how-does-it-work">How does it work?</h2>
+<h3 id="core">Core</h3>
+<h3 id="hobbit">Hobbit</h3>
+<p>The RAKI ILP Benchmark is integrated into <a href="https://project-hobbit.eu">Hobbit</a> and can be used using Hobbit.</p>
+<p>For further Information how the ILP benchmark works inside Hobbit, have a look <a href="hobbit/overview">here</a></p>
+<h2 id="where-can-i-find-the-code">Where can I find the code?</h2>
+<p>The code is open source at https://github.com/dice-group/raki-ilp-benchmark and you can code with us if you want to :)
+Where do I submit a bug or enhancement?</p>
+<p>Please use the Github Issue Tracker at https://github.com/dice-group/raki-ilp-benchmark/issues</p>
                 
               
               
