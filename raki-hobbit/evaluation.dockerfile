@@ -1,6 +1,6 @@
 FROM java
 
-ADD target/raki-evaluation-1.0-SNAPSHOT.jar /raki/evalModule.jar
+ADD target/raki-hobbit-1.0.0-SNAPSHOT.jar /raki/evalModule.jar
 ADD owl.ttl /raki/owl.ttl
 
 

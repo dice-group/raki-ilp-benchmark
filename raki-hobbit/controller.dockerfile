@@ -1,6 +1,6 @@
 FROM java
 
-ADD target/raki-benchmark-1.0-SNAPSHOT.jar /raki/controller.jar
+ADD target/raki-hobbit-1.0.0-SNAPSHOT.jar /raki/controller.jar
 
 WORKDIR /raki
 

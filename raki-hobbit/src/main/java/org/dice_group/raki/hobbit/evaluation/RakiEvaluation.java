@@ -178,6 +178,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     @Override
     protected Model summarizeEvaluation() throws Exception {
         ResultStorage result = summarize();
+        evaluator.printTable();
         Model model = createDefaultModel();
         Resource experiment = model.getResource(experimentUri);
 

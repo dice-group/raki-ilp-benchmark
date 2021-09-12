@@ -1,6 +1,6 @@
 FROM java
 
-ADD target/raki-taskgenerator-1.0-SNAPSHOT.jar /raki/taskgenerator.jar
+ADD target/raki-hobbit-1.0.0-SNAPSHOT.jar /raki/taskgenerator.jar
 
 WORKDIR /raki
 
