@@ -15,7 +15,25 @@ A learning problem may have also a gold standard concept which describes the lea
 
 ## How does it work?
 
+The RAKI ILP benchmark consists of two parts.
+
+* The core part containing the actual API, and 
+* The Hobbit part containing the Hobbit workflow
+
 ### Core
+
+The Core evaluates a Learning problem and a corresponding concept, by retrieving all
+Individuals for this concept from the provided OWL Ontology and compares
+the retrieved individuals with the individuals stated in the Learning Problem.
+
+The Learning Problem may not contain all positives and negative individuals.
+However, the default is to check only against these individuals. 
+That means all Individuals retrieved by the concept not occurring in either the positive nor the negative uris will be ignored.
+
+This can be avoided by using a gold standard concept and setting the `useConcept` flag. 
+This allows to retrieve the individuals for the LearningProblem from the Ontology as well. 
+
+For further Information on the API, have a look [here](api/)
 
 
 ### Hobbit
