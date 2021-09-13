@@ -1,0 +1,1020 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
+    
+    
+      
+        <title>Api - Raki ILP Benchmark</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.802231af.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="deep-purple">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+      <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#learning-problem" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Raki ILP Benchmark" class="md-header__button md-logo" aria-label="Raki ILP Benchmark" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Raki ILP Benchmark
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Api
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/dice-group/raki-ilp-benchmark" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dice-group/raki-ilp-benchmark
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      About
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Api
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../hobbit/add-benchmark/" class="md-tabs__link">
+        Hobbit
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Raki ILP Benchmark" class="md-nav__button md-logo" aria-label="Raki ILP Benchmark" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    Raki ILP Benchmark
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/dice-group/raki-ilp-benchmark" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dice-group/raki-ilp-benchmark
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        About
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        Api
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Api" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Api
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#learning-problem" class="md-nav__link">
+    Learning Problem
+  </a>
+  
+    <nav class="md-nav" aria-label="Learning Problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description" class="md-nav__link">
+    Description
+  </a>
+  
+    <nav class="md-nav" aria-label="Description">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-is-the-gold-standard-concept-optional" class="md-nav__link">
+    Why is the gold standard concept optional
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    API
+  </a>
+  
+    <nav class="md-nav" aria-label="API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-learning-problem" class="md-nav__link">
+    Creating a Learning Problem
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating a Learning Problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-from-lists" class="md-nav__link">
+    Creating from Lists.
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-from-json-string" class="md-nav__link">
+    Creating from JSON String
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-multiple-learning-problems-from-json-string" class="md-nav__link">
+    Creating multiple Learning Problems from JSON String
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-learning-problems-from-file" class="md-nav__link">
+    Read learning Problems from file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-manchester-parser" class="md-nav__link">
+    Concepts - Manchester Parser
+  </a>
+  
+    <nav class="md-nav" aria-label="Concepts - Manchester Parser">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description_1" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_1" class="md-nav__link">
+    API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-configuration" class="md-nav__link">
+    Benchmark Configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Benchmark Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description_2" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_2" class="md-nav__link">
+    API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metrics" class="md-nav__link">
+    Metrics
+  </a>
+  
+    <nav class="md-nav" aria-label="Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#f1-measure" class="md-nav__link">
+    F1-Measure
+  </a>
+  
+    <nav class="md-nav" aria-label="F1-Measure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-an-f1result" class="md-nav__link">
+    Create an F1Result
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-macro-and-micro-f1-scores" class="md-nav__link">
+    Create macro and micro F1 scores
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept-length" class="md-nav__link">
+    Concept Length
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evaluator" class="md-nav__link">
+    Evaluator
+  </a>
+  
+    <nav class="md-nav" aria-label="Evaluator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description_3" class="md-nav__link">
+    Description
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api_3" class="md-nav__link">
+    API
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-printer" class="md-nav__link">
+    Table Printer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Hobbit
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Hobbit" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Hobbit
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hobbit/add-benchmark/" class="md-nav__link">
+        Add a Benchmark Dataset
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hobbit/add-system/" class="md-nav__link">
+        Add A System
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hobbit/overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hobbit/setup/" class="md-nav__link">
+        Setup
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Api</h1>
+                
+                <p>We will describe the Core API in this section</p>
+<h2 id="learning-problem">Learning Problem</h2>
+<h3 id="description">Description</h3>
+<p>A learning problem is an object containing of a set of positive uris, negative uris and an optional concept.</p>
+<p>The positive uris as well as the negative uris are named individuals of the ABox of an OWL Ontology. 
+The concept is a class expression representation of this problem.
+It is build by concepts of the TBox of the Ontology.</p>
+<p>The learning problem is described using JSON. </p>
+<p>An Example:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;positives&quot;</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Human1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Human3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Human7&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;negatives&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Bear1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Dragon1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;http://ontology.com/individuals/Eagle1&quot;</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;concept&quot;</span> <span class="p">:</span> <span class="s2">&quot;ontology:Human&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="why-is-the-gold-standard-concept-optional">Why is the gold standard concept optional</h4>
+<p>Be aware: a Learning Problem does not have to contain a Concept.</p>
+<p>Imagine the following Ontology</p>
+<div class="highlight"><pre><span></span><code>Class Human
+Class Dragon
+
+Disjoint: Humand, Dragon
+
+Human1 is Human
+Dragon1 is Dragon
+Human2 is Human
+</code></pre></div>
+<p>Our Learning problem is:</p>
+<div class="highlight"><pre><span></span><code>positives: [&quot;Human1&quot;]
+negatives: [&quot;Human2&quot;, &quot;Dragon1&quot;]
+</code></pre></div>
+<p>There is no concept within the TBox of the ontology representing the Learning Problem fully.</p>
+<h3 id="api">API</h3>
+<h4 id="creating-a-learning-problem">Creating a Learning Problem</h4>
+<p>A learning problem can be created using the <code>LearningProblemFactory</code>.</p>
+<p>We will define <code>positives</code> and <code>negatives</code> each as a <code>Collection&lt;String&gt;</code> for simplicity.
+These collections contain the positive and negative uris.</p>
+<h5 id="creating-from-lists">Creating from Lists.</h5>
+<div class="highlight"><pre><span></span><code><span class="n">LearningProblem</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">LearningProblemFactory</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">positives</span><span class="p">,</span> <span class="n">negatives</span><span class="p">);</span>
+</code></pre></div>
+<h5 id="creating-from-json-string">Creating from JSON String</h5>
+<div class="highlight"><pre><span></span><code><span class="n">String</span> <span class="n">jsonString</span> <span class="o">=</span> <span class="s">&quot;{  \&quot;positives\&quot;: [...], \&quot;negatives\&quot;: [...]  }&quot;</span>
+<span class="n">LearningProblem</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">LearningProblemFactory</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="n">jsonString</span><span class="p">);</span>
+</code></pre></div>
+<h5 id="creating-multiple-learning-problems-from-json-string">Creating multiple Learning Problems from JSON String</h5>
+<div class="highlight"><pre><span></span><code><span class="n">String</span> <span class="n">jsonString</span> <span class="o">=</span> <span class="s">&quot;[ {  \&quot;positives\&quot;: [...], \&quot;negatives\&quot;: [...]  }, {  \&quot;positives\&quot;: [...], \&quot;negatives\&quot;: [...]  }]&quot;</span>
+<span class="n">Set</span><span class="o">&lt;</span><span class="n">LearningProblem</span><span class="o">&gt;</span> <span class="n">problems</span> <span class="o">=</span> <span class="n">LearningProblemFactory</span><span class="p">.</span><span class="na">readMany</span><span class="p">(</span><span class="n">jsonString</span><span class="p">);</span>
+</code></pre></div>
+<h5 id="read-learning-problems-from-file">Read learning Problems from file</h5>
+<div class="highlight"><pre><span></span><code><span class="n">Set</span><span class="o">&lt;</span><span class="n">LearningProblem</span><span class="o">&gt;</span> <span class="n">problems</span> <span class="o">=</span> <span class="n">LearningProblemFactory</span><span class="p">.</span><span class="na">readMany</span><span class="p">(</span><span class="k">new</span> <span class="n">File</span><span class="p">(</span><span class="s">&quot;learningProblems.json&quot;</span><span class="p">));</span>
+</code></pre></div>
+<h2 id="concepts-manchester-parser">Concepts - Manchester Parser</h2>
+<h3 id="description_1">Description</h3>
+<p>A Concept is a Class Expression derived from the TBox of an OWL Ontology. 
+F.e. </p>
+<p><div class="highlight"><pre><span></span><code>Human or Dragon
+</code></pre></div>
+describes the Concept of all humans and dragons.</p>
+<p>The Format used in RAKI ILP is the Manchester Syntax. </p>
+<h3 id="api_1">API</h3>
+<p>The API has a <code>ManchesterSyntaxParser</code>. 
+This parser allows to parse a Manchester Syntax String to an <code>OWLClassExpression</code> 
+and rendering an <code>OWLClassExpression</code> to a Manchester Syntax String.</p>
+<p>It needs a main ontology, and an optional OWL base ontology (containing the basics of OWL, such as <code>owl:Thing</code>). 
+Furhter on it </p>
+<div class="highlight"><pre><span></span><code><span class="n">ManchesterSyntaxParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ManchesterSyntaxParser</span><span class="p">(</span><span class="n">mainOntology</span><span class="p">,</span> <span class="n">baseOntology</span><span class="p">);</span>
+
+<span class="n">OWLClassExpression</span> <span class="n">expr</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="s">&quot;ontology:Human or ontology:Dragon&quot;</span><span class="p">);</span>
+
+<span class="err">#</span> <span class="n">concept</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">Human</span> <span class="n">or</span> <span class="n">Dragon</span><span class="err">&#39;</span>
+<span class="n">String</span> <span class="n">concept</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="na">render</span><span class="p">(</span><span class="n">expr</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="benchmark-configuration">Benchmark Configuration</h2>
+<h3 id="description_2">Description</h3>
+<p>The Benchmark Configuration consists of three elements</p>
+<ul>
+<li>The benchmark name</li>
+<li>The file path containing the Ontology</li>
+<li>The file path containing the learning problems</li>
+</ul>
+<p>Configurations can be read from a YAML file or created simply by using the <code>Configuration</code> constructor</p>
+<p>The YAML file has to look like this</p>
+<div class="highlight"><pre><span></span><code><span class="nt">datasets</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;MyBenchmarkName1&quot;</span>
+    <span class="nt">learningProblem</span><span class="p">:</span> <span class="s">&quot;/path/to/learningProblems1.json&quot;</span>
+    <span class="nt">dataset</span><span class="p">:</span> <span class="s">&quot;/path/to/ontology1.owl&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;MyBenchmarkName2&quot;</span>
+    <span class="nt">learningProblem</span><span class="p">:</span> <span class="s">&quot;/path/to/learningProblems2.json&quot;</span>
+    <span class="nt">dataset</span><span class="p">:</span> <span class="s">&quot;/path/to/ontology2.owl&quot;</span>
+</code></pre></div>
+<p>The Learning problem has to be a json file. 
+An example can be seen above.</p>
+<h3 id="api_2">API</h3>
+<p>Creating from file</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//load all Configurations</span>
+<span class="n">Configurations</span> <span class="n">confs</span> <span class="o">=</span> <span class="n">Configurations</span><span class="p">.</span><span class="na">load</span><span class="p">(</span><span class="k">new</span> <span class="n">File</span><span class="p">(</span><span class="s">&quot;/path/to/config.yml&quot;</span><span class="p">));</span>
+
+<span class="c1">//retrieve the ones with your benchmark name</span>
+<span class="n">Configuration</span> <span class="n">myBenchmark</span> <span class="o">=</span> <span class="n">confs</span><span class="p">.</span><span class="na">getConfiguration</span><span class="p">(</span><span class="s">&quot;MyBenchmarkName1&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Using the Configuration to retrieve the <code>OWLOntology</code> and the Set of <code>LearningProblems</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">OWLOntology</span> <span class="n">ontology</span> <span class="o">=</span> <span class="n">configuration</span><span class="p">.</span><span class="na">readOntology</span><span class="p">();</span>
+
+<span class="n">Set</span><span class="o">&lt;</span><span class="n">LearningProblem</span><span class="o">&gt;</span> <span class="n">problems</span> <span class="o">=</span> <span class="n">configuration</span><span class="p">.</span><span class="na">readLearningProblems</span><span class="p">();</span>
+</code></pre></div>
+<h2 id="metrics">Metrics</h2>
+<p>Currently, the core can calculate two metrics</p>
+<ul>
+<li>F1-Measure, Precision and Recall</li>
+<li>The Concept Length of a Concept</li>
+</ul>
+<h3 id="f1-measure">F1-Measure</h3>
+<p>The F1 measure will be calculated using the <code>F1MeasureCalculator</code>.</p>
+<p>The calculator will calculate the f1-score, precision and recall 
+from the <code>true positives</code>, <code>false positives</code> and <code>false negatives</code> provided
+and stores the results internally as well to calculate the macro and micro f1 measure later on.</p>
+<h4 id="create-an-f1result">Create an F1Result</h4>
+<div class="highlight"><pre><span></span><code><span class="n">F1MeasureCalculator</span> <span class="n">calculator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">F1MeasureCalculator</span><span class="p">();</span>
+<span class="n">F1Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="na">addF1Measure</span><span class="p">(</span><span class="n">truePositives</span><span class="p">,</span> <span class="n">falsePositives</span><span class="p">,</span> <span class="n">falseNegatives</span><span class="p">);</span>
+</code></pre></div>
+<p>The results can then be queried from the <code>F1Result</code> object </p>
+<div class="highlight"><pre><span></span><code><span class="kt">double</span> <span class="n">precision</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="na">getPrecision</span><span class="p">();</span>
+<span class="kt">double</span> <span class="n">recall</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="na">getRecall</span><span class="p">();</span>
+<span class="kt">double</span> <span class="n">f1score</span> <span class="o">=</span> <span class="n">result</span><span class="p">.</span><span class="na">getF1measure</span><span class="p">();</span>
+</code></pre></div>
+<h4 id="create-macro-and-micro-f1-scores">Create macro and micro F1 scores</h4>
+<div class="highlight"><pre><span></span><code><span class="n">F1MeasureCalculator</span> <span class="n">calculator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">F1MeasureCalculator</span><span class="p">();</span>
+
+<span class="c1">// Calculate and add the F1 scores for some truePositives, falsePositives and falseNegatives</span>
+<span class="n">calculator</span><span class="p">.</span><span class="na">addF1Measure</span><span class="p">(</span><span class="n">truePositives</span><span class="p">,</span> <span class="n">falsePositives</span><span class="p">,</span> <span class="n">falseNegatives</span><span class="p">);</span>
+<span class="n">calculator</span><span class="p">.</span><span class="na">addF1Measure</span><span class="p">(</span><span class="n">truePositives</span><span class="p">,</span> <span class="n">falsePositives</span><span class="p">,</span> <span class="n">falseNegatives</span><span class="p">);</span>
+
+<span class="c1">//the scores will be stored internally and be used to calculate the Micro and Macro F1Measures</span>
+<span class="n">F1Result</span> <span class="n">macroResults</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="na">calculateMacroF1Measure</span><span class="p">();</span>
+<span class="n">F1Result</span> <span class="n">microResults</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="na">calculateMicroF1Measure</span><span class="p">();</span>
+</code></pre></div>
+<p>To clear the stored values use the <code>clear</code> method
+<div class="highlight"><pre><span></span><code><span class="n">calculator</span><span class="p">.</span><span class="na">clear</span><span class="p">();</span>
+</code></pre></div></p>
+<h3 id="concept-length">Concept Length</h3>
+<p>The concept length of an <code>OWLClassExpression</code> can be calculated by using the
+<code>ConceptLengthCalculator</code>.</p>
+<p>Currently, only the following syntax structures are supported:</p>
+<ul>
+<li>AND</li>
+<li>OR</li>
+<li>SOME</li>
+<li>ALL </li>
+<li>NOT</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">ConceptLengthCalculator</span> <span class="n">calculator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConceptLengthCalculator</span><span class="p">();</span>
+
+<span class="c1">//Create your concept/class expression</span>
+<span class="n">OWLClassExpression</span> <span class="n">expr</span> <span class="o">=</span> <span class="p">...</span> <span class="p">;</span>
+
+<span class="n">calculator</span><span class="p">.</span><span class="na">render</span><span class="p">(</span><span class="n">expr</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">lengthOfExpr</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="na">getConceptLength</span><span class="p">();</span>
+</code></pre></div>
+<h2 id="evaluator">Evaluator</h2>
+<h3 id="description_3">Description</h3>
+<p>The <code>Evaluator</code> evaluates a set of Learning problems against a set of concepts.</p>
+<p>Additionally, the <code>Evaluator</code> can evaluate a single Learning Problem against a single concept.
+The single evaluation will return a <code>ResultContainer</code> containing the F1 Measures and Concept Length.</p>
+<p>If either the <code>Evaluator</code> was used, by using a set of Learning Problem and Concept pairs or
+the single evaluation was executed multiple times, the <code>Evaluator</code> can return the Macro and Micro F1 measures
+as well as all concept lengths.</p>
+<p>It needs a main Ontology, the owl base Ontology (can be empty though) and if the gold standard concept should be used
+instead of the positive and negative uris inside the learning problems.</p>
+<h3 id="api_3">API</h3>
+<p>Create the evaluator</p>
+<div class="highlight"><pre><span></span><code><span class="kt">boolean</span> <span class="n">useConcepts</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="n">Evaluator</span> <span class="n">evaluator</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Evaluator</span><span class="p">(</span><span class="n">mainOntology</span><span class="p">,</span> <span class="n">owlBaseOntology</span><span class="p">,</span> <span class="n">useConcepts</span><span class="p">);</span>
+</code></pre></div>
+<p>Execute a single execution</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//create your learning problem</span>
+<span class="n">LearningProblem</span> <span class="n">problem</span> <span class="o">=</span> <span class="p">...;</span>
+
+<span class="c1">//create the answer concept</span>
+<span class="n">String</span> <span class="n">concept</span> <span class="o">=</span> <span class="s">&quot;ontology:Human&quot;</span>
+
+<span class="n">ResultContainer</span> <span class="n">container</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">.</span><span class="na">evaluate</span><span class="p">(</span><span class="n">learningProblem</span><span class="p">,</span> <span class="n">concept</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="n">conceptLength</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="na">getConceptLength</span><span class="p">();</span>
+<span class="n">F1Result</span> <span class="n">f1result</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="na">getF1Result</span><span class="p">();</span>
+</code></pre></div>
+<p>Execute multiple LearningProblem, Concept pairs.
+Each Pair consists of a Learning Problem and the corresponding concept.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">//Create your problem Pairs</span>
+<span class="n">Set</span><span class="o">&lt;</span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">LearningProblem</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">problemPairs</span> <span class="o">=</span> <span class="p">...;</span>
+
+
+<span class="n">evaluator</span><span class="p">.</span><span class="na">evaluate</span><span class="p">(</span><span class="n">problemPairs</span><span class="p">);</span>
+
+<span class="c1">//Now we can retrieve the macro and micro F1 measures, as well as all Concept Lengths as following</span>
+<span class="n">F1Result</span> <span class="n">macroF1</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">.</span><span class="na">getMacroF1Measure</span><span class="p">();</span>
+<span class="n">F1Result</span> <span class="n">microF1</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">.</span><span class="na">getMicroF1Measure</span><span class="p">();</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">conceptLengths</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">.</span><span class="na">getConceptLengths</span><span class="p">();</span>
+</code></pre></div>
+<p>Further on all available Metrics can be printed as a table to the standard output using:
+<div class="highlight"><pre><span></span><code><span class="n">evaluator</span><span class="p">.</span><span class="na">printTable</span><span class="p">();</span>
+</code></pre></div></p>
+<h2 id="table-printer">Table Printer</h2>
+<p>The <code>TablePrinter</code> is a helper class to print a table in a kinda nice format.</p>
+<div class="highlight"><pre><span></span><code><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">header</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<span class="n">header</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">);</span>
+<span class="n">header</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="s">&quot;Description&quot;</span><span class="p">);</span>
+<span class="n">header</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="s">&quot;Salary&quot;</span><span class="p">);</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;&gt;</span> <span class="n">table</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<span class="n">table</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">Lists</span><span class="p">.</span><span class="na">newArrayList</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span> <span class="s">&quot;Consultant in IT&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">));</span>
+<span class="n">table</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">Lists</span><span class="p">.</span><span class="na">newArrayList</span><span class="p">(</span><span class="s">&quot;Mary&quot;</span><span class="p">,</span> <span class="s">&quot;Engineer in IT&quot;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">));</span>
+<span class="n">table</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">Lists</span><span class="p">.</span><span class="na">newArrayList</span><span class="p">(</span><span class="s">&quot;Lina&quot;</span><span class="p">,</span> <span class="s">&quot;Security Expert in IT&quot;</span><span class="p">,</span> <span class="mi">9500</span><span class="p">));</span>
+<span class="n">TablePrinter</span><span class="p">.</span><span class="na">print</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="s">&quot;%10s %20s %5d&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>will produce</p>
+<div class="highlight"><pre><span></span><code>---------------------------------------------------------------------------
+      Name          Description Salary
+---------------------------------------------------------------------------
+       Joe     Consultant in IT  5000
+      Mary       Engineer in IT  8000
+      Lina Security Expert in IT  9500
+---------------------------------------------------------------------------
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: About" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              About
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../hobbit/add-benchmark/" class="md-footer__link md-footer__link--next" aria-label="Next: Add a Benchmark Dataset" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Add a Benchmark Dataset
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+  <div class="md-footer-social">
+    
+      
+      
+        
+        
+      
+      <a href="https://github.com/dice-group/raki-ilp-benchmark" target="_blank" rel="noopener" title="github.com" class="md-footer-social__link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+      </a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "toc.integrate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.409db549.min.js", "version": "$VERSION"}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.756773cc.min.js"></script>
+      
+    
+  </body>
+</html>

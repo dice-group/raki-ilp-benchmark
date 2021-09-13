@@ -14,7 +14,7 @@
     
     
       
-        <title>Overview - Raki ILP Benchmark</title>
+        <title>Setup - Raki ILP Benchmark</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#preparations" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Setup
             
           </span>
         </div>
@@ -398,6 +398,18 @@
             
   
   
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
     
   
   
@@ -408,12 +420,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Overview
+          Setup
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        Overview
+        Setup
       </a>
       
         
@@ -429,22 +441,90 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
+  <a href="#preparations" class="md-nav__link">
+    Preparations
+  </a>
+  
+    <nav class="md-nav" aria-label="Preparations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2-use-a-local-hobbit-deployment" class="md-nav__link">
+    2. Use a local HOBBIT deployment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-clone-this-repo" class="md-nav__link">
+    3. Clone this Repo
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-a-dataset" class="md-nav__link">
+    Add a Dataset
+  </a>
+  
+    <nav class="md-nav" aria-label="Add a Dataset">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-benchmark-id" class="md-nav__link">
+    Create a BENCHMARK ID
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-add-a-dataset" class="md-nav__link">
+    How to add a Dataset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-the-dataset-to-the-benchmark-configuration" class="md-nav__link">
+    Add the dataset to the benchmark configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-the-dataset-to-hobbit" class="md-nav__link">
+    Add the dataset to HOBBIT
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-ontolearn-as-a-system" class="md-nav__link">
+    Use Ontolearn as a system
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
+  <a href="#build" class="md-nav__link">
+    Build
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#workflow" class="md-nav__link">
-    Workflow
+  <a href="#access-raki-private" class="md-nav__link">
+    Access Raki-private
   </a>
   
 </li>
@@ -453,18 +533,6 @@
   
 </nav>
       
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../setup/" class="md-nav__link">
-        Setup
-      </a>
     </li>
   
 
@@ -488,13 +556,138 @@
               
                 
                 
-                  <h1>Overview</h1>
+                  <h1>Setup</h1>
                 
-                <p>In this section we will explain the overview of Hobbit. </p>
-<h2 id="usage">Usage</h2>
-<h2 id="parameters">Parameters</h2>
-<h2 id="workflow">Workflow</h2>
-<p><img alt="Hobbit timing flow" src="../../images/raki-hobbit-timing.drawio.png" /></p>
+                <p>RAKI ILP Benchmark integration for HOBBIT.</p>
+<p>This setup will guide you through the steps to create the RAKI ILP Benchmark on your local machine using a local Hobbit.</p>
+<h2 id="preparations">Preparations</h2>
+<ol>
+<li>You need an Account on Hobbit at https://git.project-hobbit.eu and permission on the project</li>
+<li>You need to use a local HOBBIT deployment if you want to use private datasets</li>
+<li>You need to Clone this Repository</li>
+</ol>
+<h3 id="2-use-a-local-hobbit-deployment">2. Use a local HOBBIT deployment</h3>
+<p>See https://hobbit-project.github.io/quick_guide.html how to deploy HOBBIT locally and make sure to set <code>DOCKER_AUTOPULL: 0</code> in the config as described in https://hobbit-project.github.io/parameters_env.html</p>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+  <span class="nt">platform-controller</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hobbitproject/hobbit-platform-controller:latest</span>
+    <span class="nt">networks</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hobbit</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hobbit-core</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">...</span>
+      <span class="l l-Scalar l-Scalar-Plain">DOCKER_AUTOPULL</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+</code></pre></div>
+<h3 id="3-clone-this-repo">3. Clone this Repo</h3>
+<div class="highlight"><pre><span></span><code>git clone https://github.com/dice-group/raki-ilp-benchmark 
+<span class="nb">cd</span>  raki-ilp-benchmark
+git checkout raki-private
+</code></pre></div>
+<h2 id="add-a-dataset">Add a Dataset</h2>
+<p>This involves a few straight forward steps</p>
+<ol>
+<li>You need to create a URL we call benchmark ID for HOBBIT</li>
+<li>Add the dataset(s) to this repository and set the configurations accordingly, so the system recognizes your dataset</li>
+<li>Add the benchmark ID to HOBBIT. </li>
+</ol>
+<h3 id="create-a-benchmark-id">Create a BENCHMARK ID</h3>
+<p>Create a benchmark ID like the following 
+<code>http://w3id.org/raki/hobbit/vocab#YOUR-BENCHMARK-NAME</code> </p>
+<p>we will use <code>YOUR_BENCHMARK_URI</code> as a placeholder fo this ID throughout this README.</p>
+<h3 id="how-to-add-a-dataset">How to add a Dataset</h3>
+<p>Create the directory where you'll put your benchmark dataset in.</p>
+<div class="highlight"><pre><span></span><code>cd raki-datagenerator/data/
+mkdir YOUR_BENCHMARK_NAME
+cd YOUR_BENCHMARK_NAME/
+</code></pre></div>
+<p>Add your Ontology <code>ontology.owl</code> into <code>raki-datagenerator/data/YOUR_BENCHMARK_NAME/</code></p>
+<p>Be aware that your Ontology needs an Ontology ID which you can set in the ontology like the following. Let's assume that your ID is <code>http://example.com/MY-ID</code></p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;rdf:RDF</span> <span class="na">xmlns=</span><span class="s">&quot;http://example.com/MY-ID&quot;</span>
+<span class="na">xml:base=</span><span class="s">&quot;http://example.com/MY-ID&quot;</span>
+<span class="na">xmlns:rdf=</span><span class="s">&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;</span>
+<span class="na">xmlns:owl=</span><span class="s">&quot;http://www.w3.org/2002/07/owl#&quot;</span>
+<span class="na">xmlns:xml=</span><span class="s">&quot;http://www.w3.org/XML/1998/namespace&quot;</span>
+<span class="na">xmlns:dl=</span><span class="s">&quot;http://dl-learner.org/benchmark/dataset/animals/&quot;</span>
+<span class="na">xmlns:xsd=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema#&quot;</span>
+<span class="na">xmlns:rdfs=</span><span class="s">&quot;http://www.w3.org/2000/01/rdf-schema#&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;owl:Ontology</span> <span class="na">rdf:about=</span><span class="s">&quot;http://example.com/MY-ID&quot;</span><span class="nt">/&gt;</span>
+<span class="c">&lt;!-- YOUR ONTOLOGY HERE --&gt;</span>
+<span class="nt">&lt;/rdf:RDF&gt;</span>
+</code></pre></div>
+<p>Now create a file called <code>lp.json</code> where you put the learning problems in the following format:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+  <span class="p">{</span>
+    <span class="nt">&quot;positives&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://example.com/positive1&quot;</span><span class="p">,</span> <span class="s2">&quot;http://example.com/positive2&quot;</span> <span class="err">...</span><span class="p">],</span>
+    <span class="nt">&quot;negatives&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://example.com/negative1&quot;</span><span class="p">,</span> <span class="s2">&quot;http://example.com/negative2&quot;</span> <span class="err">...</span><span class="p">]</span>
+  <span class="p">},</span>
+  <span class="err">...</span>
+<span class="p">]</span>
+</code></pre></div>
+<h3 id="add-the-dataset-to-the-benchmark-configuration">Add the dataset to the benchmark configuration</h3>
+<p>Edit <code>raki-datagenerator/src/main/resources/benchmark.yaml</code> and add the following at the end</p>
+<div class="highlight"><pre><span></span><code>  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="s">&quot;YOUR_BENCHMARK_URI&quot;</span>
+    <span class="nt">dataset</span><span class="p">:</span> <span class="s">&quot;/raki/data/YOUR-BENCHMARK-NAME/ontology.owl&quot;</span>
+    <span class="nt">learningProblem</span><span class="p">:</span> <span class="s">&quot;/raki/data/YOUR-BENCHMARK-NAME/lp.json&quot;</span>
+</code></pre></div>
+<h3 id="add-the-dataset-to-hobbit">Add the dataset to HOBBIT</h3>
+<p>This is the only step which is public. </p>
+<p>go to https://git.project-hobbit.eu/raki/raki-private/raki-benchmark and edit the <code>benchmark.ttl</code> </p>
+<p>Add the following to the end</p>
+<div class="highlight"><pre><span></span><code><span class="na">&lt;YOUR_BENCHMARK_URI&gt; a raki</span><span class="o">:</span><span class="s">Datasets;</span>
+<span class="na">        rdfs</span><span class="o">:</span><span class="s">label &quot;My Benchmark Name&quot;@en;</span>
+<span class="na">        rdfs</span><span class="o">:</span><span class="s">comment &quot;Description of My Benchmark Name&quot;@en .</span>
+</code></pre></div>
+<p>Be aware: Folks may see the name of the dataset. (Use an obscured one if you don't want them, however it needs to be obscured in the previous steps as well.)</p>
+<h2 id="use-ontolearn-as-a-system">Use Ontolearn as a system</h2>
+<ol>
+<li>
+<p>Get pre defined embeddings and trained datasets
+<div class="highlight"><pre><span></span><code>cd raki-system-adapters &amp;&amp; https://github.com/dice-group/Ontolearn/blob/main/embeddings.zip?raw=true -O embeddings.zip &amp;&amp; cd ..
+</code></pre></div></p>
+</li>
+<li>
+<p>Unzip them to add your datasets
+<div class="highlight"><pre><span></span><code>cd raki-system-adapters &amp;&amp; unzip pre_trained_agents.zip &amp;&amp; cd ..
+cd raki-system-adapters &amp;&amp; unzip embeddings.zip &amp;&amp; cd ..
+</code></pre></div></p>
+</li>
+</ol>
+<p>To use the Ontolearn adapter you need to create embeddings in https://github.com/dice-group/DAIKIRI-Embedding using ConEx on your dataset. </p>
+<p>add the embeddings and pre-trained agents to the corresponding folder in <code>embeddings/ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv</code> and <code>pre_trained_agents/YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth</code></p>
+<p>Add in <code>raki-system-adapter/src/main/resources/drill-mapping.properties</code> using your previous declared Ontology ID (e.g. <code>http://example.com/MY-ID</code>)</p>
+<div class="highlight"><pre><span></span><code><span class="na">http\</span><span class="o">:</span><span class="s">//example.com/MY-ID=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth</span>
+</code></pre></div>
+<p>Now we need to zip the embeddings and pre_trained_agents again</p>
+<div class="highlight"><pre><span></span><code>cd raki-system-adapters &amp;&amp; zip -r pre_trained_agents.zip pre_trained_agents/ &amp;&amp; cd ..
+cd raki-system-adapters &amp;&amp; zip -r embeddings.zip embeddings/ &amp;&amp; cd ..
+</code></pre></div>
+<h2 id="build">Build</h2>
+<p>Set build.sh to an executable</p>
+<p><code>chmod +x build.sh</code></p>
+<p>If you've done your changes:
+<code>./build.sh</code></p>
+<p>It will automatically build the Docker images for the private RAKI benchmark.</p>
+<h2 id="access-raki-private">Access Raki-private</h2>
+<p>As the RAKI-private benchmark should be only accessible by members of the raki-private group 
+add to the docker-compose.yml  the following</p>
+<div class="highlight"><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+  <span class="nt">platform-controller</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">hobbitproject/hobbit-platform-controller:latest</span>
+    <span class="nt">networks</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hobbit</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hobbit-core</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">...</span>
+      <span class="l l-Scalar l-Scalar-Plain">GITLAB_USER</span><span class="p p-Indicator">:</span> <span class="s">&quot;YOUR_USER_NAME&quot;</span>
+      <span class="nt">GITLAB_EMAIL</span><span class="p">:</span> <span class="s">&quot;YOUR_EMAIL&quot;</span>
+      <span class="nt">GITLAB_TOKEN</span><span class="p">:</span> <span class="s">&quot;YOUR_TOKEN&quot;</span>
+</code></pre></div>
+<p><code>YOUR_TOKEN</code> is a gitlab token you have to create in https://git.project-hobbit.eu  -&gt; Settings -&gt; Access Token -&gt; check at least (api, read_repository, read_registry)</p>
+<p>Now start the platform and go to http://localhost:8181 (Keycloack) -&gt; Admin Console and login using the Keycloack admin account (see https://hobbit-project.github.io/quick_guide.html for initial credentials) </p>
+<p>Now add a dummy user (users -&gt; add users) with the same name and email as your token user. 
+Click again on <code>Users</code> and on <code>view all users</code> click on the ID of your newly created dummy user and click on the <code>Credentials</code> tab. 
+Create a password for your user. </p>
+<p>Now you can login into localhost:8080 using your dummy user and should be able to access the <code>Raki ILP Benchmark - Priv</code>.</p>
                 
               
               
@@ -519,7 +712,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../add-system/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Add A System" rel="prev">
+        <a href="../overview/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -528,26 +721,11 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Add A System
+              Overview
             </div>
           </div>
         </a>
       
-      
-        
-        <a href="../setup/" class="md-footer__link md-footer__link--next" aria-label="Next: Setup" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Setup
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
       
     </nav>
   

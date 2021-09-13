@@ -14,7 +14,7 @@
     
     
       
-        <title>Overview - Raki ILP Benchmark</title>
+        <title>Add a Benchmark Dataset - Raki ILP Benchmark</title>
       
     
     
@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#add-a-benchmark-dataset" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Add a Benchmark Dataset
             
           </span>
         </div>
@@ -230,7 +230,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../add-benchmark/" class="md-tabs__link md-tabs__link--active">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
         Hobbit
       </a>
     </li>
@@ -374,11 +374,72 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../add-benchmark/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Add a Benchmark Dataset
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Add a Benchmark Dataset
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preliminaries" class="md-nav__link">
+    Preliminaries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-dataset-to-code" class="md-nav__link">
+    Add Dataset to Code
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#add-dataset-to-benchmarkttl" class="md-nav__link">
+    Add Dataset to Benchmark.ttl
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-add-dataset-to-the-ontolearn-system" class="md-nav__link">
+    (Optional) Add Dataset to the Ontolearn System
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -398,61 +459,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Overview
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
         Overview
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    Parameters
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#workflow" class="md-nav__link">
-    Workflow
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -488,13 +499,20 @@
               
                 
                 
-                  <h1>Overview</h1>
-                
-                <p>In this section we will explain the overview of Hobbit. </p>
-<h2 id="usage">Usage</h2>
-<h2 id="parameters">Parameters</h2>
-<h2 id="workflow">Workflow</h2>
-<p><img alt="Hobbit timing flow" src="../../images/raki-hobbit-timing.drawio.png" /></p>
+                <h1 id="add-a-benchmark-dataset">Add a Benchmark Dataset</h1>
+<h2 id="preliminaries">Preliminaries</h2>
+<ul>
+<li>Learning Problem in json</li>
+<li>Ontology containing TBox and Abox </li>
+<li>Check LPBenchGen to generate </li>
+</ul>
+<h2 id="add-dataset-to-code">Add Dataset to Code</h2>
+<ul>
+<li>to data folder</li>
+<li>to benchmark.yml</li>
+</ul>
+<h2 id="add-dataset-to-benchmarkttl">Add Dataset to Benchmark.ttl</h2>
+<h2 id="optional-add-dataset-to-the-ontolearn-system">(Optional) Add Dataset to the Ontolearn System</h2>
                 
               
               
@@ -519,7 +537,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../add-system/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Add A System" rel="prev">
+        <a href="../../api/api/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Api" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -528,20 +546,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Add A System
+              Api
             </div>
           </div>
         </a>
       
       
         
-        <a href="../setup/" class="md-footer__link md-footer__link--next" aria-label="Next: Setup" rel="next">
+        <a href="../add-system/" class="md-footer__link md-footer__link--next" aria-label="Next: Add A System" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Setup
+              Add A System
             </div>
           </div>
           <div class="md-footer__button md-icon">

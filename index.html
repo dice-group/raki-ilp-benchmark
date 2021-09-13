@@ -214,7 +214,23 @@
   
   
     <li class="md-tabs__item">
-      <a href="hobbit/overview/" class="md-tabs__link">
+      <a href="api/api/" class="md-tabs__link">
+        Api
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="hobbit/add-benchmark/" class="md-tabs__link">
         Hobbit
       </a>
     </li>
@@ -375,11 +391,53 @@
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
       <label class="md-nav__link" for="__nav_2">
+        Api
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Api" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/api/" class="md-nav__link">
+        Api
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
         Hobbit
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="Hobbit" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
+        <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Hobbit
         </label>
@@ -390,8 +448,44 @@
   
   
     <li class="md-nav__item">
+      <a href="hobbit/add-benchmark/" class="md-nav__link">
+        Add a Benchmark Dataset
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hobbit/add-system/" class="md-nav__link">
+        Add A System
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="hobbit/overview/" class="md-nav__link">
         Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hobbit/setup/" class="md-nav__link">
+        Setup
       </a>
     </li>
   
@@ -423,27 +517,11 @@
 <h2 id="what-is-a-learning-problem-in-this-context">What is a Learning Problem in this context?</h2>
 <p>A learning problem is a set of positive examples and negative examples, whereas one example is an Individual contained in the ABox of the benchmarked OWL ontology.</p>
 <p>A learning problem may have also a gold standard concept which describes the learning problem.</p>
-<p>However a Learning Problem does not have to contain a Concept. </p>
-<p>Imagine the following Ontology </p>
-<pre><code>Class Human
-Class Dragon
-
-Disjoint: Humand, Dragon
-
-Human1 is Human
-Dragon1 is Dragon
-Human2 is Human
-</code></pre>
-<p>Our Learning problem is:</p>
-<pre><code>positives: [&quot;Human1&quot;]
-negatives: [&quot;Human2&quot;, &quot;Dragon1&quot;]
-</code></pre>
-<p>There is no concept within the TBox of the ontology representing the Learning Problem fully.</p>
 <h2 id="how-does-it-work">How does it work?</h2>
 <h3 id="core">Core</h3>
 <h3 id="hobbit">Hobbit</h3>
-<p>The RAKI ILP Benchmark is integrated into <a href="https://project-hobbit.eu">Hobbit</a> and can be used using Hobbit.</p>
-<p>For further Information how the ILP benchmark works inside Hobbit, have a look <a href="hobbit/overview">here</a></p>
+<p>The RAKI ILP Benchmark is integrated into <a href="https://project-hobbit.eu">Hobbit</a>.</p>
+<p>For further Information how the ILP benchmark works with Hobbit and a walkthrough on how to use it, have a look <a href="hobbit/overview">here</a></p>
 <h2 id="where-can-i-find-the-code">Where can I find the code?</h2>
 <p>The code is open source at https://github.com/dice-group/raki-ilp-benchmark and you can code with us if you want to :)
 Where do I submit a bug or enhancement?</p>
@@ -473,13 +551,13 @@ Where do I submit a bug or enhancement?</p>
       
       
         
-        <a href="hobbit/overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview" rel="next">
+        <a href="api/api/" class="md-footer__link md-footer__link--next" aria-label="Next: Api" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Overview
+              Api
             </div>
           </div>
           <div class="md-footer__button md-icon">
