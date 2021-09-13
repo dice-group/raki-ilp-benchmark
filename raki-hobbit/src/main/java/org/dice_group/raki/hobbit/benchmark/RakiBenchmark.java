@@ -9,14 +9,21 @@ import org.hobbit.core.components.AbstractBenchmarkController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The RAKI ILP Benchmark Controller.
+ *
+ * Will create and Start the Data Generator, Task Generator and Evaluation Module.
+ */
 public class RakiBenchmark extends AbstractBenchmarkController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RakiBenchmark.class);
 
+    // Container images to use
     private static final String EVALUATION_MODULE_CONTAINER_IMAGE = "git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakievaluationmodule";
     private static final String TASK_GENERATOR_CONTAINER_IMAGE = "git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakitaskgenerator";
     private static final String DATA_GENERATOR_CONTAINER_IMAGE = "git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakidatagenerator";
 
+    //timeout in ms , default to 1 minute
     private long timeOutMS=60000;
 
 
@@ -25,12 +32,15 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         super.init();
         Resource newExpResource = benchmarkParamModel.getResource(Constants.NEW_EXPERIMENT_URI);
 
+        //Get Benchmarkname
         NodeIterator iterator = benchmarkParamModel
                 .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "benchmarkName"));
         String datasetName = "";
         if(iterator.hasNext()){
             datasetName = iterator.next().asResource().toString();
         }
+
+        //Get Timeout in MS
         iterator = benchmarkParamModel
                 .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "timeOutMS"));
         if(iterator.hasNext())
@@ -38,7 +48,7 @@ public class RakiBenchmark extends AbstractBenchmarkController {
 
         boolean useConcepts=false;
 
-
+        //everything for slitting the Learning Problem
         int minExamples=1;
         iterator = benchmarkParamModel
                 .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "minExamples"));
@@ -56,6 +66,7 @@ public class RakiBenchmark extends AbstractBenchmarkController {
                 .listObjectsOfProperty(benchmarkParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "splitRatio"));
         if(iterator.hasNext())
             splitRatio = iterator.next().asLiteral().getDouble();
+
 
         //CREATE TASK DATA etc here
         String ontToSystemQueueName = generateSessionQueueName("ontologyToSystemQueue");
@@ -77,9 +88,6 @@ public class RakiBenchmark extends AbstractBenchmarkController {
 
         createEvaluationStorage(DEFAULT_EVAL_STORAGE_IMAGE,
                 new String[] { Constants.ACKNOWLEDGEMENT_FLAG_KEY + "=true", DEFAULT_EVAL_STORAGE_PARAMETERS[0] });
-
-
-
 
         // start the evaluation module
         waitForComponentsToInitialize();
@@ -108,11 +116,7 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         sendToCmdQueue(CONSTANTS.COMMAND_EVAL_START);
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();
-        // the evaluation module should have sent an RDF model containing the
-        // results. We should add the configuration of the benchmark to this
-        // model.
-        // FIXME add parameters
-        // this.resultModel.add(null);
+
         LOGGER.info("Results: {}", this.resultModel);
         //this.resultModel.add(benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel.createProperty("http://w3id.org/hobbit/vocab#involvesSystemInstance")).next().asResource(), RDF.type, HOBBIT.System);
         sendResultModel(this.resultModel);
