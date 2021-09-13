@@ -13,30 +13,6 @@ A learning problem is a set of positive examples and negative examples, whereas 
 A learning problem may have also a gold standard concept which describes the learning problem.
 
 
-Be aware: a Learning Problem does not have to contain a Concept. 
-
-Imagine the following Ontology 
-
-```
-Class Human
-Class Dragon
-
-Disjoint: Humand, Dragon
-
-Human1 is Human
-Dragon1 is Dragon
-Human2 is Human
-```
-
-Our Learning problem is:
-
-```
-positives: ["Human1"]
-negatives: ["Human2", "Dragon1"]
-```
-
-There is no concept within the TBox of the ontology representing the Learning Problem fully.
-
 ## How does it work?
 
 ### Core
