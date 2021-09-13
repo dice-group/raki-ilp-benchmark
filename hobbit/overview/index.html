@@ -461,9 +461,54 @@
                 
                 <p>In this section we will explain the overview of Hobbit. </p>
 <h2 id="usage">Usage</h2>
-<p>TODO include pictures</p>
+<ol>
+<li>Go to https://git.project-hobbit.eu </li>
+<li>Login</li>
+<li>Go to Benchmarks</li>
+<li>Choose <code>Raki ILP Benchmark</code> or <code>Raki ILP Benchmark - Priv</code></li>
+<li>Choose the system you want to benchmark</li>
+<li>set the parameters you want to use (see below)</li>
+<li>choose the benchmark you want to execute (benchmark name)</li>
+<li>Execute</li>
+</ol>
 <h2 id="parameters">Parameters</h2>
-<p>TODO explain parameters</p>
+<p>The Hobbit frontend allows a few parameters to be used.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Benchmark name</td>
+<td>The Benchmark Name to use</td>
+<td></td>
+</tr>
+<tr>
+<td>Timeout in MS</td>
+<td>The timeout to use in MS for each learning problem</td>
+<td>60000 (1min)</td>
+</tr>
+<tr>
+<td>Ratio of positives to system should receive</td>
+<td>Will randomly choose the specified percentage (0.0, 1.0) of positive uris.</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Minimum Examples if ratio is set &lt; 1</td>
+<td>the minimum amount of positive examples that should remain of splitRatio is smaller than 1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Seed</td>
+<td>Seed to use for any random activity</td>
+<td>123</td>
+</tr>
+</tbody>
+</table>
 <h2 id="workflow">Workflow</h2>
 <p>The following image shows the time flow of the Raki Hobbit Modules
 <img alt="Hobbit timing flow" src="../../images/raki-hobbit-timing.drawio.png" /></p>

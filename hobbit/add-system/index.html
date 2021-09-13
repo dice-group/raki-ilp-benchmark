@@ -390,16 +390,49 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#add-raki-hobbit-library" class="md-nav__link">
-    Add Raki Hobbit Library
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#create-your-system" class="md-nav__link">
     Create your System
   </a>
+  
+    <nav class="md-nav" aria-label="Create your System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-java-api" class="md-nav__link">
+    Using the Java API
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-http" class="md-nav__link">
+    Using HTTP
+  </a>
+  
+    <nav class="md-nav" aria-label="Using HTTP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    Status
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concept_learning" class="md-nav__link">
+    Concept_learning
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -482,11 +515,129 @@
                 
                 
                 <h1 id="add-a-system">Add A System</h1>
-<h2 id="add-raki-hobbit-library">Add Raki Hobbit Library</h2>
+<p>In this section we described how you can add your RAKI ILP system to Hobbit</p>
+<p>We assume that you directly extend the <code>raki-system-adapter</code> module.
+Otherwise you need to add the following dependency to your system</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.dice_group.raki<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>raki-hobbit<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>1.0.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
 <h2 id="create-your-system">Create your System</h2>
+<p>There are two ways, either</p>
+<ul>
+<li>the system has a Java API, or</li>
+<li>the system has an HTTP endpoint</li>
+</ul>
+<h3 id="using-the-java-api">Using the Java API</h3>
+<p>This way  you need to implement two methods</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MySystem</span> <span class="kd">extends</span> <span class="n">AbstractRakiSystemAdapter</span> <span class="p">{</span>
+
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">createConcept</span><span class="p">(</span><span class="n">String</span> <span class="n">posNegExample</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">LearningProblem</span> <span class="n">problem</span> <span class="o">=</span> <span class="n">LearningProblem</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">posNegExample</span><span class="p">);</span>
+        <span class="c1">//TODO your concept learning</span>
+
+        <span class="c1">//return your concept in manchester syntax</span>
+        <span class="k">return</span> <span class="n">concept</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">loadOntology</span><span class="p">(</span><span class="n">File</span> <span class="n">ontologyFile</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="c1">//TODO load the ontology here.</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="using-http">Using HTTP</h3>
+<p>If you're using an HTTP concept learner you need to implement mainly one function, the function to start the system.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MySystem</span> <span class="kd">extends</span> <span class="n">AbstractHTTPSystemAdapter</span> <span class="p">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">baseUri</span> <span class="o">=</span><span class="s">&quot;http://localhost:9080&quot;</span><span class="p">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">convertToManchester</span><span class="p">(</span><span class="n">String</span> <span class="n">concept</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">OWLOntologyCreationException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+        <span class="c1">//TODO this can be used if your system doesn&#39;t provide manchester syntax directly</span>
+
+        <span class="k">return</span> <span class="n">concept</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">public</span> <span class="nf">MySystem</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">super</span><span class="p">(</span><span class="n">baseUri</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">startSystem</span><span class="p">(</span><span class="n">String</span> <span class="n">ontologyFile</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="c1">//TODO start and load your system using the ontology file </span>
+        <span class="c1">// Be aware that the AbstractHTTPSystemAdapter waits until the system provides the status ready</span>
+        <span class="c1">// and you don&#39;t have to implement that</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Additionally, The HTTP endpoint needs to implement the following two paths</p>
+<ul>
+<li><code>GET /status</code> </li>
+<li><code>POST /concept_learning</code></li>
+</ul>
+<h4 id="status">Status</h4>
+<p>the status endpoint needs return if the Concept Learner is ready to be queried.
+It should return an HTTPCode 200 and the following json message if that is the case</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;ready&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h4 id="concept_learning">Concept_learning</h4>
+<p>The concept_learner will need to accept a Learning Problem in JSON format as a POST request and
+should return the concept for this problem. </p>
+<p>Ideally the concept will be directly in manchester syntax, 
+if that is not the case however it is possible to convert the concept to manchster syntax inside the System wrapper itself by overriding the following method</p>
+<div class="highlight"><pre><span></span><code>  <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="n">String</span> <span class="nf">convertToManchester</span><span class="p">(</span><span class="n">String</span> <span class="n">concept</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">OWLOntologyCreationException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+        <span class="c1">//TODO this can be used if your system doesn&#39;t provide manchester syntax directly</span>
+
+        <span class="k">return</span> <span class="n">concept</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></div>
 <h2 id="add-system-to-hobbit">Add System to Hobbit</h2>
+<p>Now that we create that system we can add it to Hobbit</p>
 <h3 id="create-a-systemttl">Create a system.ttl</h3>
+<p>Create a repository in https://git.project-hobbit.eu</p>
+<p>with the following <code>system.ttl</code></p>
+<div class="highlight"><pre><span></span><code>@<span class="nv">prefix</span> <span class="nv">rdfs</span>: <span class="o">&lt;</span><span class="nv">http</span>:<span class="o">//</span><span class="nv">www</span>.<span class="nv">w3</span>.<span class="nv">org</span><span class="o">/</span><span class="mi">2000</span><span class="o">/</span><span class="mi">01</span><span class="o">/</span><span class="nv">rdf</span><span class="o">-</span><span class="nv">schema</span>#<span class="o">&gt;</span> .
+@<span class="nv">prefix</span> <span class="nv">hobbit</span>: <span class="o">&lt;</span><span class="nv">http</span>:<span class="o">//</span><span class="nv">w3id</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">hobbit</span><span class="o">/</span><span class="nv">vocab</span>#<span class="o">&gt;</span> .
+@<span class="nv">prefix</span> <span class="nv">raki</span>: <span class="o">&lt;</span><span class="nv">http</span>:<span class="o">//</span><span class="nv">w3id</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">raki</span><span class="o">/</span><span class="nv">hobbit</span><span class="o">/</span><span class="nv">vocab</span>#<span class="o">&gt;</span> .
+
+
+<span class="nv">raki</span>:<span class="nv">MySystem</span> <span class="nv">a</span>  <span class="nv">hobbit</span>:<span class="nv">SystemInstance</span><span class="c1">;</span>
+    <span class="nv">rdfs</span>:<span class="nv">label</span>  <span class="s2">&quot;</span><span class="s">MySystem</span><span class="s2">&quot;</span>@<span class="nv">en</span><span class="c1">;</span>
+    <span class="nv">rdfs</span>:<span class="nv">comment</span>    <span class="s2">&quot;</span><span class="s">The MySystem system</span><span class="s2">&quot;</span>@<span class="nv">en</span><span class="c1">;</span>
+    <span class="nv">hobbit</span>:<span class="nv">imageName</span> <span class="s2">&quot;</span><span class="s">git.project-hobbit.eu:4567/raki/mySystem</span><span class="s2">&quot;</span><span class="c1">;</span>
+    <span class="nv">hobbit</span>:<span class="nv">implementsAPI</span> <span class="nv">raki</span>:<span class="nv">Private</span><span class="o">-</span><span class="nv">API</span>, <span class="nv">raki</span>:<span class="nv">API</span> .
+</code></pre></div>
 <h3 id="create-the-docker-container">Create the Docker container</h3>
+<p>Now we can create a Dockerfile, build and push that docker container to the Hobbit registry</p>
+<p>The Dockerfile should look like</p>
+<div class="highlight"><pre><span></span><code><span class="k">FROM</span> <span class="s">java</span>
+
+<span class="k">ADD</span> target/raki-system-adapter-1.0.0-SNAPSHOT.jar /raki/systems.jar
+
+<span class="k">WORKDIR</span><span class="s"> /raki</span>
+
+<span class="k">CMD</span> java -cp systems.jar org.hobbit.core.run.ComponentStarter org.dice_group.raki.hobbit.systems.test.TestSystem
+</code></pre></div>
+<p>However, as long as the system is executed the same way as the last line you can do whatever before</p>
+<p>Now let's build the docker container</p>
+<div class="highlight"><pre><span></span><code>docker build -f Dockerfile -t IMAGE_NAME .
+</code></pre></div>
+<p>Be aware that the Image name is predetermined by your repository.</p>
+<p>if your repository is located at <code>https://git.project-hobbit.eu/raki/mysystem</code> 
+your Image name will be <code>git.project-hobbit.eu:4567/raki/mysystem</code></p>
+<p>If you're using a local deployment of Hobbit that's it (make sure that you set DOCKER_AUTOPULL to 0 in the Hobbit platform)</p>
+<p>If you want to use the system on the https://master.project-hobbit.eu push the repository</p>
+<div class="highlight"><pre><span></span><code>docker push IMAGE_NAME
+</code></pre></div>
+<p>If that doesn't work make sure that you used <code>docker login</code> to login to the Docker Hobbit registry</p>
                 
               
               
