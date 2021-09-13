@@ -1,7 +1,7 @@
-package org.dice_group.raki.core.commons;
+package org.dice_group.raki.hobbit.commons;
 
 /**
- * Some CONSTANTS used in Hobbit
+ * Some CONSTANTS used in the RAKI Hobbit workflow
  */
 public class CONSTANTS {
 

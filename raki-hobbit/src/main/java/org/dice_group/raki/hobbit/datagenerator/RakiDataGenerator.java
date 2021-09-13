@@ -7,7 +7,7 @@ import org.dice_group.raki.core.config.Configuration;
 import org.dice_group.raki.core.config.Configurations;
 import org.dice_group.raki.core.ilp.LearningProblem;
 import org.dice_group.raki.core.ilp.LearningProblemFactory;
-import org.dice_group.raki.core.commons.CONSTANTS;
+import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractDataGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.hobbit.core.rabbit.SimpleFileSender;
@@ -19,6 +19,14 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The Data generator reads the Ontology and learning problems for a benchmark configuration.
+ * and sends the Ontology to the System adapter and the Evaluation
+ * It will send a command to both after finishing sending the Ontology, so the system and evaluation module can start receiving correctly.
+ *
+ * After that it will send each learning problem to the Task Generator.
+ *
+ */
 public class RakiDataGenerator extends AbstractDataGenerator {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(RakiDataGenerator.class);
@@ -46,45 +54,55 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         }
         LOGGER.info("Got following benchmark name {}", benchmarkName);
 
-        //load Properties file
         String configFile ="/raki/benchmark.yaml";
         LOGGER.info("Reading datasets config file {}", configFile);
 
+        //load configuration from config file with the name=benchmarkName
         Configuration config = Configurations.load(new File(configFile)).getConfiguration(benchmarkName);
+
+        //make sure that the config is not null
         if(config == null){
             LOGGER.error("Couldn't find Configuration with name {}", benchmarkName);
             System.exit(1);
         }
+
         //check if lps exists
         if(!new File(config.getLearningProblem()).exists()){
             LOGGER.error("Couldn't find Learning Problem file at {}", config.getLearningProblem());
             System.exit(1);
         }
+        //read all learning problems from the file
         learningProblems = LearningProblemFactory.readMany(new File(config.getLearningProblem()));
-        //check if onto exists
+
+        //check if ontology file exists
         if(!new File(config.getDataset()).exists()){
             LOGGER.error("Couldn't find Ontology Dataset file at {}", config.getDataset());
             System.exit(1);
         }
-        ontology= config.getDataset();
+        ontology = config.getDataset();
     }
 
 
 
     @Override
     protected void generateData() throws Exception {
+        //First we send the ontology to the system
         LOGGER.info("Sending ontology to system. "+ Instant.now());
         sendOntologyToSystem();
+        //let the system know we fully send the ontology
         sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND_SYSTEM);
+        // Now we send the ontology to the evaluation module
         LOGGER.info("Sending ontology to eval. "+ Instant.now());
         sendOntologyToEval();
+        //let the eval know we fully send the ontology
         sendToCmdQueue(CONSTANTS.COMMAND_ONTO_FULLY_SEND);
 
         LOGGER.debug("Sending now tasks to task generator. ");
-        //send examples to task generator
+        //send Learning Problems to task generator
         AtomicInteger count= new AtomicInteger(1);
         learningProblems.forEach(learningProblem -> {
             LOGGER.info("Sending {}. task to system. ", count.getAndIncrement());
+            //convert LP to json, We want to add the concepts here if there are any, so the TG can handle them
             byte[] data = RabbitMQUtils.writeString(learningProblem.asJsonString(true));
             try {
                 sendDataToTaskGenerator(data);
@@ -95,14 +113,24 @@ public class RakiDataGenerator extends AbstractDataGenerator {
 
     }
 
+    /**
+     * Sends the Ontology to the evaluation module
+     *
+     * @throws IOException
+     */
     private void sendOntologyToEval() throws IOException {
         SimpleFileSender sender = SimpleFileSender.create(this.outgoingDataQueuefactory, this.evalQueueName);
 
         sendOntologyToQueue(sender, this.evalQueueName);
     }
 
+    /**
+     * Sends the Ontology to the system adapter
+     *
+     * @throws IOException
+     */
     private void sendOntologyToSystem() throws IOException {
-        //just sending one byte so the system triggers and we can send to the correct queue
+        //just sending one byte so the system triggers, and we can send to the correct queue <- no idea why we need that
         SimpleFileSender sender = SimpleFileSender.create(this.outgoingDataQueuefactory, this.systemOntQueueName);
 
         sendDataToSystemAdapter(new byte[]{1});
@@ -111,6 +139,13 @@ public class RakiDataGenerator extends AbstractDataGenerator {
         //send to the actual queue
     }
 
+    /**
+     * this will send the Ontology to the queue over the provided sender
+     *
+     * @param sender
+     * @param queue
+     * @throws IOException
+     */
     private void sendOntologyToQueue(SimpleFileSender sender, String queue) throws IOException {
         // define a queue name, e.g., read it from the environment
 

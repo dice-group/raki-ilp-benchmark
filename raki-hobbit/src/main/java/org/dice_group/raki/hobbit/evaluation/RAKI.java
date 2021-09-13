@@ -3,6 +3,9 @@ package org.dice_group.raki.hobbit.evaluation;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;
 
+/**
+ * Constants which are used in the benchmark.ttl
+ */
 public class RAKI {
     public static final String RAKI2_PREFIX = "http://w3id.org/raki/hobbit/vocab#";
     public static Property macroPrecision=getProperty("macroPrecision");

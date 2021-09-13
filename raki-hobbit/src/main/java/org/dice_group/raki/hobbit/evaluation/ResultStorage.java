@@ -1,5 +1,32 @@
 package org.dice_group.raki.hobbit.evaluation;
 
+/**
+ * A Result Container.
+ *
+ * Contains
+ * * error count
+ * * average concept length
+ * * max concept length
+ * * min concept length
+ * * first percentile of the concept length
+ * * second percentile of the concept length
+ * * third percentile of the concept length
+ * * variance of the concept length
+ * * average result time
+ * * max result time
+ * * min result time
+ * * first percentile of the result time
+ * * second percentile of the result time
+ * * third percentile of the result time
+ * * variance of the result time
+ * * macro Precision
+ * * macro Recall
+ * * macro F1 measure
+ * * micro Precision
+ * * micro Recall
+ * * micro F1 measure
+ *
+ */
 public class ResultStorage {
 
     private final int errorCount;
@@ -56,6 +83,11 @@ public class ResultStorage {
         this.varRT=varRT;
     }
 
+    /**
+     * Creates an empty ResultStorage where each value is set to 0
+     *
+     * @return an empty ResultStorage
+     */
     public static ResultStorage createEmpty() {
         return new ResultStorage(0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,

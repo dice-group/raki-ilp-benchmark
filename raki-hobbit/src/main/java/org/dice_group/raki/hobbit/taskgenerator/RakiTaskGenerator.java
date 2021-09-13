@@ -2,10 +2,9 @@ package org.dice_group.raki.hobbit.taskgenerator;
 
 import org.dice_group.raki.core.ilp.LearningProblem;
 import org.dice_group.raki.core.ilp.LearningProblemFactory;
-import org.dice_group.raki.core.commons.CONSTANTS;
+import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractSequencingTaskGenerator;
 import org.hobbit.core.rabbit.RabbitMQUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

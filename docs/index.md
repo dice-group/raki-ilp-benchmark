@@ -12,7 +12,8 @@ A learning problem is a set of positive examples and negative examples, whereas 
 
 A learning problem may have also a gold standard concept which describes the learning problem.
 
-However a Learning Problem does not have to contain a Concept. 
+
+Be aware: a Learning Problem does not have to contain a Concept. 
 
 Imagine the following Ontology 
 
