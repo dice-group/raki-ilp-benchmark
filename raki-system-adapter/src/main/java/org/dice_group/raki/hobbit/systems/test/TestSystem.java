@@ -1,7 +1,6 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
-import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.semanticweb.HermiT.structural.OWLAxioms;
@@ -14,9 +13,7 @@ import uk.ac.manchester.cs.owl.owlapi.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TestSystem extends AbstractRakiSystemAdapter {

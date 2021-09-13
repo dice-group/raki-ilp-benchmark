@@ -1,6 +1,5 @@
 package org.dice_group.raki.hobbit.systems.test;
 
-import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

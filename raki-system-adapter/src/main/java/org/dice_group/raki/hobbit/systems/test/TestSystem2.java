@@ -1,7 +1,6 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
-import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.semanticweb.owlapi.apibinding.OWLManager;

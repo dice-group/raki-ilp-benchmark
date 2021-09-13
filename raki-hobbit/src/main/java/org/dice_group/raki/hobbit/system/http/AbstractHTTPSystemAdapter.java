@@ -1,8 +1,6 @@
-package org.dice_group.raki.hobbit.systems.http;
+package org.dice_group.raki.hobbit.system.http;
 
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +10,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.lf5.util.StreamUtils;
-import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
+import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.json.JSONObject;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;

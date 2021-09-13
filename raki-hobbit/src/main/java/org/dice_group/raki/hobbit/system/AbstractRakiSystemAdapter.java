@@ -1,6 +1,5 @@
-package org.dice_group.raki.hobbit.systems;
+package org.dice_group.raki.hobbit.system;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.NodeIterator;
 import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.components.AbstractSystemAdapter;

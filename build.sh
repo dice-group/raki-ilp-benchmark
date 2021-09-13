@@ -1,5 +1,4 @@
-cd raki-core && mvn clean install -Dmaven.test.skip=true
-cd raki-hobbit && mvn clean install -Dmaven.test.skip=true
+mvn clean install -Dmaven.test.skip=true
 
 cd raki-hobbit && docker build -f controller.dockerfile -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakibenchmark . && cd ..
 cd raki-hobbit && docker build -f datagenerator.dockerfile -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakidatagenerator . && cd ../
