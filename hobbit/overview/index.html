@@ -208,15 +208,11 @@
   
 
 
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../api/api/" class="md-tabs__link">
-        Api
-      </a>
-    </li>
-  
+  <li class="md-tabs__item">
+    <a href="../../api/" class="md-tabs__link">
+      Api
+    </a>
+  </li>
 
       
         
@@ -310,37 +306,10 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
-      
-      <label class="md-nav__link" for="__nav_2">
-        Api
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="Api" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Api
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../../api/api/" class="md-nav__link">
+      <a href="../../api/" class="md-nav__link">
         Api
       </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -377,7 +346,7 @@
   
     <li class="md-nav__item">
       <a href="../add-benchmark/" class="md-nav__link">
-        Add a Benchmark Dataset
+        Add benchmark
       </a>
     </li>
   
@@ -492,9 +461,29 @@
                 
                 <p>In this section we will explain the overview of Hobbit. </p>
 <h2 id="usage">Usage</h2>
+<p>TODO include pictures</p>
 <h2 id="parameters">Parameters</h2>
+<p>TODO explain parameters</p>
 <h2 id="workflow">Workflow</h2>
-<p><img alt="Hobbit timing flow" src="../../images/raki-hobbit-timing.drawio.png" /></p>
+<p>The following image shows the time flow of the Raki Hobbit Modules
+<img alt="Hobbit timing flow" src="../../images/raki-hobbit-timing.drawio.png" /></p>
+<p>The RakiBenchmark and the RakiSystem will be created by the Hobbit System.</p>
+<p>After that the RakiBenchmark creates the RakiTaskGenerator, the RakiDatagenerator and the RakiEvaluation.</p>
+<p>The init phase of Hobbit ends and the RakiSystem and the RakiEvaluator needs the Ontology they should use.</p>
+<p>The RakiDataGenerator will load the Ontology to be used and sends it to the RakiSystem and the RakiEvaluator.
+To assure that it has fully send the Ontology, the RakiDataGenerator will then send a command to both modules, indicating it has fully send the ontology.</p>
+<p>The RakiSystem and the RakiEvaluator will then load the ontology and each sends a command to 
+the RakiTaskGenerator indicating they have loaded the Ontology and are readyto go.</p>
+<p>In the same time, the RakiDataGenerator will send the RakiTaskGenerator the LearningProblems to the RakiTaskGenerator.
+Each LearningProblem is one task and thus the DataGenerator will send each LearningProblem, and not all at once.
+Be aware that the image simplifies this.</p>
+<p>As soon as the RakiTaskGenerator got the Ontology loaded commands it will send the 
+Learning problem to the system (without a gold standard concept) and the full learning problem to the RakiEvaluator.
+Be aware that the image simplifies this by simply sending all learning problems instead of each one by one.</p>
+<p>The RakiSystem will then send the concept it generated from the learning problem to the evaluation storage (which will then be send to the evaluator).</p>
+<p>After the RakiTaskGeneratir and RakiSystem finished their tasks, the RakiBenchmark controller will send a command
+to the RakiEvaluator to start the evaluation. (This is needed, as the RakiEvaluator sometimes ended prematurely)</p>
+<p>As soon as the RakiEvaluator finished evaluation, it will send the Result model to the RakiBenchmark Controller.</p>
                 
               
               
