@@ -48,6 +48,10 @@ theme:
 repo_url: https://github.com/dice-group/raki-ilp-benchmark
 repo_name: dice-group/raki-ilp-benchmark
 
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
 plugins:
   - macros
   - search

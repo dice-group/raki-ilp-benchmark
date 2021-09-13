@@ -130,7 +130,48 @@ String concept = parser.render(expr);
 
 ### Description
 
+The Benchmark Configuration consists of three elements
+
+* The benchmark name
+* The file path containing the Ontology
+* The file path containing the learning problems
+
+Configurations can be read from a YAML file or created simply by using the `Configuration` constructor
+
+The YAML file has to look like this
+
+```yaml
+datasets:
+  - name: "MyBenchmarkName1"
+    learningProblem: "/path/to/learningProblems1.json"
+    dataset: "/path/to/ontology1.owl"
+  - name: "MyBenchmarkName2"
+    learningProblem: "/path/to/learningProblems2.json"
+    dataset: "/path/to/ontology2.owl"
+```
+
+The Learning problem has to be a json file. 
+An example can be seen above.
+
 ### API
+
+Creating from file
+
+```java
+//load all Configurations
+Configurations confs = Configurations.load(new File("/path/to/config.yml"));
+
+//retrieve the ones with your benchmark name
+Configuration myBenchmark = confs.getConfiguration("MyBenchmarkName1");
+```
+
+Using the Configuration to retrieve the `OWLOntology` and the Set of `LearningProblems`
+
+```java
+OWLOntology ontology = configuration.readOntology();
+
+Set<LearningProblem> problems = configuration.readLearningProblems();
+```
 
 ## Metrics 
 
@@ -207,6 +248,64 @@ int lengthOfExpr = calculator.getConceptLength();
 
 ## Evaluator
 
+### Description
+
+The `Evaluator` evaluates a set of Learning problems against a set of concepts.
+
+Additionally, the `Evaluator` can evaluate a single Learning Problem against a single concept.
+The single evaluation will return a `ResultContainer` containing the F1 Measures and Concept Length.
+
+If either the `Evaluator` was used, by using a set of Learning Problem and Concept pairs or
+the single evaluation was executed multiple times, the `Evaluator` can return the Macro and Micro F1 measures
+as well as all concept lengths.
+
+It needs a main Ontology, the owl base Ontology (can be empty though) and if the gold standard concept should be used
+instead of the positive and negative uris inside the learning problems.
+
+### API
+
+Create the evaluator
+
+```java
+boolean useConcepts = false;
+Evaluator evaluator = new Evaluator(mainOntology, owlBaseOntology, useConcepts);
+```
+
+Execute a single execution
+
+```java
+//create your learning problem
+LearningProblem problem = ...;
+
+//create the answer concept
+String concept = "ontology:Human"
+
+ResultContainer container = evaluator.evaluate(learningProblem, concept);
+
+int conceptLength = container.getConceptLength();
+F1Result f1result = container.getF1Result();
+```
+
+Execute multiple LearningProblem, Concept pairs.
+Each Pair consists of a Learning Problem and the corresponding concept.
+
+```java
+//Create your problem Pairs
+Set<Pair<LearningProblem, String>> problemPairs = ...;
+
+
+evaluator.evaluate(problemPairs);
+
+//Now we can retrieve the macro and micro F1 measures, as well as all Concept Lengths as following
+F1Result macroF1 = evaluator.getMacroF1Measure();
+F1Result microF1 = evaluator.getMicroF1Measure();
+List<Integer> conceptLengths = evaluator.getConceptLengths();
+```
+
+Further on all available Metrics can be printed as a table to the standard output using:
+```java
+evaluator.printTable();
+```
 
 ## Table Printer
 
