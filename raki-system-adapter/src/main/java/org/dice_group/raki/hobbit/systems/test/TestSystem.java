@@ -1,9 +1,9 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
+import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.semanticweb.HermiT.structural.OWLAxioms;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;

@@ -1,5 +1,6 @@
 package org.dice_group.raki.hobbit.system.http;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -22,6 +23,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * The raki ilp adapter for HTTP endpoint systems.
+ *
+ * Uses GET /status == {status : ready} to check if the system is ready
+ *
+ * Uses POST /concept_learning to retrieve the concept from the HTTP endpoint.
+ */
 public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapter {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(AbstractHTTPSystemAdapter.class);
@@ -62,6 +70,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
             InputStream is = response.getEntity().getContent();
             if (response.getStatusLine().getStatusCode() != 200) {
                 LOGGER.error("Status is not 200, but {}", response.getStatusLine().getStatusCode());
+                IOUtils.closeQuietly(is);
                 httpclient.close();
                 return "";
             }
@@ -69,8 +78,12 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
                 byte[] data = StreamUtils.getBytes(bis);
                 concept = RabbitMQUtils.readString(data);
 
+            }finally {
+                IOUtils.closeQuietly(is);
             }
             try {
+                //print concept FIXME: make this better and more beautiful
+                System.out.println(concept);
                 concept = convertToManchester(concept);
             } catch (OWLOntologyCreationException e) {
                 e.printStackTrace();
@@ -89,6 +102,15 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
     }
 
 
+    /**
+     * Should convert the string concept  to Manchester Syntax.
+     * It assumes, that the concept is already in Manchester Syntax
+     *
+     * @param concept
+     * @return
+     * @throws OWLOntologyCreationException
+     * @throws IOException
+     */
     protected String convertToManchester(String concept) throws OWLOntologyCreationException, IOException {
         return concept;
     }
@@ -102,7 +124,13 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
          LOGGER.info("System is now ready to be queried");
     }
 
-    protected void waitForSystemReady() throws IOException {
+    /**
+     *
+     * Waits for the system to be ready using the status request
+     *
+     * http://localhost:PORT/status should return 200 and a json {status: ready} as soon as the http endpoint is ready
+     */
+    protected void waitForSystemReady() {
         boolean ready=false;
         do {
             try {
@@ -135,7 +163,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
             }catch(Exception e){
                 try {
                     this.wait(100);
-                } catch (Exception e1) {
+                } catch (Exception ignored) {
                 }
             }
         }while(!ready);
@@ -147,5 +175,11 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
         super.init();
     }
 
-    public abstract void startSystem(String ontologyFile) throws OWLOntologyCreationException, Exception;
+    /**
+     * Starts the systems HTTP endpoint using the provided ontology file
+     *
+     * @param ontologyFile
+     * @throws Exception
+     */
+    public abstract void startSystem(String ontologyFile) throws Exception;
 }

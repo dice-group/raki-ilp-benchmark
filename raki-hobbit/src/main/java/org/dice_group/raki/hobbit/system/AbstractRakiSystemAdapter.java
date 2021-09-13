@@ -16,15 +16,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * THe abstract raki system adapter
+ */
 public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     protected static Logger LOGGER = LoggerFactory.getLogger(AbstractRakiSystemAdapter.class);
 
 
     protected int delta=500;
-    protected Long timeOutMs=60000l;
-    public abstract String createConcept(String posNegExample) throws IOException, Exception;
-    public abstract void loadOntology(File ontology) throws IOException, Exception;
+    protected Long timeOutMs=60000L;
+    public abstract String createConcept(String posNegExample) throws Exception;
+    public abstract void loadOntology(File ontology) throws Exception;
     private SimpleFileReceiver receiver = null;
 
     @Override
