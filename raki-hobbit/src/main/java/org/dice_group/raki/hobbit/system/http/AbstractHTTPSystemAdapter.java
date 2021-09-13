@@ -10,7 +10,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.json.JSONObject;
@@ -75,7 +74,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
                 return "";
             }
             try (BufferedInputStream bis = new BufferedInputStream(is)) {
-                byte[] data = StreamUtils.getBytes(bis);
+                byte[] data = bis.readAllBytes();
                 concept = RabbitMQUtils.readString(data);
 
             }finally {
@@ -142,7 +141,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
                 if (ready) {
                     InputStream is = response.getEntity().getContent();
                     try (BufferedInputStream bis = new BufferedInputStream(is)) {
-                        byte[] data = StreamUtils.getBytes(bis);
+                        byte[] data = bis.readAllBytes();
                         String jsonStr = RabbitMQUtils.readString(data);
                         System.out.println(jsonStr);
                         JSONObject jsonStatus = new JSONObject(jsonStr);

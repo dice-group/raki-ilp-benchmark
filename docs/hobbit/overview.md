@@ -2,12 +2,28 @@ In this section we will explain the overview of Hobbit.
 
 ## Usage
 
-TODO include pictures
+1. Go to https://git.project-hobbit.eu 
+2. Login
+3. Go to Benchmarks
+4. Choose `Raki ILP Benchmark` or `Raki ILP Benchmark - Priv`
+5. Choose the system you want to benchmark
+6. set the parameters you want to use (see below)
+7. choose the benchmark you want to execute (benchmark name)
+8. Execute
 
 
 ## Parameters
 
-TODO explain parameters
+The Hobbit frontend allows a few parameters to be used.
+
+
+| Name | Description | Default |
+| -----| --------------| -------|
+| Benchmark name | The Benchmark Name to use | |
+| Timeout in MS | The timeout to use in MS for each learning problem | 60000 (1min) |
+| Ratio of positives to system should receive | Will randomly choose the specified percentage (0.0, 1.0) of positive uris.  | 1.0 |
+| Minimum Examples if ratio is set < 1 | the minimum amount of positive examples that should remain of splitRatio is smaller than 1 | 5 |
+| Seed | Seed to use for any random activity | 123 |
 
 ## Workflow 
 
