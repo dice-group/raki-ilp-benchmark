@@ -128,13 +128,82 @@ String concept = parser.render(expr);
 
 ## Benchmark Configuration
 
+### Description
+
+### API
 
 ## Metrics 
 
+Currently, the core can calculate two metrics
+
+* F1-Measure, Precision and Recall
+* The Concept Length of a Concept
+
 ### F1-Measure
+
+The F1 measure will be calculated using the `F1MeasureCalculator`.
+
+The calculator will calculate the f1-score, precision and recall 
+from the `true positives`, `false positives` and `false negatives` provided
+and stores the results internally as well to calculate the macro and micro f1 measure later on.
+
+
+#### Create an F1Result
+
+```java
+F1MeasureCalculator calculator = new F1MeasureCalculator();
+F1Result result = calculator.addF1Measure(truePositives, falsePositives, falseNegatives);
+```
+
+The results can then be queried from the `F1Result` object 
+
+```java
+double precision = result.getPrecision();
+double recall = result.getRecall();
+double f1score = result.getF1measure();
+```
+
+#### Create macro and micro F1 scores
+
+```java
+F1MeasureCalculator calculator = new F1MeasureCalculator();
+
+// Calculate and add the F1 scores for some truePositives, falsePositives and falseNegatives
+calculator.addF1Measure(truePositives, falsePositives, falseNegatives);
+calculator.addF1Measure(truePositives, falsePositives, falseNegatives);
+
+//the scores will be stored internally and be used to calculate the Micro and Macro F1Measures
+F1Result macroResults = calculator.calculateMacroF1Measure();
+F1Result microResults = calculator.calculateMicroF1Measure();
+```
+
+To clear the stored values use the `clear` method
+```java
+calculator.clear();
+```
 
 ### Concept Length 
 
+The concept length of an `OWLClassExpression` can be calculated by using the
+`ConceptLengthCalculator`.
+
+Currently, only the following syntax structures are supported:
+
+* AND
+* OR
+* SOME
+* ALL 
+* NOT
+
+```java
+ConceptLengthCalculator calculator = new ConceptLengthCalculator();
+
+//Create your concept/class expression
+OWLClassExpression expr = ... ;
+
+calculator.render(expr);
+int lengthOfExpr = calculator.getConceptLength();
+```
 
 ## Evaluator
 
