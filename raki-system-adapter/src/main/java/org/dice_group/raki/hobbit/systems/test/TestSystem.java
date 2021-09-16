@@ -13,6 +13,7 @@ import uk.ac.manchester.cs.owl.owlapi.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,7 +58,7 @@ public class TestSystem extends AbstractRakiSystemAdapter {
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
         renderer.setShortFormProvider(provider);
-        Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+        ArrayList<OWLClassExpression> classes = new ArrayList<OWLClassExpression>();
         if(posAxioms.size()>1){
             posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
         }

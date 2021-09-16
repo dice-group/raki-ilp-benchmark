@@ -1,6 +1,7 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
+import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +17,9 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TestSystem2 extends AbstractRakiSystemAdapter {
@@ -50,8 +53,8 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
         JSONObject posNegJson = new JSONObject(posNegExample);
         Set<OWLIndividual> posExamples = getExamples(posNegJson.getJSONArray("positives"));
         Set<OWLIndividual> negExamples = getExamples(posNegJson.getJSONArray("negatives"));
-        Set<OWLClass> posAxioms = new HashSet<OWLClass>();
-        Set<OWLClass> negAxioms = new HashSet<OWLClass>();
+        List<OWLClassExpression> posAxioms = new ArrayList<>();
+        List<OWLClassExpression> negAxioms = new ArrayList<>();
         for(OWLIndividual pos : posExamples) {
             ontology.getClassAssertionAxioms(pos).forEach(classAssertion ->{
                 posAxioms.addAll(classAssertion.getClassesInSignature());
@@ -73,7 +76,7 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
 
         posAxioms.add(new OWLDataFactoryImpl().getOWLThing());
 
-        Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+        List<OWLClassExpression> classes = new ArrayList<>();
         if(posAxioms.size()>1){
             posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
         }
@@ -83,7 +86,7 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
 
         if(!negAxioms.isEmpty()){
             OWLClassExpression nes = new OWLObjectUnionOfImpl(negAxioms);
-            pos = new OWLObjectIntersectionOfImpl(Sets.newHashSet(pos, nes.getComplementNNF()));
+            pos = new OWLObjectIntersectionOfImpl(Lists.newArrayList(pos, nes.getComplementNNF()));
         }
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
