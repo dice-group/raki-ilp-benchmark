@@ -1,0 +1,10 @@
+datasets:
+  - wrong1: "benchmark1"
+    wrong2: "/path/to/lps1.json"
+    wrong3: "/path/to/dataset1.owl"
+  - wrong1: "benchmark2"
+    wrong2: "/path/to/lps2.json"
+    wrong3: "/path/to/dataset2.owl"
+  - name: "benchmark3"
+    learningProblem: "/path/to/lps3.json"
+    dataset: "/path/to/dataset3.owl"

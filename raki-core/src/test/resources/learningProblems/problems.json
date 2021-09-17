@@ -1,0 +1,15 @@
+[
+  {
+    "positives": ["http://example.com/1", "http://example.com/2"],
+    "negatives": ["http://example.com/3", "http://example.com/4"]
+  },
+  {
+    "positives": ["http://example.com/5", "http://example.com/6"],
+    "negatives": ["http://example.com/7"]
+  },
+  {
+    "concept" : "ABCDEFG",
+    "positives": ["http://example.com/8"],
+    "negatives": ["http://example.com/9", "http://example.com/10"]
+  }
+]

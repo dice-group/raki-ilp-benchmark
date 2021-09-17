@@ -4,22 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.dice_group.raki.hobbit</groupId>
-    <artifactId>RakiHobbitBenchmark</artifactId>
+    <groupId>org.dice_group.raki</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>raki-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>raki-commons</module>
-        <module>raki-benchmark</module>
-        <module>raki-evaluation</module>
-        <module>raki-datagenerator</module>
-        <module>raki-taskgenerator</module>
-        <module>raki-system-adapter</module>
-    </modules>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
+    <modules>
+        <module>raki-core</module>
+        <module>raki-hobbit</module>
+    </modules>
 </project>
