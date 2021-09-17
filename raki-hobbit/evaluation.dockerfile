@@ -1,4 +1,4 @@
-FROM java
+FROM openjdk:11
 
 ADD target/raki-hobbit-1.0.0-SNAPSHOT.jar /raki/evalModule.jar
 ADD owl.ttl /raki/owl.ttl

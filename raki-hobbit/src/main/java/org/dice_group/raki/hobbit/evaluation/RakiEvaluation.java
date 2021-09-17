@@ -161,13 +161,15 @@ public class RakiEvaluation extends AbstractEvaluationModule {
                 errorCount++;
             }
             else {
-                //Creata the Learning Problem from the expected data (this is a json learning problem)
+                //Create the Learning Problem from the expected data (this is a json learning problem)
                 LearningProblem lp = LearningProblemFactory.parse(RabbitMQUtils.readString(expectedData));
                 //read the concept (in manchester syntax)
                 String concept = RabbitMQUtils.readString(receivedData);
 
                 //Be aware, we do not need to save the f1 measures for macro and micro, the evaluator will take care of that.
                 ResultContainer container = evaluator.evaluate(lp,concept);
+                container.setResultTimeMs(responseReceivedTimestamp-taskSentTimestamp);
+
                 //ad concept lengths
                 this.conceptLengths.add(Integer.valueOf(container.getConceptLength()).doubleValue());
             }
@@ -225,7 +227,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     private Double[] getStats(List<? extends Number> results){
         double[] values = new double[results.size()];
         for(int i=0;i<values.length;i++){
-            values[i]= resultTimes.get(i);
+            values[i]= results.get(i).doubleValue();
         }
         double avg = StatUtils.mean(values);
         double max = StatUtils.max(values);

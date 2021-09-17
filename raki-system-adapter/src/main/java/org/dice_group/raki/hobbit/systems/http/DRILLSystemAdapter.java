@@ -20,6 +20,7 @@ import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -97,7 +98,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
     public void startSystem(String ontologyFile) throws Exception {
         if(!new File(ontologyFile).exists()){
             LOGGER.error("Couldn't find ontology file {}", ontologyFile);
-            System.exit(1);
+            throw new FileNotFoundException(ontologyFile);
         }
 
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
@@ -112,13 +113,13 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
         String preTrainedData = files[1];
 
         //Check if both embeddings or training data exists, if not exit, otherwise the system will hang and not terminate
-        if(!new File(embeddings).exists()){
-            LOGGER.error("Couldn't find embeddings file {}", embeddings);
-            System.exit(1);
+        if(!new File(ONTOPY_PATH+"embeddings/"+embeddings).exists()){
+            LOGGER.error("Couldn't find embeddings file {}embeddings/{}", ONTOPY_PATH, embeddings);
+            throw new FileNotFoundException(ONTOPY_PATH+"embeddings/"+embeddings);
         }
-        if(!new File(preTrainedData).exists()){
-            LOGGER.error("Couldn't find pre trained data file {}", preTrainedData);
-            System.exit(1);
+        if(!new File(ONTOPY_PATH+"pre_trained_agents/"+preTrainedData).exists()){
+            LOGGER.error("Couldn't find pre trained data file {}pre_trained_agents/{}", ONTOPY_PATH, preTrainedData);
+            throw new FileNotFoundException(ONTOPY_PATH+"pre_trained_agents/"+preTrainedData);
         }
 
         LOGGER.info("Found embeddings {} and pre trained data {}", embeddings, preTrainedData);

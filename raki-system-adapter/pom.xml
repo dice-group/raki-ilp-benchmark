@@ -2,11 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>raki-parent</artifactId>
         <groupId>org.dice_group.raki</groupId>
         <version>1.0.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>raki-system-adapter</artifactId>
@@ -99,6 +96,36 @@
                 <groupId>org.apache.jena</groupId>
             </exclusion>
         </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>org.semanticweb.hermit</artifactId>
+        <version>1.4.5.456</version>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>owlapi-distribution</artifactId>
+        <version>4.5.17</version>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>owlapi-api</artifactId>
+        <version>4.5.17</version>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>owlapi-parsers</artifactId>
+        <version>4.5.17</version>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>owlapi-apibinding</artifactId>
+        <version>4.5.17</version>
+    </dependency>
+    <dependency>
+        <groupId>net.sourceforge.owlapi</groupId>
+        <artifactId>owlapi-impl</artifactId>
+        <version>4.5.17</version>
     </dependency>
 
 </dependencies>

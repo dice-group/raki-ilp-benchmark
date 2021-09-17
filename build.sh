@@ -1,4 +1,7 @@
-#mvn clean install -Dmaven.test.skip=true
+mvn clean install -Dmaven.test.skip=true
+cd raki-system-adapter && mvn clean package && cd ..
+mvn clean package -P shaded
+
 
 cd raki-hobbit && sudo docker build -f controller.dockerfile -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakibenchmark . && cd ..
 cd raki-hobbit && sudo docker build -f datagenerator.dockerfile -t git.project-hobbit.eu:4567/raki/raki-private/raki-benchmark/rakidatagenerator . && cd ../

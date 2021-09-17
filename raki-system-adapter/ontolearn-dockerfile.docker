@@ -3,7 +3,7 @@ FROM continuumio/miniconda3
 RUN mkdir /usr/share/man/man1/
 RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
 
-RUN git clone https://github.com/dice-group/Ontolearn.git -b develop
+RUN git clone -b develop https://github.com/dice-group/Ontolearn.git
 
 
 # enable shell for conda

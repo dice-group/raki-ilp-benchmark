@@ -98,10 +98,12 @@ public class Evaluator {
         //calculate f1 Result
         F1Result f1Result = f1MeasureCalculator.addF1Measure(truePositives, falsePositives, falseNegatives);
 
-        return new ResultContainer(
+        ResultContainer container = new ResultContainer(
                 answerConcept,
                 f1Result,
                 conceptLength);
+        this.resultContainers.add(container);
+        return container;
     }
 
     /**
@@ -213,9 +215,8 @@ public class Evaluator {
 
         //for each Pair evaluate
         for (Pair<LearningProblem, String> answer : answers) {
-            ResultContainer container = evaluate(answer.getFirst(), answer.getSecond());
+            evaluate(answer.getFirst(), answer.getSecond());
             //store conceptLength
-            this.resultContainers.add(container);
         }
     }
 
@@ -228,22 +229,23 @@ public class Evaluator {
             //add CONCEPT, F1, PRECISION, RECALL, CONCEPT_LENGTH
             table.add(
                     Lists.newArrayList(
-                            resultContainer.getConcept(),
+                            resultContainer.getConcept().replace("\n", " "),
                             resultContainer.getF1Result().getF1measure(),
                             resultContainer.getF1Result().getPrecision(),
                             resultContainer.getF1Result().getRecall(),
-                            resultContainer.getConceptLength()
+                            resultContainer.getConceptLength(),
+                            resultContainer.getResultTimeMs()
                     )
             );
         }
         // Add macro and micro F1 to table
         F1Result macroF1 = f1MeasureCalculator.calculateMacroF1Measure();
         F1Result microF1 = f1MeasureCalculator.calculateMicroF1Measure();
-        table.add(Lists.newArrayList("MACRO", macroF1.getF1measure(), macroF1.getPrecision(), macroF1.getRecall(), 0));
-        table.add(Lists.newArrayList("MICRO", microF1.getF1measure(), microF1.getPrecision(), microF1.getRecall(), 0));
+        table.add(Lists.newArrayList("MACRO", macroF1.getF1measure(), macroF1.getPrecision(), macroF1.getRecall(), 0, 0));
+        table.add(Lists.newArrayList("MICRO", microF1.getF1measure(), microF1.getPrecision(), microF1.getRecall(), 0, 0));
 
         // print the whole table.
-        TablePrinter.print(table, Lists.newArrayList("concept", "f1measure", "precision", "recall", "concept-length"), "%50s\t%5f\t%3d");
+        TablePrinter.print(table, Lists.newArrayList("concept", "f1measure", "precision", "recall", "concept-length", "result-times-ms"), "%50s\t%5f\t%5f\t%5f\t%5d\t%5d");
 
     }
 

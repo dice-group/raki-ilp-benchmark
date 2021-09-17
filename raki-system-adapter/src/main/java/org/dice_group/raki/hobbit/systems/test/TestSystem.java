@@ -58,7 +58,7 @@ public class TestSystem extends AbstractRakiSystemAdapter {
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
         renderer.setShortFormProvider(provider);
-        ArrayList<OWLClassExpression> classes = new ArrayList<OWLClassExpression>();
+        Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
         if(posAxioms.size()>1){
             posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
         }

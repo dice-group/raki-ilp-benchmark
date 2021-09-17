@@ -1,7 +1,6 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
-import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,8 +52,8 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
         JSONObject posNegJson = new JSONObject(posNegExample);
         Set<OWLIndividual> posExamples = getExamples(posNegJson.getJSONArray("positives"));
         Set<OWLIndividual> negExamples = getExamples(posNegJson.getJSONArray("negatives"));
-        List<OWLClassExpression> posAxioms = new ArrayList<>();
-        List<OWLClassExpression> negAxioms = new ArrayList<>();
+        Set<OWLClassExpression> posAxioms = new HashSet<>();
+        Set<OWLClassExpression> negAxioms = new HashSet<>();
         for(OWLIndividual pos : posExamples) {
             ontology.getClassAssertionAxioms(pos).forEach(classAssertion ->{
                 posAxioms.addAll(classAssertion.getClassesInSignature());
@@ -76,7 +75,7 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
 
         posAxioms.add(new OWLDataFactoryImpl().getOWLThing());
 
-        List<OWLClassExpression> classes = new ArrayList<>();
+        Set<OWLClassExpression> classes = new HashSet<>();
         if(posAxioms.size()>1){
             posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
         }
@@ -86,7 +85,7 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
 
         if(!negAxioms.isEmpty()){
             OWLClassExpression nes = new OWLObjectUnionOfImpl(negAxioms);
-            pos = new OWLObjectIntersectionOfImpl(Lists.newArrayList(pos, nes.getComplementNNF()));
+            pos = new OWLObjectIntersectionOfImpl(Sets.newHashSet(pos, nes.getComplementNNF()));
         }
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();

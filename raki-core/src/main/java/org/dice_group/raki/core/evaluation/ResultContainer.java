@@ -12,6 +12,7 @@ public class ResultContainer {
     private final F1Result f1Result;
     private final int conceptLength;
     private final String concept;
+    private long resultTimeMs = 0;
 
     public ResultContainer(String concept, F1Result f1Result, int conceptLength){
         this.f1Result = f1Result;
@@ -29,6 +30,14 @@ public class ResultContainer {
 
     public String getConcept() {
         return concept;
+    }
+
+    public void setResultTimeMs(long resultTimeMs){
+        this.resultTimeMs = resultTimeMs;
+    }
+
+    public long getResultTimeMs(){
+        return resultTimeMs;
     }
 
     @Override

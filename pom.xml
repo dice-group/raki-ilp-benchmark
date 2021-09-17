@@ -17,6 +17,5 @@
     <modules>
         <module>raki-core</module>
         <module>raki-hobbit</module>
-        <module>raki-system-adapter</module>
     </modules>
 </project>
