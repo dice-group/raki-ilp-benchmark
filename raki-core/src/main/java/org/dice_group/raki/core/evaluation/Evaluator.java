@@ -82,6 +82,21 @@ public class Evaluator {
 
         //retrieve OWLNamedIndividuals for answerConcept
         Collection<String> answers = retrieveIndividuals(expr);
+        return evaluate(problem, answers, conceptLength, answerConcept);
+    }
+
+    /**
+     * Helper function. Shouldn't be used directly.
+     *
+     * use [evaluate(LearningProblem, String)]
+     *
+     * @param problem
+     * @param answers
+     * @param conceptLength
+     * @param answerConcept
+     * @return
+     */
+    public ResultContainer evaluate(LearningProblem problem, Collection<String> answers, int conceptLength, String answerConcept) {
         //retrieve positive uris from either problem or if useConcept is set to all positives
         Collection<String> positiveUris = retrievePositiveUris(problem);
 
