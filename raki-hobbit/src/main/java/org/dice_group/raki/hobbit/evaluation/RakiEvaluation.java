@@ -1,6 +1,7 @@
 package org.dice_group.raki.hobbit.evaluation;
 
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.jena.ext.com.google.common.collect.Sets;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
@@ -155,14 +156,17 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         noOfConcepts++;
         // Add the time it took
         this.resultTimes.add(responseReceivedTimestamp-taskSentTimestamp);
+        LearningProblem lp = LearningProblemFactory.parse(RabbitMQUtils.readString(expectedData));
+
         try {
             if(receivedData.length==0){
                 LOGGER.error("Concept Length is 0. Defined as error.");
                 errorCount++;
+                ResultContainer container = evaluator.evaluate(lp, Sets.newHashSet(), 0, "ERROR");
+                container.setResultTimeMs(responseReceivedTimestamp-taskSentTimestamp);
             }
             else {
                 //Create the Learning Problem from the expected data (this is a json learning problem)
-                LearningProblem lp = LearningProblemFactory.parse(RabbitMQUtils.readString(expectedData));
                 //read the concept (in manchester syntax)
                 String concept = RabbitMQUtils.readString(receivedData);
 
