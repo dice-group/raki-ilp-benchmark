@@ -1,7 +1,7 @@
 package org.dice_group.raki.hobbit.systems.test;
 
 import com.google.common.collect.Sets;
-import org.dice_group.raki.hobbit.systems.AbstractRakiSystemAdapter;
+import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -16,7 +16,9 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectUnionOfImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TestSystem2 extends AbstractRakiSystemAdapter {
@@ -50,8 +52,8 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
         JSONObject posNegJson = new JSONObject(posNegExample);
         Set<OWLIndividual> posExamples = getExamples(posNegJson.getJSONArray("positives"));
         Set<OWLIndividual> negExamples = getExamples(posNegJson.getJSONArray("negatives"));
-        Set<OWLClass> posAxioms = new HashSet<OWLClass>();
-        Set<OWLClass> negAxioms = new HashSet<OWLClass>();
+        Set<OWLClassExpression> posAxioms = new HashSet<>();
+        Set<OWLClassExpression> negAxioms = new HashSet<>();
         for(OWLIndividual pos : posExamples) {
             ontology.getClassAssertionAxioms(pos).forEach(classAssertion ->{
                 posAxioms.addAll(classAssertion.getClassesInSignature());
@@ -73,7 +75,7 @@ public class TestSystem2 extends AbstractRakiSystemAdapter {
 
         posAxioms.add(new OWLDataFactoryImpl().getOWLThing());
 
-        Set<OWLClassExpression> classes = new HashSet<OWLClassExpression>();
+        Set<OWLClassExpression> classes = new HashSet<>();
         if(posAxioms.size()>1){
             posAxioms.remove(new OWLDataFactoryImpl().getOWLThing());
         }

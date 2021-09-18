@@ -1,0 +1,57 @@
+extra:
+  version: $VERSION
+  release_version: $RELEASE_VERSION
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/dice-group/raki-ilp-benchmark
+
+site_name: Raki ILP Benchmark
+
+
+edit_uri: ""
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - toc.integrate
+
+  include_search_page: false
+  search_index_only: true
+
+  language: en
+  font:
+    text: Roboto
+    code: Roboto Mono
+  favicon: assets/favicon.png
+  icon:
+    logo: logo
+    repo: fontawesome/brands/git-alt
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep orange
+      accent: deep purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: deep orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+
+
+repo_url: https://github.com/dice-group/raki-ilp-benchmark
+repo_name: dice-group/raki-ilp-benchmark
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+plugins:
+  - macros
+  - search

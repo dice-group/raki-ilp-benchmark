@@ -1,13 +1,15 @@
 package org.dice_group.raki.hobbit.systems;
 
-import com.clarkparsia.owlapi.explanation.io.manchester.ManchesterSyntaxObjectRenderer;
+import com.github.jsonldjava.shaded.com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.apache.commons.io.FileUtils;
+import org.dice_group.raki.core.utils.TablePrinter;
+import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.dllearner.algorithms.celoe.CELOE;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentInitException;
+import org.dllearner.core.EvaluatedDescription;
+import org.dllearner.core.Score;
 import org.dllearner.kb.OWLAPIOntology;
-import org.dllearner.learningproblems.ClassLearningProblem;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.learningproblems.PosNegLPStandard;
 import org.dllearner.reasoning.ClosedWorldReasoner;
@@ -16,82 +18,65 @@ import org.dllearner.reasoning.ReasonerImplementation;
 import org.dllearner.refinementoperators.RhoDRDown;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.semanticweb.HermiT.Configuration;
-import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.dlsyntax.renderer.DLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.io.FileDocumentSource;
-import org.semanticweb.owlapi.manchestersyntax.renderer.*;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.BidirectionalShortFormProvider;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
-import org.semanticweb.owlapi.util.OWLOntologyMerger;
 import org.semanticweb.owlapi.util.ShortFormProvider;
-import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLNamedIndividualImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
-    private CELOE celoeAlg;
+/**
+ * This is the raki ilp system adapter for the DLLearner
+ */
+public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter {
+
+
     private ClosedWorldReasoner rc;
     private RhoDRDown op;
-    private OWLOntology ontology;
     private ShortFormProvider provider;
-    private Semaphore serialMutex = new Semaphore(0);
+    private ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
 
+    private List<List<List<Object>>> concepts = new ArrayList<>();
 
-    //TODO add some variables DLLearner may use in init
-
-
-    public static void main(String[] args) throws Exception {
-        DLLearnerSystemAdapter adapter = new DLLearnerSystemAdapter();
-        adapter.timeOutMs=1000l;
-        adapter.loadOntology(new File("raki-datagenerator/data/carcinogenesis/ontology.owl"));
-
-        JSONObject posNegJson = new JSONObject("{ \"benchmark\":"+FileUtils.readFileToString(new File("raki-datagenerator/data/carcinogenesis/lp.json"))+"}");
-        posNegJson.getJSONArray("benchmark").forEach(lp ->{
-            try {
-                adapter.receiveGeneratedTask("1", lp.toString().getBytes(StandardCharsets.UTF_8));
-                //System.out.println(adapter.createConcept(lp.toString()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
+    private final Semaphore serialMutex = new Semaphore(0);
 
     @Override
     public void close() throws IOException {
-        LOGGER.info("Closing now");
+        //print stuff here
+        for (int i =0 ; i<concepts.size(); i++) {
+            System.out.println("Learning Problem "+i);
+            TablePrinter.print(concepts.get(i), Lists.newArrayList("CONCEPT", "LENGTH", "ACCURACY"),
+                    "%80s\t%5d\t%5f");
+            System.out.println();
+        }
         super.close();
     }
 
     @Override
     public String createConcept(String posNegExample) throws Exception {
+        // read the LP from the string
         JSONObject posNegJson = new JSONObject(posNegExample);
+        //get positive and negative examples
         Set<OWLIndividual> posExamples = getExamples(posNegJson.getJSONArray("positives"));
         Set<OWLIndividual> negExamples = getExamples(posNegJson.getJSONArray("negatives"));
+
+        //get the mutex, we will release it later on in the AbstractSystemAdapter
         serialMutex.acquire();
         PosNegLP lp = new PosNegLPStandard(rc);
         lp.setNegativeExamples(negExamples);
         lp.setPositiveExamples(posExamples);
         lp.init();
-        AtomicReference<String> atomicConcept = new AtomicReference<>("");
-        atomicConcept.set(celeo(lp));
-
-        //String ret =  celeo(lp);
-        serialMutex.release();
-        return atomicConcept.get();
+        return celeo(lp);
     }
 
     @Override
@@ -99,10 +84,16 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
         serialMutex.release();
     }
 
+    /**
+     * This creates the CELEO Algorithm from DLLearner and returns the Concept in Manchester Syntax.
+     * @param lp The learning problem to create the concept for
+     * @return The concept rendered in Manchester Syntax
+     * @throws ComponentInitException
+     */
     private String celeo(PosNegLP lp) throws ComponentInitException {
 
-
-        this.celoeAlg = new CELOE(lp, rc);
+        //Simply copied that from the example DLLearner
+        CELOE celoeAlg = new CELOE(lp, rc);
         celoeAlg.setMaxExecutionTimeInSeconds(Math.max(1, timeOutMs/1000));
         celoeAlg.setOperator(op);
         celoeAlg.setWriteSearchTree(true);
@@ -113,13 +104,28 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
 
         celoeAlg.start();
 
-        OWLClassExpression best = celoeAlg.getCurrentlyBestDescription();
+        //save all info to print at the end
+        List<List<Object>> tmp  =new ArrayList<>();
+        celoeAlg.getCurrentlyBestEvaluatedDescriptions().forEach( it ->
+                tmp.add(Lists.newArrayList(renderer.render(it.getDescription()),
+                        it.getDescriptionLength(),
+                        it.getAccuracy()))
+        );
+        concepts.add(tmp);
 
-        ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
-        renderer.setShortFormProvider(provider);
+                // We want the best OWLClassExpression
+        OWLClassExpression best = celoeAlg.getCurrentlyBestDescription();
+        LOGGER.info("Best expression: {}", best);
+
         return renderer.render(best);
     }
 
+    /**
+     * Get the set of OWLIndividuals in the examples
+     *
+     * @param examples
+     * @return
+     */
     private Set<OWLIndividual> getExamples(JSONArray examples) {
         Set<OWLIndividual> ret = new HashSet<OWLIndividual>();
         examples.forEach(uri -> {
@@ -130,9 +136,12 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
 
     @Override
     public void loadOntology(File ontologyFile) throws Exception {
+
+        // initializes the DLLearner stuff
+
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLOntologyLoaderConfiguration loaderConfig = new OWLOntologyLoaderConfiguration();
-        ontology = manager.loadOntologyFromOntologyDocument(new FileDocumentSource(ontologyFile), loaderConfig);
+        OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new FileDocumentSource(ontologyFile), loaderConfig);
 
 
         //ontology = new OWLOntologyMerger(manager).createMergedOntology(manager, IRI.create("http://raki.merged.ontology/"));
@@ -142,6 +151,9 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter{
 
         LOGGER.info("Initialize reasoner");
         provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(ontology), new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology));
+        renderer.setShortFormProvider(provider);
+
+
         OWLAPIReasoner baseReasoner = new OWLAPIReasoner(ks);
         baseReasoner.setReasonerImplementation(ReasonerImplementation.PELLET);
         baseReasoner.init();
