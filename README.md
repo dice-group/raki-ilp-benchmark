@@ -59,7 +59,7 @@ mkdir YOUR_BENCHMARK_NAME
 cd YOUR_BENCHMARK_NAME/
 ```
 
-Add your Ontology `ontology.owl` into `raki-datagenerator/data/YOUR_BENCHMARK_NAME/`
+Add your Ontology `ontology.owl` into `raki-hobbit/data/YOUR_BENCHMARK_NAME/`
 
 Be aware that your Ontology needs an Ontology ID which you can set in the ontology like the following. Let's assume that your ID is `http://example.com/MY-ID`
 
