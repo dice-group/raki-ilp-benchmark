@@ -17,11 +17,9 @@ See https://hobbit-project.github.io/quick_guide.html how to deploy HOBBIT local
 services:
   platform-controller:
     image: hobbitproject/hobbit-platform-controller:latest
-    networks:
-      - hobbit
-      - hobbit-core
+    # ...
     environment:
-      ...
+      # ...
       DOCKER_AUTOPULL: 0
 ```
 
@@ -54,9 +52,7 @@ we will use `YOUR_BENCHMARK_URI` as a placeholder fo this ID throughout this REA
 Create the directory where you'll put your benchmark dataset in.
 
 ```
-cd raki-hobbit/data/
-mkdir YOUR_BENCHMARK_NAME
-cd YOUR_BENCHMARK_NAME/
+mkdir raki-hobbit/data/YOUR_BENCHMARK_NAME
 ```
 
 Add your Ontology `ontology.owl` into `raki-hobbit/data/YOUR_BENCHMARK_NAME/`
@@ -77,7 +73,7 @@ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
 </rdf:RDF>
 ```
 
-Now create a file called `lp.json` where you put the learning problems in the following format:
+Now create a file called `lp.json` in `raki-hobbit/data/YOUR_BENCHMARK_NAME/` where you put the learning problems in the following format:
 
 ```json
 [
@@ -120,14 +116,14 @@ Be aware: Folks may see the name of the dataset. (Use an obscured one if you don
 
 1. Get pre defined embeddings and trained datasets
 ```
-cd raki-system-adapters && https://github.com/dice-group/DRILL/blob/main/embeddings.zip?raw=true -O embeddings.zip && cd ..
-cd raki-system-adapters && https://github.com/dice-group/DRILL/blob/main/pre_trained_agents.zip?raw=true -O pre_trained_agents.zip && cd ..
+wget "https://github.com/dice-group/DRILL/blob/main/embeddings.zip?raw=true" -O raki-system-adapter/embeddings.zip
+wget "https://github.com/dice-group/DRILL/blob/main/pre_trained_agents.zip?raw=true" -O raki-system-adapter/pre_trained_agents.zip
 ```
 
 2. Unzip them to add your datasets
 ```
-cd raki-system-adapters && unzip embeddings.zip && cd ..
-cd raki-system-adapters && unzip pre_trained_agents.zip && cd ..
+unzip raki-system-adapter/embeddings.zip -d raki-system-adapter
+unzip raki-system-adapter/pre_trained_agents.zip -d raki-system-adapter
 ```
 
 To use the Ontolearn adapter you need to create embeddings in https://github.com/dice-group/DAIKIRI-Embedding using ConEx on your dataset. 
@@ -143,15 +139,11 @@ http\://example.com/MY-ID=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, Y
 Now we need to zip the embeddings and pre_trained_agents again
 
 ```
-cd raki-system-adapters && zip -r pre_trained_agents.zip pre_trained_agents/ && cd ..
-cd raki-system-adapters && zip -r embeddings.zip embeddings/ && cd ..
+zip -r raki-system-adapter/pre_trained_agents.zip raki-system-adapter/pre_trained_agents/
+zip -r raki-system-adapter/embeddings.zip raki-system-adapter/embeddings/
 ```
 
 # Build 
-
-Set build.sh to an executable
-
-`chmod +x build.sh`
 
 If you've done your changes:
 `./build.sh`
@@ -159,7 +151,11 @@ If you've done your changes:
 It will automatically build the Docker images for the private RAKI benchmark.
 
 
-# Access Raki-private
+# The Benchmark 
+
+The benchmark is called `RAKI ILP Benchmark`. 
+
+# Executing Hobbit
 
 As the RAKI-private benchmark should be only accessible by members of the raki-private group 
 add to the docker-compose.yml  the following

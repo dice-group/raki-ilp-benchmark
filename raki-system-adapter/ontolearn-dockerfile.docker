@@ -3,7 +3,7 @@ FROM continuumio/miniconda3
 RUN mkdir /usr/share/man/man1/
 RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
 
-RUN git clone -b develop https://github.com/dice-group/Ontolearn.git
+RUN git clone -b 0.2.1 https://github.com/dice-group/Ontolearn.git
 
 
 # enable shell for conda
@@ -15,17 +15,18 @@ RUN conda update -n base -c defaults conda
 
 RUN conda init bash
 RUN conda create -n ontolearn_env python=3.8
-RUN conda activate ontolearn_env && conda install wheel
-RUN conda activate ontolearn_env && conda install cython
-RUN conda activate ontolearn_env && conda install pytorch cpuonly -c pytorch
+#RUN conda activate ontolearn_env && conda install wheel
+#RUN conda activate ontolearn_env && conda install cython
+#RUN conda activate ontolearn_env && conda install pytorch cpuonly -c pytorch
+RUN conda env update --name ontolearn_env
 
 #RUN conda activate ontolearn_env && python setup.py egg_info && pip install -r *.egg-info/requires.txt
-RUN conda activate ontolearn_env &&  python -c 'from setuptools import setup; setup()' develop
+RUN conda run -n ontolearn_env python -c 'from setuptools import setup; setup()' develop
 #RUN conda activate ontolearn_env && pip install -e .
 
 ADD startonto.sh /raki/startonto.sh
 
-RUN conda activate ontolearn_env && simple_drill_endpoint -h
+RUN conda run -n ontolearn_env simple_drill_endpoint -h
 ADD embeddings.zip .
 
 RUN unzip embeddings.zip

@@ -156,8 +156,8 @@ public class RakiEvaluation extends AbstractEvaluationModule {
         noOfConcepts++;
         // Add the time it took
         this.resultTimes.add(responseReceivedTimestamp-taskSentTimestamp);
-        //Create the Learning Problem from the expected data (this is a json learning problem)
         LearningProblem lp = LearningProblemFactory.parse(RabbitMQUtils.readString(expectedData));
+
         try {
             if(receivedData.length==0){
                 LOGGER.error("Concept Length is 0. Defined as error.");
@@ -166,7 +166,7 @@ public class RakiEvaluation extends AbstractEvaluationModule {
                 container.setResultTimeMs(responseReceivedTimestamp-taskSentTimestamp);
             }
             else {
-
+                //Create the Learning Problem from the expected data (this is a json learning problem)
                 //read the concept (in manchester syntax)
                 String concept = RabbitMQUtils.readString(receivedData);
 

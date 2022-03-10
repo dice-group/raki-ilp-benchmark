@@ -72,7 +72,7 @@ public class Evaluator {
      * @param answerConcept the concept which is the solution for the problem
      * @return The result container, containing the {@link F1Result} and the conceptLength
      */
-    public ResultContainer evaluate(LearningProblem problem, String answerConcept){
+    public ResultContainer evaluate(LearningProblem problem, String answerConcept) {
         OWLClassExpression expr = manchesterParser.parse(answerConcept);
 
         //calculate length.
@@ -120,6 +120,7 @@ public class Evaluator {
         this.resultContainers.add(container);
         return container;
     }
+
 
     /**
      * Retrieves all Individuals fitting to the provided concept listed in the provided ontology.
