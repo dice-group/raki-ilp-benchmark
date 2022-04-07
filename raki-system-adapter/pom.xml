@@ -11,9 +11,10 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
+    
     <repositories>
-
         <repository>
             <id>maven.aksw.internal</id>
             <name>University Leipzig, AKSW Maven2 Repository</name>
@@ -31,6 +32,26 @@
         </repository>
     </repositories>
 <dependencies>
+            <!-- ~~~~~~~~~~~~~~~~~~~ Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
+            <!-- slf4j: Logging API -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- Logging - SLF4J-Log4j Binding (only for testing) -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- Java Commons logging via SLF4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- ~~~~~~~~~~~~~~~~~~~ End Logging ~~~~~~~~~~~~~~~~~~~~~~ -->
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-configuration2</artifactId>
@@ -74,7 +95,6 @@
         <artifactId>components-core</artifactId>
         <version>1.5.0</version>
         <exclusions>
-
             <exclusion>
                 <artifactId>jena-arq</artifactId>
                 <groupId>org.apache.jena</groupId>
@@ -94,6 +114,18 @@
             <exclusion>
                 <artifactId>jena-tdb</artifactId>
                 <groupId>org.apache.jena</groupId>
+            </exclusion>
+            <exclusion>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
             </exclusion>
         </exclusions>
     </dependency>
@@ -127,7 +159,6 @@
         <artifactId>owlapi-impl</artifactId>
         <version>4.5.17</version>
     </dependency>
-
 </dependencies>
 
     <build>
