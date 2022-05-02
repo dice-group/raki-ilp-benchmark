@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import org.dice_group.raki.core.utils.TablePrinter;
 import org.dice_group.raki.hobbit.system.AbstractRakiSystemAdapter;
 import org.dllearner.algorithms.celoe.CELOE;
+import org.dllearner.core.AbstractClassExpressionLearningProblem;
 import org.dllearner.core.AbstractKnowledgeSource;
 import org.dllearner.core.ComponentInitException;
 import org.dllearner.core.EvaluatedDescription;
@@ -12,6 +13,7 @@ import org.dllearner.core.Score;
 import org.dllearner.kb.OWLAPIOntology;
 import org.dllearner.learningproblems.PosNegLP;
 import org.dllearner.learningproblems.PosNegLPStandard;
+import org.dllearner.learningproblems.PosOnlyLP;
 import org.dllearner.reasoning.ClosedWorldReasoner;
 import org.dllearner.reasoning.OWLAPIReasoner;
 import org.dllearner.reasoning.ReasonerImplementation;
@@ -69,13 +71,24 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter {
         //get positive and negative examples
         Set<OWLIndividual> posExamples = getExamples(posNegJson.getJSONArray("positives"));
         Set<OWLIndividual> negExamples = getExamples(posNegJson.getJSONArray("negatives"));
+        System.out.println("Positive examples: " + posExamples.size());
+        System.out.println("Negative examples: " + negExamples.size());
 
         //get the mutex, we will release it later on in the AbstractSystemAdapter
         serialMutex.acquire();
-        PosNegLP lp = new PosNegLPStandard(rc);
-        lp.setNegativeExamples(negExamples);
-        lp.setPositiveExamples(posExamples);
-        lp.init();
+        AbstractClassExpressionLearningProblem lp;
+        if (negExamples.size() > 0) {
+            System.out.println("Using PosNegLPStandard");
+            lp = new PosNegLPStandard(rc);
+            ((PosNegLP) lp).setNegativeExamples(negExamples);
+            ((PosNegLP) lp).setPositiveExamples(posExamples);
+            ((PosNegLP) lp).init();
+        } else {
+            System.out.println("Using PosOnlyLP");
+            lp = new PosOnlyLP(rc);
+            ((PosOnlyLP) lp).setPositiveExamples(posExamples);
+            ((PosOnlyLP) lp).init();
+        }
         return celeo(lp);
     }
 
@@ -90,7 +103,7 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter {
      * @return The concept rendered in Manchester Syntax
      * @throws ComponentInitException
      */
-    private String celeo(PosNegLP lp) throws ComponentInitException {
+    private String celeo(AbstractClassExpressionLearningProblem lp) throws ComponentInitException {
 
         //Simply copied that from the example DLLearner
         CELOE celoeAlg = new CELOE(lp, rc);
