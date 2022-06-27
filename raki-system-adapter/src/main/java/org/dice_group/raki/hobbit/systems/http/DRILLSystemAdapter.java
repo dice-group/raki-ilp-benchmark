@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 
 /**
@@ -89,7 +90,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
 
 
     private void loadFileMapping() {
-        mapping = readConfiguration("/raki/drill-mapping.properties");
+        mapping = readConfiguration("drill-mapping.properties");
 
     }
 
@@ -100,6 +101,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
             LOGGER.error("Couldn't find ontology file {}", ontologyFile);
             throw new FileNotFoundException(ontologyFile);
         }
+        LOGGER.info("Ontology: {}", ontologyFile);
 
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
         OWLOntology owlOntology = manager.loadOntologyFromOntologyDocument(IRI.create("http://www.w3.org/2002/07/owl"));
@@ -107,26 +109,30 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
         renderer.setShortFormProvider(provider);
         String id = ontology.getOntologyID().getOntologyIRI().get().toString();
 
-        LOGGER.info("Using Ontology with ID {}", id);
+        LOGGER.info("Ontology ID: {}", id);
         String[] files = mapping.getString(id).split(",\\s*");
-        String embeddings = files[0];
-        String preTrainedData = files[1];
+        String embeddings = "embeddings/" + files[0];
+        String preTrainedData = "pre_trained_agents/" + files[1];
 
         //Check if both embeddings or training data exists, if not exit, otherwise the system will hang and not terminate
-        if(!new File(ONTOPY_PATH+"embeddings/"+embeddings).exists()){
-            LOGGER.error("Couldn't find embeddings file {}embeddings/{}", ONTOPY_PATH, embeddings);
-            throw new FileNotFoundException(ONTOPY_PATH+"embeddings/"+embeddings);
+        if(!new File(embeddings).exists()){
+            LOGGER.error("Couldn't find embeddings file {}", embeddings);
+            throw new FileNotFoundException(embeddings);
         }
-        if(!new File(ONTOPY_PATH+"pre_trained_agents/"+preTrainedData).exists()){
-            LOGGER.error("Couldn't find pre trained data file {}pre_trained_agents/{}", ONTOPY_PATH, preTrainedData);
-            throw new FileNotFoundException(ONTOPY_PATH+"pre_trained_agents/"+preTrainedData);
+        if(!new File(preTrainedData).exists()){
+            LOGGER.error("Couldn't find pre trained data file {}", preTrainedData);
+            throw new FileNotFoundException(preTrainedData);
         }
 
-        LOGGER.info("Found embeddings {} and pre trained data {}", embeddings, preTrainedData);
-        System.out.println(timeOutMs);
-        String[] start = new String[]{"bash", "-c", "/raki/startonto.sh "+ontologyFile+" "+ONTOPY_PATH+"embeddings/"+embeddings+
-                " "+ONTOPY_PATH+"pre_trained_agents/"+preTrainedData+" "+Math.max(1, this.timeOutMs/1000) };
-        execute(start);
+        Long timeOut = Math.max(1, this.timeOutMs/1000);
+
+        LOGGER.info("Embeddings: {}", embeddings);
+        LOGGER.info("Pre-trained data: {}", preTrainedData);
+        LOGGER.info("Timeout: {}s", timeOut);
+
+        Map<String, String> env = Map.of("KG", ontologyFile, "EMBEDDINGS", embeddings,  "PRE_TRAINED_AGENT", preTrainedData, "TIMEOUT", timeOut.toString());
+        LOGGER.info("Starting DRILL endpoint: {}", env);
+        execute(new String[]{"./drill-endpoint"}, env);
     }
 
     @Override
@@ -135,9 +141,10 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
     }
 
 
-    public void execute(String[] args) throws IOException {
+    public void execute(String[] args, Map<String, String> env) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder().redirectErrorStream(true).inheritIO();
         processBuilder.command(args);
+        processBuilder.environment().putAll(env);
         processBuilder.start();
     }
 }

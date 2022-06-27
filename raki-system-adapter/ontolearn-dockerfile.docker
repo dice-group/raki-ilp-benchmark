@@ -1,44 +1,9 @@
-FROM continuumio/miniconda3
+FROM dicegroup/raki-drill-endpoint:latest
+COPY embeddings embeddings
+COPY pre_trained_agents pre_trained_agents
 
-#RUN mkdir /usr/share/man/man1/
-RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
-
-RUN git clone -b 0.5.0 https://github.com/dice-group/Ontolearn.git
-
-
-# enable shell for conda
-SHELL ["/bin/bash", "--login", "-c"]
-
-WORKDIR /Ontolearn
-
-RUN conda update -n base -c defaults conda
-
-RUN conda init bash
-RUN conda create -n ontolearn_env python=3.8
-#RUN conda activate ontolearn_env && conda install wheel
-#RUN conda activate ontolearn_env && conda install cython
-#RUN conda activate ontolearn_env && conda install pytorch cpuonly -c pytorch
-RUN conda env update --name ontolearn_env
-
-#RUN conda activate ontolearn_env && python setup.py egg_info && pip install -r *.egg-info/requires.txt
-RUN conda run -n ontolearn_env python -c 'from setuptools import setup; setup()' develop
-#RUN conda activate ontolearn_env && pip install -e .
-
-ADD startonto.sh /raki/startonto.sh
-
-RUN conda run -n ontolearn_env simple_drill_endpoint -h
-ADD embeddings.zip .
-
-RUN unzip embeddings.zip
-
-ADD pre_trained_agents.zip .
-
-RUN unzip pre_trained_agents.zip
-
-ADD target/raki-system-adapter-1.0.0-SNAPSHOT.jar /raki/systems.jar
-
-ADD src/main/resources/drill-mapping.properties /raki/drill-mapping.properties
-
-WORKDIR /raki
+RUN apt-get update && apt-get -y install openjdk-11-jre
+COPY target/raki-system-adapter-*.jar systems.jar
+COPY src/main/resources/drill-mapping.properties drill-mapping.properties
 
 CMD java -cp systems.jar org.hobbit.core.run.ComponentStarter org.dice_group.raki.hobbit.systems.http.DRILLSystemAdapter
