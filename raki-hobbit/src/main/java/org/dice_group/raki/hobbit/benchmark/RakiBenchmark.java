@@ -6,8 +6,11 @@ import org.dice_group.raki.hobbit.commons.CONSTANTS;
 import org.hobbit.core.Commands;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractBenchmarkController;
+import org.hobbit.core.rabbit.RabbitMQUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
 
 /**
  * The RAKI ILP Benchmark Controller.
@@ -120,5 +123,21 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         LOGGER.info("Results: {}", this.resultModel);
         //this.resultModel.add(benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel.createProperty("http://w3id.org/hobbit/vocab#involvesSystemInstance")).next().asResource(), RDF.type, HOBBIT.System);
         sendResultModel(this.resultModel);
+    }
+
+    @Override
+    public void receiveCommand(byte command, byte[] data) {
+        switch (command) {
+        case Commands.DOCKER_CONTAINER_TERMINATED: {
+            ByteBuffer buffer = ByteBuffer.wrap(data);
+            String containerName = RabbitMQUtils.readString(buffer);
+            int exitCode = buffer.get();
+            if (exitCode != 0) {
+                LOGGER.error("Container {} terminated with exit code {}", containerName, exitCode);
+                containerCrashed(containerName);
+            }
+        }
+        }
+        super.receiveCommand(command, data);
     }
 }

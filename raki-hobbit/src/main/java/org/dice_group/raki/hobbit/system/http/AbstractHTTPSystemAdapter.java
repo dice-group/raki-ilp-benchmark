@@ -130,7 +130,7 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
      *
      * http://localhost:PORT/status should return 200 and a json {status: ready} as soon as the http endpoint is ready
      */
-    protected void waitForSystemReady() {
+    protected void waitForSystemReady() throws Exception {
         boolean ready=false;
         do {
             try {
@@ -161,6 +161,10 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
                     e.printStackTrace();
                 }
             }catch(Exception e){
+                if (!isSystemAlive()) {
+                    LOGGER.error("System is not alive, terminating");
+                    terminate(e);
+                }
                 try {
                     this.wait(100);
                 } catch (Exception ignored) {
@@ -182,4 +186,11 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
      * @throws Exception
      */
     public abstract void startSystem(String ontologyFile) throws Exception;
+
+    /**
+     * Tests whether the system process is alive.
+     *
+     * @returns true if the system process has not yet terminated.
+     */
+    public abstract boolean isSystemAlive();
 }

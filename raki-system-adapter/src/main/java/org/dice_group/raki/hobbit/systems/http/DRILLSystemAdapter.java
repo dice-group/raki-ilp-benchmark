@@ -37,6 +37,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
     private Configuration mapping;
     private final OWLOntologyManager manager = OWLManager.createConcurrentOWLOntologyManager();
     private final OWLParser parser = new RDFXMLParser();
+    private Process process;
 
 
     @Override
@@ -136,11 +137,19 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
         super.init();
     }
 
+    @Override
+    public boolean isSystemAlive() {
+        if (process != null) {
+            return process.isAlive();
+        }
+        return false;
+    }
+
 
     public void execute(String[] args, Map<String, String> env) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder().redirectErrorStream(true).inheritIO();
         processBuilder.command(args);
         processBuilder.environment().putAll(env);
-        processBuilder.start();
+        process = processBuilder.start();
     }
 }
