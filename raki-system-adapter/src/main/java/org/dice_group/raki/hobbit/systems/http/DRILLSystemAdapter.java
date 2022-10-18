@@ -124,11 +124,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
             throw new FileNotFoundException(preTrainedData);
         }
 
-        Long timeOut = Math.max(1, this.timeOutMs/1000);
-
-        LOGGER.info("Embeddings: {}", embeddings);
-        LOGGER.info("Pre-trained data: {}", preTrainedData);
-        LOGGER.info("Timeout: {}s", timeOut);
+        Integer timeOut = getSystemTimeoutms() / 1_000;
 
         Map<String, String> env = Map.of("KG", ontologyFile, "EMBEDDINGS", embeddings,  "PRE_TRAINED_AGENT", preTrainedData, "TIMEOUT", timeOut.toString());
         LOGGER.info("Starting DRILL endpoint: {}", env);

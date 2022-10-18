@@ -24,8 +24,9 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
     protected static Logger LOGGER = LoggerFactory.getLogger(AbstractRakiSystemAdapter.class);
 
 
-    protected int delta=500;
-    protected Long timeOutMs=60000L;
+    protected int delta = 60_000;
+    protected double deltaRatio=1.01;
+    protected int timeOutms=60_000;
     public abstract String createConcept(String posNegExample) throws Exception;
     public abstract void loadOntology(File ontology) throws Exception;
     private SimpleFileReceiver receiver = null;
@@ -57,7 +58,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         NodeIterator iterator = systemParamModel
                 .listObjectsOfProperty(systemParamModel.getProperty(CONSTANTS.RAKI2_PREFIX + "timeOutMS"));
         if(iterator.hasNext()){
-            timeOutMs = iterator.next().asLiteral().getLong();
+            timeOutms = iterator.next().asLiteral().getInt();
         }
 
         iterator = systemParamModel
@@ -65,7 +66,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
         if(iterator.hasNext()){
             delta = iterator.next().asLiteral().getInt();
         }
-        LOGGER.info("Timeout set to {} ms, delta set to {} ms", timeOutMs, delta);
+        LOGGER.info("Timeout set to {} ms, delta set to {} ms", timeOutms, delta);
     }
 
     @Override
@@ -99,6 +100,14 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     }
 
+    public int getSystemTimeoutms() {
+        return timeOutms;
+    }
+
+    public int getAdapterTimeoutms() {
+        return Math.max(1, Math.max(timeOutms + delta, (int) (timeOutms * deltaRatio)));
+    }
+
     @Override
     public void receiveGeneratedTask(String taskId, byte[] data) {
         LOGGER.info("Retrieved task with id {}. ", taskId);
@@ -120,10 +129,15 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
             });
             service.shutdown();
             try {
-                boolean terminated = service.awaitTermination(timeOutMs + delta, TimeUnit.MILLISECONDS);
-                LOGGER.info("received {}, terminated: {}", atomicConcept.get(), terminated);
-            }catch(Exception e){
-                e.printStackTrace();
+                int adapterTimeoutms = getAdapterTimeoutms();
+                boolean terminated = service.awaitTermination(adapterTimeoutms, TimeUnit.MILLISECONDS);
+                if (terminated) {
+                    LOGGER.info("Concept creation finished in task {}.", taskId);
+                } else {
+                    LOGGER.error("Concept creation in task {} didn't finish in {}s.", taskId, adapterTimeoutms / 1000);
+                }
+            } catch (InterruptedException e) {
+                LOGGER.error("Interrupted", e);
             }
             releaseMutexes();
             concept = atomicConcept.get();

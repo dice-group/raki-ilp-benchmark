@@ -107,7 +107,7 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter {
 
         //Simply copied that from the example DLLearner
         CELOE celoeAlg = new CELOE(lp, rc);
-        celoeAlg.setMaxExecutionTimeInSeconds(Math.max(1, timeOutMs/1000));
+        celoeAlg.setMaxExecutionTimeInSeconds(getSystemTimeoutms() / 1_000);
         celoeAlg.setOperator(op);
         celoeAlg.setWriteSearchTree(true);
         celoeAlg.setSearchTreeFile("log/search-tree.log");

@@ -53,9 +53,10 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
 
 
         RequestConfig.Builder requestConfig = RequestConfig.custom();
-        requestConfig.setConnectTimeout(this.timeOutMs.intValue()+delta);
-        requestConfig.setConnectionRequestTimeout(this.timeOutMs.intValue()+delta);
-        requestConfig.setSocketTimeout(this.timeOutMs.intValue()+delta);
+        int adapterTimeoutms = getAdapterTimeoutms();
+        requestConfig.setConnectTimeout(adapterTimeoutms);
+        requestConfig.setConnectionRequestTimeout(adapterTimeoutms);
+        requestConfig.setSocketTimeout(adapterTimeoutms);
 
         post.setConfig(requestConfig.build());
         post.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
