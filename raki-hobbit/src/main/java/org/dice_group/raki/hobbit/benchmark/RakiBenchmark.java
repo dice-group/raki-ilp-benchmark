@@ -96,8 +96,6 @@ public class RakiBenchmark extends AbstractBenchmarkController {
         waitForComponentsToInitialize();
     }
 
-
-
     @Override
     protected void executeBenchmark() throws Exception {
         // give the start signals
@@ -110,15 +108,19 @@ public class RakiBenchmark extends AbstractBenchmarkController {
 
         LOGGER.info("Finished creating Modules");
         waitForDataGenToFinish();
+        LOGGER.info("Data generators finished");
 
         // wait for the task generators to finish their work
         waitForTaskGenToFinish();
+        LOGGER.info("Task generators finished");
 
         waitForSystemToFinish();
+        LOGGER.info("System finished, starting evaluation...");
 
         sendToCmdQueue(CONSTANTS.COMMAND_EVAL_START);
         // wait for the evaluation to finish
         waitForEvalComponentsToFinish();
+        LOGGER.info("Evaluation finished");
 
         LOGGER.info("Results: {}", this.resultModel);
         //this.resultModel.add(benchmarkParamModel.listObjectsOfProperty(benchmarkParamModel.createProperty("http://w3id.org/hobbit/vocab#involvesSystemInstance")).next().asResource(), RDF.type, HOBBIT.System);

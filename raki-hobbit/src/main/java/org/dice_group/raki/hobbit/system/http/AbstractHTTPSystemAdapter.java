@@ -45,8 +45,8 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
 
     @Override
     public String createConcept(String posNegExample) throws IOException {
-        LOGGER.debug("Creating Concept request");
         String learningUri = baseUri+"/concept_learning";
+        LOGGER.debug("Using HTTP system: {}", learningUri);
         HttpPost post = new HttpPost(learningUri);
 
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -83,18 +83,22 @@ public abstract class AbstractHTTPSystemAdapter extends AbstractRakiSystemAdapte
             }
             try {
                 //print concept FIXME: make this better and more beautiful
-                System.out.println(concept);
+                LOGGER.info("Concept: {}", concept);
                 concept = convertToManchester(concept);
             } catch (OWLOntologyCreationException e) {
                 e.printStackTrace();
             }
-        }catch(Exception e){
-            LOGGER.warn(e.getMessage());
+        } catch (org.apache.http.NoHttpResponseException e) {
+            // happens when the HTTP server process dies
+            LOGGER.error("No response in HTTP system request");
+        } catch (java.net.SocketTimeoutException e) {
+            // httpclient.execute
+            LOGGER.error("Read timed out in HTTP system request");
+        } catch(Exception e){
+            LOGGER.error("Exception in system request", e);
             return "";
         }finally {
-            LOGGER.info("Closing connection.");
             httpclient.close();
-            LOGGER.info("Closing connection done.");
         }
         LOGGER.info("Concept received successfully.");
         LOGGER.info("Concept is: {}", concept);

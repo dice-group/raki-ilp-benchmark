@@ -11,6 +11,8 @@ import org.dice_group.raki.core.utils.TablePrinter;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
  * the provided learning problems and their corresponding solution, represented as a Concept ({@link org.semanticweb.owlapi.model.OWLClassExpression})
  */
 public class Evaluator {
+
+    protected static Logger LOGGER = LoggerFactory.getLogger(Evaluator.class);
 
     private final F1MeasureCalculator f1MeasureCalculator = new F1MeasureCalculator();
 
@@ -43,8 +47,11 @@ public class Evaluator {
     public Evaluator(OWLOntology ontology, OWLOntology owlBaseOntology, boolean useConcepts){
         this.ontology = ontology;
         this.useConcepts = useConcepts;
+        LOGGER.info("Creating reasoner...");
         this.reasoner = createReasoner();
+        LOGGER.info("Creating parser...");
         this.manchesterParser = new ManchesterSyntaxParser(ontology, owlBaseOntology);
+        LOGGER.info("Created parser");
     }
 
     /**

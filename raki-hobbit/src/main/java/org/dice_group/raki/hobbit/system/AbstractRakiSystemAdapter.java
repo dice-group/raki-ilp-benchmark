@@ -110,8 +110,9 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
 
     @Override
     public void receiveGeneratedTask(String taskId, byte[] data) {
-        LOGGER.info("Retrieved task with id {}. ", taskId);
+        LOGGER.trace("Retrieved task: {}", taskId);
         String posNegExamples = RabbitMQUtils.readString(data);
+        LOGGER.info("Task {}: {}", taskId, posNegExamples);
         //empty string will be considered as an error
         String concept = "";
         AtomicReference<String> atomicConcept = new AtomicReference<>("");
@@ -119,11 +120,12 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
             ExecutorService service = Executors.newSingleThreadExecutor();
             service.submit(() -> {
                 try {
+                    LOGGER.info("Creating concept in task {}...", taskId);
                     String conceptTmp = createConcept(posNegExamples);
-                    LOGGER.info("recevied {}", conceptTmp);
+                    LOGGER.info("Created concept in task {}: {}", taskId, conceptTmp);
                     atomicConcept.set(conceptTmp);
                 } catch (Exception e) {
-                    LOGGER.error("Problems retrieving concepts", e);
+                    LOGGER.error("Exception while creating concepts in task {}.", taskId, e);
                     atomicConcept.set("");
                 }
             });
@@ -141,22 +143,18 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
             }
             releaseMutexes();
             concept = atomicConcept.get();
-            System.out.println("Concept: "+ concept);
-                    //concept = createConcept(posNegExamples);
         } catch (Exception e) {
-            LOGGER.error("Concept couldn't be created. ", e);
+            LOGGER.error("Could not create concept in task {}.", taskId, e);
         }
 
         try {
             if(concept==null){
                 concept="";
             }
-            LOGGER.info("Sending concept {} now", concept);
+            LOGGER.info("Sending the results in task {} to the evaluation storage...", taskId);
             sendResultToEvalStorage(taskId, RabbitMQUtils.writeString(concept));
-            LOGGER.info("sended concept");
         } catch (IOException e) {
-            //Log the error.
-            LOGGER.error("Problem sending results to eval storage. ", e);
+            LOGGER.error("Could not send results to the evaluation storage in task {}.", taskId, e);
         }
     }
 }

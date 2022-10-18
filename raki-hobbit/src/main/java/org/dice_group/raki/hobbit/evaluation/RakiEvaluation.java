@@ -126,13 +126,15 @@ public class RakiEvaluation extends AbstractEvaluationModule {
 
         //Load the OWL base Ontology. This is sometimes needed, to allow owl:Thing and such.
         //the ontology will be added to the Hobbit container in the dockerfile
+        LOGGER.info("Loading OWL base ontology...");
         OWLOntology owlOnto = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(new File("/raki/owl.ttl"));
 
         //Create the core evaluator
+        LOGGER.info("Loading ontology: {}...", ontology);
         evaluator = new Evaluator(ontology, owlOnto, useConcepts);
 
         //The eval has at this point loaded the ontology fully and can be executed.
-        LOGGER.debug("Sending Eval Loaded command.");
+        LOGGER.info("Evaluation module loaded");
         try {
             sendToCmdQueue(CONSTANTS.COMMAND_EVAL_LOADED);
         } catch (IOException e) {
@@ -145,7 +147,9 @@ public class RakiEvaluation extends AbstractEvaluationModule {
     protected void collectResponses() throws Exception {
         // We have to make sure, that the collectResponse method waits until we actually have responses
         // otherwise the evaluation module will just stop immediately. So we wait until we get the signal in the receiveCommands method
+        LOGGER.info("Waiting for evaluation to start...");
         evalStartMutex.acquire();
+        LOGGER.info("Collecting responses...");
         super.collectResponses();
         evalStartMutex.release();
     }

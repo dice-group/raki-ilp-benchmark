@@ -11,9 +11,13 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProvider;
 import org.semanticweb.owlapi.util.BidirectionalShortFormProviderAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
 public class ManchesterSyntaxParser {
+
+    protected static Logger LOGGER = LoggerFactory.getLogger(ManchesterSyntaxParser.class);
 
     private final BidirectionalShortFormProvider provider;
     private final ManchesterOWLSyntaxClassExpressionParser parser;
@@ -26,12 +30,17 @@ public class ManchesterSyntaxParser {
      * @param owlBaseOntology the additional OWL base ontology
      * */
     public ManchesterSyntaxParser(OWLOntology mainOntology, OWLOntology owlBaseOntology){
+        LOGGER.info("Creating BidirectionalShortFormProviderAdapter...");
         provider = new BidirectionalShortFormProviderAdapter(Sets.newHashSet(mainOntology, owlBaseOntology), new ManchesterOWLSyntaxPrefixNameShortFormProvider(mainOntology));
 
         //create underlying parser
+        LOGGER.info("Creating OWLEntityChecker...");
         OWLEntityChecker checker = new ShortFormEntityChecker(provider);
+        LOGGER.info("Creating OWLDataFactory...");
         OWLDataFactory dataFactory = new OWLDataFactoryImpl();
+        LOGGER.info("Creating ManchesterOWLSyntaxClassExpressionParser...");
         parser = new ManchesterOWLSyntaxClassExpressionParser(dataFactory, checker);
+        LOGGER.info("Created ManchesterOWLSyntaxClassExpressionParser");
     }
 
 
