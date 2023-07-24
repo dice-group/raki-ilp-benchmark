@@ -1,6 +1,6 @@
 FROM continuumio/miniconda3
 
-RUN mkdir /usr/share/man/man1/
+#RUN mkdir /usr/share/man/man1/
 RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
 
 RUN git clone -b 0.2.1 https://github.com/dice-group/Ontolearn.git
@@ -15,9 +15,6 @@ RUN conda update -n base -c defaults conda
 
 RUN conda init bash
 RUN conda create -n ontolearn_env python=3.8
-#RUN conda activate ontolearn_env && conda install wheel
-#RUN conda activate ontolearn_env && conda install cython
-#RUN conda activate ontolearn_env && conda install pytorch cpuonly -c pytorch
 RUN conda env update --name ontolearn_env
 
 #RUN conda activate ontolearn_env && python setup.py egg_info && pip install -r *.egg-info/requires.txt

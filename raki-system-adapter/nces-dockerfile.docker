@@ -11,17 +11,19 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 WORKDIR /Ontolearn
 
+RUN git checkout nces
 RUN conda update -n base -c defaults conda
 
 RUN conda init bash
-RUN conda create -n ontolearn_env python=3.8
-RUN conda env update --name ontolearn_env
+RUN conda env create -f nces_environment.yml
+#RUN conda create -n ontolearn_env python=3.8
+RUN conda env update --name nces_env
 
-RUN conda run -n ontolearn_env python -c 'from setuptools import setup; setup()' nces
+RUN conda run -n nces_env python -c 'from setuptools import setup; setup()' develop
 
 ADD startnces.sh /raki/startnces.sh
 
-RUN conda run -n ontolearn_env nces_endpoint -h
+RUN conda run -n nces_env ./nces_endpoint -h
 
 ADD NCESData.zip .
 
