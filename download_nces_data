@@ -1,0 +1,2 @@
+! wget https://hobbitdata.informatik.uni-leipzig.de/NCES_Data_Hobbit_Bench/NCESDataHobbitBench.zip -O raki-system-adapter/NCESData.zip
+! unzip -o raki-system-adapter/NCESData.zip -d raki-system-adapter
