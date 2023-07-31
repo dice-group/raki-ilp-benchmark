@@ -1,4 +1,4 @@
-
+# -*- mode: dockerfile; -*-
 FROM openjdk:11
 
 ADD target/raki-system-adapter-1.0.0-SNAPSHOT.jar /raki/systems.jar
