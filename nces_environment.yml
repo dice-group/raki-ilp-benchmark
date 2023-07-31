@@ -1,4 +1,4 @@
-name: nces_env_temp
+name: nces_env
 channels:
   - pytorch
   - nvidia
@@ -139,4 +139,4 @@ dependencies:
     - tokenizers==0.13.3
     - tqdm==4.65.0
     - transformers==4.31.0
-prefix: /home/user/.conda/envs/nces_env_temp
+prefix: /home/user/.conda/envs/nces_env
