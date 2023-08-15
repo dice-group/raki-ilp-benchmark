@@ -112,7 +112,27 @@ Add the following to the end
 
 Be aware: Folks may see the name of the dataset. (Use an obscured one if you don't want them, however it needs to be obscured in the previous steps as well.)
 
-# Use Ontolearn as a system
+# Use NCES (from Ontolearn) as a system
+
+1. Download datasets and pretrained models. In a terminal open in the main repository `raki-ilp-benchmark` run
+```
+./download\_nces\_data
+```
+The directory NCESData will be created under `raki-system-adapter`. 
+
+2. Prepare embeddings and trained models for your dataset following the steps described at [NCES](https://github.com/dice-group/NeuralClassExpressionSynthesis) under section `Bring your own data`. It might also help to have a look at example notebooks [here](https://github.com/dice-group/Ontolearn/blob/develop/examples/example-usage-NCES.ipynb) on how to train NCES on your data
+
+3. Add pretrained models and embeddings into `raki-system-adapter/NCESData/`. Your folder should be formatted as follows: 1) give it a name, say `my\_folder`, and 2) it should contain subfolders `embeddings` for embeddings, `trained_models` for trained NCES instances, and the ontology file `my\_folder.owl`
+
+4. Zip NCESData again and leave the Zip file under raki-system-adapter
+
+5. Add in `raki-system-adapter/src/main/resources/nces-mapping.properties` using your previous declared Ontology ID (e.g. `http://example.com/MY-ID`) the following:
+```properties
+http\://example.com/MY-ID=my\_folder/my\_folder.owl, my\_folder/embeddings/ConEx_entity_embeddings.csv
+```
+
+
+# Use DRILL (from Ontolearn) as a system
 
 1. Get pre defined embeddings and trained datasets
 ```
