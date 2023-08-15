@@ -126,7 +126,7 @@ The directory NCESData will be created under `raki-system-adapter`.
 
 4. Zip NCESData again and leave the Zip file under raki-system-adapter
 
-5. Add in `raki-system-adapter/src/main/resources/nces-mapping.properties` using your previous declared Ontology ID (e.g. `http://example.com/MY-ID`) the following:
+5. Add in `raki-system-adapter/src/main/resources/nces-mapping.properties` using your previously declared Ontology ID (e.g. `http://example.com/MY-ID`) the following:
 ```properties
 http\://example.com/MY-ID=my\_folder/my\_folder.owl, my\_folder/embeddings/ConEx_entity_embeddings.csv
 ```
@@ -150,7 +150,7 @@ To use the Ontolearn adapter you need to create embeddings in https://github.com
 
 add the embeddings and pre-trained agents to the corresponding folder in `embeddings/ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv` and `pre_trained_agents/YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth`
 
-Add in `raki-system-adapter/src/main/resources/drill-mapping.properties` using your previous declared Ontology ID (e.g. `http://example.com/MY-ID`)
+Add in `raki-system-adapter/src/main/resources/drill-mapping.properties` using your previously declared Ontology ID (e.g. `http://example.com/MY-ID`)
 
 ```properties
 http\://example.com/MY-ID=ConEx_YOUR_DATASET_NAME/ConEx_entity_embeddings.csv, YOUR_DATASET_NAME/DrillHeuristic_averaging/DrillHeuristic_averaging.pth
