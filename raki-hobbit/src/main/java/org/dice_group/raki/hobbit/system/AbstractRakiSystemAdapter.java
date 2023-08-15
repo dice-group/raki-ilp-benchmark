@@ -139,7 +139,7 @@ public abstract class AbstractRakiSystemAdapter extends AbstractSystemAdapter {
             }
             LOGGER.info("Sending concept {} now", concept);
             sendResultToEvalStorage(taskId, RabbitMQUtils.writeString(concept));
-            LOGGER.info("sended concept");
+            LOGGER.info("concept sent");
         } catch (IOException e) {
             //Log the error.
             LOGGER.error("Problem sending results to eval storage. ", e);

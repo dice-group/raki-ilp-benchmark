@@ -24,12 +24,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+
 /**
  * Creates the raki ilp system adapter for the Ontolearn/NCES System
  */
-
-
-
 public class NCESSystemAdapter extends AbstractHTTPSystemAdapter {
 
     private static final String ONTOPY_PATH = "/Ontolearn/NCESData/";
@@ -45,7 +43,7 @@ public class NCESSystemAdapter extends AbstractHTTPSystemAdapter {
         //We get the whole thing in RDF syntax, but we want Manchester Syntax
         OWLOntology onto = manager.createOntology();
         parser.parse(new StreamDocumentSource(new ByteArrayInputStream(concept.getBytes(StandardCharsets.UTF_8))), onto, manager.getOntologyLoaderConfiguration());
-        OWLClass  pred0 =new OWLDataFactoryImpl().getOWLClass(IRI.create(onto.getOntologyID().getOntologyIRI().get() +"#Pred_0"));
+        OWLClass  pred0 = new OWLDataFactoryImpl().getOWLClass(IRI.create(onto.getOntologyID().getOntologyIRI().get() +"#Pred_0"));
         OWLEquivalentClassesAxiom axiom = onto.getEquivalentClassesAxioms(pred0).iterator().next();
         OWLClassExpression expr = axiom.getClassExpressionsMinus(pred0).iterator().next();
         manager.removeOntology(onto);
@@ -111,22 +109,22 @@ public class NCESSystemAdapter extends AbstractHTTPSystemAdapter {
 
         LOGGER.info("Using Ontology with ID {}", id);
         String[] files = mapping.getString(id).split(",\\s*");
-        String embeddings = files[0];
-        String trained_models = files[1];
+        String ontology_path = files[0];
+        String embeddings = files[1];
 
-        //Check if both embeddings and pretrained synthesizers exist, if not exit, otherwise the system will hang and not terminate
+        //Check if both embeddings and ontology file exist, if not exit, otherwise the system will hang and not terminate
         if(!new File(ONTOPY_PATH+embeddings).exists()){
             LOGGER.error("Couldn't find embeddings file {}/{}", ONTOPY_PATH, embeddings);
             throw new FileNotFoundException(ONTOPY_PATH+embeddings);
         }
-        if(!new File(ONTOPY_PATH+trained_models+"/trained_SetTransformer.pt").exists()){
-            LOGGER.error("Couldn't find pretrained synthesizers' file {}/{}", ONTOPY_PATH, trained_models);
-            throw new FileNotFoundException(ONTOPY_PATH+trained_models);
+        if(!new File(ONTOPY_PATH+ontology_path).exists()){
+            LOGGER.error("Couldn't find ontology file {}/{}", ONTOPY_PATH, ontology_path);
+            throw new FileNotFoundException(ONTOPY_PATH+ontology_path);
         }
 
-        LOGGER.info("Found embeddings {} and pretrained synthesizers {}", embeddings, trained_models);
+        LOGGER.info("Found embeddings {} and ontology file {}", embeddings, ontology_path);
         System.out.println(timeOutMs);
-        String[] start = new String[]{"bash", "-c", "/raki/startnces.sh "+ontologyFile+" "+ONTOPY_PATH+embeddings};
+        String[] start = new String[]{"bash", "-c", "/raki/startnces.sh "+ONTOPY_PATH+ontology_path+" "+ONTOPY_PATH+embeddings};
         execute(start);
     }
 

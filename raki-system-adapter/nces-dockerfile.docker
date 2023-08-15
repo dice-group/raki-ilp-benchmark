@@ -6,19 +6,20 @@ RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
 # enable shell for conda
 SHELL ["/bin/bash", "--login", "-c"]
 
-RUN git clone --branch nces --depth 1 https://github.com/dice-group/Ontolearn.git
+RUN git clone --branch nces --depth 1 https://github.com/dice-group/Ontolearn.git /Ontolearn
 
 WORKDIR /Ontolearn
 
 RUN conda update -n base -c defaults conda
-
-RUN conda env create -f nces_environment.yml
-
-RUN conda run -n nces_env python -c 'from setuptools import setup; setup()' develop
+RUN conda create -n "nces" python=3.9 && conda clean -afy
+RUN conda run -n nces python -m pip install torch torchvision torchaudio
+RUN conda run -n nces python -m pip install pandas tqdm matplotlib flask deap
+RUN conda run -n nces python -m pip install owlready2
+RUN conda run -n nces python -c "from setuptools import setup; setup()" develop
 
 # FIXME
 ADD NCESData.zip .
-RUN unzip NCESData.zip
+RUN unzip -o NCESData.zip
 
 ADD startnces.sh /raki/startnces.sh
 

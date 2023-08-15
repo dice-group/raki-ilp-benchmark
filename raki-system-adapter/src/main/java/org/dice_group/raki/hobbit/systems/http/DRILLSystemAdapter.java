@@ -43,7 +43,7 @@ public class DRILLSystemAdapter extends AbstractHTTPSystemAdapter {
         //We get the whole thing in RDF syntax, but we want Manchester Syntax
         OWLOntology onto = manager.createOntology();
         parser.parse(new StreamDocumentSource(new ByteArrayInputStream(concept.getBytes(StandardCharsets.UTF_8))), onto, manager.getOntologyLoaderConfiguration());
-        OWLClass  pred0 =new OWLDataFactoryImpl().getOWLClass(IRI.create(onto.getOntologyID().getOntologyIRI().get() +"#Pred_0"));
+        OWLClass  pred0 = new OWLDataFactoryImpl().getOWLClass(IRI.create(onto.getOntologyID().getOntologyIRI().get() +"#Pred_0"));
         OWLEquivalentClassesAxiom axiom = onto.getEquivalentClassesAxioms(pred0).iterator().next();
         OWLClassExpression expr = axiom.getClassExpressionsMinus(pred0).iterator().next();
         manager.removeOntology(onto);

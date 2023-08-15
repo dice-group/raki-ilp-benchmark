@@ -116,7 +116,6 @@ public class DLLearnerSystemAdapter extends AbstractRakiSystemAdapter {
                 // We want the best OWLClassExpression
         OWLClassExpression best = celoeAlg.getCurrentlyBestDescription();
         LOGGER.info("Best expression: {}", best);
-
         return renderer.render(best);
     }
 
