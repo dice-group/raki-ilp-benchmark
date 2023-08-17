@@ -6,7 +6,7 @@ RUN apt-get update && apt-get -y install openjdk-11-jre unzip gcc
 # enable shell for conda
 SHELL ["/bin/bash", "--login", "-c"]
 
-RUN git clone --branch nces --depth 1 https://github.com/dice-group/Ontolearn.git /Ontolearn
+RUN git clone --branch 0.5.4 --depth 1 https://github.com/dice-group/Ontolearn.git /Ontolearn
 
 WORKDIR /Ontolearn
 
