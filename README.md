@@ -178,7 +178,7 @@ The benchmark is called `RAKI ILP Benchmark`.
 # Executing Hobbit
 
 As the RAKI-private benchmark should be only accessible by members of the raki-private group 
-add to the docker-compose.yml  the following
+add to the docker-compose.yml  the following (also see an example at https://github.com/hobbit-project/platform/blob/master/docker-compose.yml)
 
 ```yaml
 services:
